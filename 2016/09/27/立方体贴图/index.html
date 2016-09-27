@@ -2,8 +2,6 @@
 
 
 
-  
-
 
 
 
@@ -18,9 +16,34 @@
   
   
   
-    <meta name="description" content="">
+    <meta name="description" content="首先简单的介绍一下什么是立方体贴图（CubeMap）？立方体贴图，就是6张2D纹理，组成一个立方体，但这并不是一个简单的立方体盒子，它有自己特有的属性，其中最重要的一点就是可以使用方向向量对6个面的纹理进行采样和索引，不再使用纹理坐标，以下的示意图就很简单明了（教程中图片拿来用一下）
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+参考教程：https://learnopengl-c...">
   
-  <title>分类: 欢迎 [ 奔跑的蜗牛 ]</title>
+  <title>立方体贴图 [ 奔跑的蜗牛 ]</title>
   
   
     <link rel="shortcut icon" href="/favicon.ico">
@@ -39,6 +62,15 @@
 <body>
 <div class="side-navigate hide-area">
   
+  
+    <div class="item next">
+      <a href="/2016/09/22/hello-world/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Hello World
+      </div>
+    </div>
   
 </div>
 <div id="outer-container" class="hide-area">
@@ -78,7 +110,7 @@
           </li>
         
           
-            <li class="active">
+            <li>
           
             <a href="/categories">分类</a>
             
@@ -103,92 +135,91 @@
     <div id="content-inner">
       
       
-  <article id="page">
-    
+  <article id="post">
+    <h1>立方体贴图</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2016-09-27</span>
       
-        <h1 class="center-title">
-          分类
-          
-        </h1>
+        <span id = "post-title-updated">修改于 2016-09-27</span>
       
-    
       
-    
-    <ul class="category-list">
-      
-        <li class="category-list-item">
-        
-          <a class="active" href="/categories/欢迎/">欢迎</a>
-        
-          <span class="category-list-count">1</span>
-        </li>
-      
-        <li class="category-list-item">
-        
-          <a href="/categories/OpenGL/">OpenGL</a>
-        
-          <span class="category-list-count">1</span>
-        </li>
-      
-    </ul>
-    
+      <span id = "post-title-categories">分类
       
       
         
-          
         
+        <a href="/categories/OpenGL/">OpenGL</a>
+      
+      </span>
       
       
-      <div class="post-title-item">
-  
-  <a href="/2016/09/22/hello-world/">
-  
-    Hello World
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">9-22</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/欢迎/">欢迎</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/开始/">开始</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
+      <span id = "post-title-tags">
+      标签
       
       
         
+        
+        <a href="/tags/高级OpenGL/">高级OpenGL</a>
       
+      </span>
       
+    </p>
     
+    <p>首先简单的介绍一下什么是立方体贴图（CubeMap）？<br>立方体贴图，就是6张2D纹理，组成一个立方体，但这并不是一个简单的立方体盒子，它有自己特有的属性，其中最重要的一点就是可以使用方向向量对6个面的纹理进行采样和索引，不再使用纹理坐标，以下的示意图就很简单明了（教程中图片拿来用一下）</p>
+<div class="self_define_image"> <p id="img_text"> <img id="img_image" src="cubemaps_sampling.png"> </p> </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a></p>
+
   </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
 
   
 
+  
+    <a href="/2016/09/22/hello-world/" class="next">下一篇 Hello World &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div class="ds-thread" data-thread-key="2016/09/27/立方体贴图/" data-title="立方体贴图" data-url="http://yoursite.com/2016/09/27/立方体贴图/"></div>
       
       
       
@@ -206,6 +237,18 @@
 </div>
 
 </div>
+
+  <script type="text/javascript">
+var duoshuoQuery = {short_name:"gamerblog"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] 
+   || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
 
 
 
@@ -312,6 +355,8 @@ var unsplashConfig = {"gravity":"north"};
 var turnoffBackgroundImage = false;
 
 
+
+  turnoffBackgroundImage = true;
 
 
 var backgroundColor = "D7CCC8";
