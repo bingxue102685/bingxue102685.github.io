@@ -1,0 +1,59 @@
+<html>
+<head>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><title>CubmapStudy_r.h</title>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<style type="text/css">
+<!--.line_num {color: #666666; background-color: #E8E8E8;}//-->
+</style><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body bgcolor=#FFFFFF text=#000000>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><pre style="font: 9pt Verdana, Fixedsys, Verdana, Tahoma;">
+<span class="line_num"><font color=#e8e8e8>000</font>1 </span><font color=#800080>#ifndef CUB_MAP_STUDY_R_H</font>
+<span class="line_num"><font color=#e8e8e8>000</font>2 </span><font color=#800080>#define CUB_MAP_STUDY_R_H</font>
+<span class="line_num"><font color=#e8e8e8>000</font>3 </span>
+<span class="line_num"><font color=#e8e8e8>000</font>4 </span><font color=#800080>#include "renderDelegate.h"</font>
+<span class="line_num"><font color=#e8e8e8>000</font>5 </span><font color=#800080>#include "shaderHandle.h"</font>
+<span class="line_num"><font color=#e8e8e8>000</font>6 </span><font color=#800080>#include "Camera.h"</font>
+<span class="line_num"><font color=#e8e8e8>000</font>7 </span><font color=#800080>#include &lt;glm\glm.hpp&gt;</font>
+<span class="line_num"><font color=#e8e8e8>000</font>8 </span><font color=#800080>#include &lt;glm\gtc\matrix_transform.hpp&gt;</font>
+<span class="line_num"><font color=#e8e8e8>000</font>9 </span><font color=#800080>#include &lt;glm\gtc\type_ptr.hpp&gt;</font>
+<span class="line_num"><font color=#e8e8e8>00</font>10 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>11 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>12 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>13 </span><font color=#0000FF>class</font> CubMapStudyR: <font color=#0000FF>public</font> Handle
+<span class="line_num"><font color=#e8e8e8>00</font>14 </span>{
+<span class="line_num"><font color=#e8e8e8>00</font>15 </span><font color=#0000FF>public</font>:
+<span class="line_num"><font color=#e8e8e8>00</font>16 </span>    CubMapStudyR();
+<span class="line_num"><font color=#e8e8e8>00</font>17 </span>    <font color=#0000FF>void</font> render();
+<span class="line_num"><font color=#e8e8e8>00</font>18 </span><font color=#0000FF>private</font>:
+<span class="line_num"><font color=#e8e8e8>00</font>19 </span>    GLuint skyBoxTextureID;
+<span class="line_num"><font color=#e8e8e8>00</font>20 </span>    GLuint cubeTexutrueID;
+<span class="line_num"><font color=#e8e8e8>00</font>21 </span>    GLuint skyBoxVAO;
+<span class="line_num"><font color=#e8e8e8>00</font>22 </span>    GLuint cubeVAO;
+<span class="line_num"><font color=#e8e8e8>00</font>23 </span>    ShaderHandle<font color=#AA5500>*</font> skyboxShader;
+<span class="line_num"><font color=#e8e8e8>00</font>24 </span>    ShaderHandle<font color=#AA5500>*</font> cubeShader;
+<span class="line_num"><font color=#e8e8e8>00</font>25 </span>    Camera<font color=#AA5500>*</font> camera;
+<span class="line_num"><font color=#e8e8e8>00</font>26 </span><font color=#0000FF>private</font>:
+<span class="line_num"><font color=#e8e8e8>00</font>27 </span>    <font color=#0000FF>void</font> initTextrueID();
+<span class="line_num"><font color=#e8e8e8>00</font>28 </span>    <font color=#0000FF>void</font> initVAO();
+<span class="line_num"><font color=#e8e8e8>00</font>29 </span>};
+<span class="line_num"><font color=#e8e8e8>00</font>30 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>31 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>32 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>33 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>34 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>35 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>36 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>37 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>38 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>39 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>40 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>41 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>42 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>43 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>44 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>45 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>46 </span><font color=#800080>#endif </font><font color=#008000>//CUB_MAP_STUDY_R_H</font>
+</pre><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>

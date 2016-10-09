@@ -1,0 +1,118 @@
+<html>
+<head>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><title>BrowseDir.cpp</title>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<style type="text/css">
+<!--.line_num {color: #666666; background-color: #E8E8E8;}//-->
+</style><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body bgcolor=#FFFFFF text=#000000>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><pre style="font: 9pt Verdana, Fixedsys, Verdana, Tahoma;">
+<span class="line_num"><font color=#e8e8e8>000</font>1 </span><font color=#800080>#include "BrowseDir.h"</font>
+<span class="line_num"><font color=#e8e8e8>000</font>2 </span>
+<span class="line_num"><font color=#e8e8e8>000</font>3 </span>BrowseDir<font color=#AA5500>*</font> BrowseDir::browseDir <font color=#AA5500>=</font> nullptr;
+<span class="line_num"><font color=#e8e8e8>000</font>4 </span>
+<span class="line_num"><font color=#e8e8e8>000</font>5 </span>BrowseDir::BrowseDir()
+<span class="line_num"><font color=#e8e8e8>000</font>6 </span>{
+<span class="line_num"><font color=#e8e8e8>000</font>7 </span>}
+<span class="line_num"><font color=#e8e8e8>000</font>8 </span>
+<span class="line_num"><font color=#e8e8e8>000</font>9 </span>BrowseDir<font color=#AA5500>*</font> BrowseDir::getInstance(string rootName)
+<span class="line_num"><font color=#e8e8e8>00</font>10 </span>{
+<span class="line_num"><font color=#e8e8e8>00</font>11 </span>    <font color=#0000FF>if</font> (BrowseDir::browseDir == nullptr)
+<span class="line_num"><font color=#e8e8e8>00</font>12 </span>    {
+<span class="line_num"><font color=#e8e8e8>00</font>13 </span>        BrowseDir::browseDir <font color=#AA5500>=</font> <font color=#0000FF>new</font> BrowseDir();
+<span class="line_num"><font color=#e8e8e8>00</font>14 </span>    }
+<span class="line_num"><font color=#e8e8e8>00</font>15 </span>    BrowseDir::browseDir-<font color=#AA5500>&gt;</font>setRootPath(rootName);
+<span class="line_num"><font color=#e8e8e8>00</font>16 </span>    BrowseDir::browseDir-<font color=#AA5500>&gt;</font>initFileInfo();
+<span class="line_num"><font color=#e8e8e8>00</font>17 </span>    <font color=#0000FF>return</font> BrowseDir::browseDir;
+<span class="line_num"><font color=#e8e8e8>00</font>18 </span>}
+<span class="line_num"><font color=#e8e8e8>00</font>19 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>20 </span><font color=#0000FF>void</font> BrowseDir::setRootPath(string rootName)
+<span class="line_num"><font color=#e8e8e8>00</font>21 </span>{
+<span class="line_num"><font color=#e8e8e8>00</font>22 </span>    this-<font color=#AA5500>&gt;</font>curRootName <font color=#AA5500>=</font> rootName;
+<span class="line_num"><font color=#e8e8e8>00</font>23 </span>    <font color=#0000FF>char</font><font color=#AA5500>*</font> curretPath <font color=#AA5500>=</font> getcwd(nullptr, 0);
+<span class="line_num"><font color=#e8e8e8>00</font>24 </span>    this-<font color=#AA5500>&gt;</font>curRootPath <font color=#AA5500>=</font> string(curretPath) <font color=#AA5500>+</font> "&<font color=#800080>#</font>92;&<font color=#800080>#</font>92;..&<font color=#800080>#</font>92;&<font color=#800080>#</font>92;resource\&<font color=#800080>#</font>92;&<font color=#800080>#</font>34; <font color=#AA5500>+</font> this-<font color=#AA5500>&gt;</font>curRootName;
+<span class="line_num"><font color=#e8e8e8>00</font>25 </span>}
+<span class="line_num"><font color=#e8e8e8>00</font>26 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>27 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>28 </span><font color=#0000FF>bool</font> BrowseDir::initFileInfo()
+<span class="line_num"><font color=#e8e8e8>00</font>29 </span>{
+<span class="line_num"><font color=#e8e8e8>00</font>30 </span>    filePath.clear();
+<span class="line_num"><font color=#e8e8e8>00</font>31 </span>    fileNames <font color=#AA5500>=</font> vector<font color=#AA5500>&lt;</font>string&gt;(6);
+<span class="line_num"><font color=#e8e8e8>00</font>32 </span>    WIN32_FIND_DATAA findData;
+<span class="line_num"><font color=#e8e8e8>00</font>33 </span>    HANDLE findRet;
+<span class="line_num"><font color=#e8e8e8>00</font>34 </span>    string researchPath <font color=#AA5500>=</font> this-<font color=#AA5500>&gt;</font>curRootPath <font color=#AA5500>+</font> <font color=#FF00FF>"&#92;&#92;*.*"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>35 </span>    findRet <font color=#AA5500>=</font> FindFirstFile(researchPath.c_str(), &findData);
+<span class="line_num"><font color=#e8e8e8>00</font>36 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>37 </span>    <font color=#0000FF>if</font> (INVALID_HANDLE_VALUE == findRet) {
+<span class="line_num"><font color=#e8e8e8>00</font>38 </span>        cout <font color=#AA5500>&lt;</font><font color=#AA5500>&lt;</font> <font color=#FF00FF>"file research failed��"</font> <font color=#AA5500>&lt;</font><font color=#AA5500>&lt;</font> endl;
+<span class="line_num"><font color=#e8e8e8>00</font>39 </span>        <font color=#0000FF>return</font> <font color=#0000FF>false</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>40 </span>    }
+<span class="line_num"><font color=#e8e8e8>00</font>41 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>42 </span>    <font color=#0000FF>while</font> ( FindNextFile(findRet, &findData) ) {
+<span class="line_num"><font color=#e8e8e8>00</font>43 </span><font color=#008000>        //ȥ��. �� .. ȥ���ļ���</font>
+<span class="line_num"><font color=#e8e8e8>00</font>44 </span><font color=#008000>        //if ((strcmp(findData.cFileName, ".") == 0) || (strcmp(findData.cFileName, "..") == 0))</font>
+<span class="line_num"><font color=#e8e8e8>00</font>45 </span>        <font color=#0000FF>if</font> (findData.dwFileAttributes == FILE_ATTRIBUTE_DIRECTORY)
+<span class="line_num"><font color=#e8e8e8>00</font>46 </span>        {
+<span class="line_num"><font color=#e8e8e8>00</font>47 </span>            <font color=#0000FF>continue</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>48 </span>        }
+<span class="line_num"><font color=#e8e8e8>00</font>49 </span><font color=#008000>        //����</font>
+<span class="line_num"><font color=#e8e8e8>00</font>50 </span>        doSomethingWhenFind(findData.cFileName);
+<span class="line_num"><font color=#e8e8e8>00</font>51 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>52 </span>        cout <font color=#AA5500>&lt;</font><font color=#AA5500>&lt;</font> findData.cFileName <font color=#AA5500>&lt;</font><font color=#AA5500>&lt;</font> endl;
+<span class="line_num"><font color=#e8e8e8>00</font>53 </span>    };
+<span class="line_num"><font color=#e8e8e8>00</font>54 </span>}
+<span class="line_num"><font color=#e8e8e8>00</font>55 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>56 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>57 </span><font color=#0000FF>void</font> BrowseDir::doSomethingWhenFind(string fileName)
+<span class="line_num"><font color=#e8e8e8>00</font>58 </span>{
+<span class="line_num"><font color=#e8e8e8>00</font>59 </span>    string tempPath <font color=#AA5500>=</font> this-<font color=#AA5500>&gt;</font>curRootPath <font color=#AA5500>+</font> "\&<font color=#800080>#</font>92;&<font color=#800080>#</font>34; <font color=#AA5500>+</font> fileName;
+<span class="line_num"><font color=#e8e8e8>00</font>60 </span>    string tempKey <font color=#AA5500>=</font> <font color=#FF00FF>""</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>61 </span><font color=#008000>    //fileName  �� �ң������ϣ��£�ǰ����</font>
+<span class="line_num"><font color=#e8e8e8>00</font>62 </span><font color=#008000>    //��</font>
+<span class="line_num"><font color=#e8e8e8>00</font>63 </span>    <font color=#0000FF>if</font> (fileName.find(<font color=#FF00FF>"right"</font>) != string::npos) {
+<span class="line_num"><font color=#e8e8e8>00</font>64 </span>        tempKey <font color=#AA5500>=</font> <font color=#FF00FF>"right"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>65 </span>        fileNames<font color=#AA5500>[</font>0<font color=#AA5500>]</font> <font color=#AA5500>=</font> <font color=#FF00FF>"right"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>66 </span>    }
+<span class="line_num"><font color=#e8e8e8>00</font>67 </span><font color=#008000>    //��</font>
+<span class="line_num"><font color=#e8e8e8>00</font>68 </span>    <font color=#0000FF>if</font> (fileName.find(<font color=#FF00FF>"left"</font>) != string::npos) {
+<span class="line_num"><font color=#e8e8e8>00</font>69 </span>        tempKey <font color=#AA5500>=</font> <font color=#FF00FF>"left"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>70 </span>        fileNames<font color=#AA5500>[</font>1<font color=#AA5500>]</font> <font color=#AA5500>=</font> <font color=#FF00FF>"left"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>71 </span>    }
+<span class="line_num"><font color=#e8e8e8>00</font>72 </span><font color=#008000>    //��</font>
+<span class="line_num"><font color=#e8e8e8>00</font>73 </span>    <font color=#0000FF>if</font> (fileName.find(<font color=#FF00FF>"top"</font>) != string::npos) {
+<span class="line_num"><font color=#e8e8e8>00</font>74 </span>        tempKey <font color=#AA5500>=</font> <font color=#FF00FF>"top"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>75 </span>        fileNames<font color=#AA5500>[</font>2<font color=#AA5500>]</font> <font color=#AA5500>=</font> <font color=#FF00FF>"top"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>76 </span>    }
+<span class="line_num"><font color=#e8e8e8>00</font>77 </span><font color=#008000>    //��</font>
+<span class="line_num"><font color=#e8e8e8>00</font>78 </span>    <font color=#0000FF>if</font> (fileName.find(<font color=#FF00FF>"bottom"</font>) != string::npos) {
+<span class="line_num"><font color=#e8e8e8>00</font>79 </span>        tempKey <font color=#AA5500>=</font> <font color=#FF00FF>"bottom"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>80 </span>        fileNames<font color=#AA5500>[</font>3<font color=#AA5500>]</font> <font color=#AA5500>=</font> <font color=#FF00FF>"bottom"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>81 </span>    }
+<span class="line_num"><font color=#e8e8e8>00</font>82 </span><font color=#008000>    //��</font>
+<span class="line_num"><font color=#e8e8e8>00</font>83 </span>    <font color=#0000FF>if</font> (fileName.find(<font color=#FF00FF>"back"</font>) != string::npos) {
+<span class="line_num"><font color=#e8e8e8>00</font>84 </span>        tempKey <font color=#AA5500>=</font> <font color=#FF00FF>"back"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>85 </span>        fileNames<font color=#AA5500>[</font>4<font color=#AA5500>]</font> <font color=#AA5500>=</font> <font color=#FF00FF>"back"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>86 </span>    }
+<span class="line_num"><font color=#e8e8e8>00</font>87 </span><font color=#008000>    //ǰ</font>
+<span class="line_num"><font color=#e8e8e8>00</font>88 </span>    <font color=#0000FF>if</font> (fileName.find(<font color=#FF00FF>"front"</font>) != string::npos) {
+<span class="line_num"><font color=#e8e8e8>00</font>89 </span>        tempKey <font color=#AA5500>=</font> <font color=#FF00FF>"front"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>90 </span>        fileNames<font color=#AA5500>[</font>5<font color=#AA5500>]</font> <font color=#AA5500>=</font> <font color=#FF00FF>"front"</font>;
+<span class="line_num"><font color=#e8e8e8>00</font>91 </span>    }
+<span class="line_num"><font color=#e8e8e8>00</font>92 </span>    filePath<font color=#AA5500>[</font>tempKey<font color=#AA5500>]</font> <font color=#AA5500>=</font> tempPath;
+<span class="line_num"><font color=#e8e8e8>00</font>93 </span>}
+<span class="line_num"><font color=#e8e8e8>00</font>94 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>95 </span>map<font color=#AA5500>&lt;</font>string, string<font color=#AA5500>&gt;</font> BrowseDir::getAllFilePath()
+<span class="line_num"><font color=#e8e8e8>00</font>96 </span>{
+<span class="line_num"><font color=#e8e8e8>00</font>97 </span>    <font color=#0000FF>return</font> filePath;
+<span class="line_num"><font color=#e8e8e8>00</font>98 </span>}
+<span class="line_num"><font color=#e8e8e8>00</font>99 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>100 </span>vector<font color=#AA5500>&lt;</font>string<font color=#AA5500>&gt;</font> BrowseDir::getAllFileNames()
+<span class="line_num"><font color=#e8e8e8>0</font>101 </span>{
+<span class="line_num"><font color=#e8e8e8>0</font>102 </span>    <font color=#0000FF>return</font> fileNames;
+<span class="line_num"><font color=#e8e8e8>0</font>103 </span>}
+<span class="line_num"><font color=#e8e8e8>0</font>104 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>105 </span><font color=#008000>//</font>
+</pre><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>

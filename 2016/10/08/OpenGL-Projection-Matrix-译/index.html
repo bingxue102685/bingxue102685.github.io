@@ -1,0 +1,471 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="OpenGL投影矩阵近期看到OpenGL矩阵变换，发现一篇外国人songho写的文章OpenGL Projection Matrix还不错，搜了一下，国内竟然没有翻译，就自己动动手翻一下，方便自己查阅。
+简介电脑的显示器是一个2D的平面，OpenGL渲染的3D场景一定要转换为2D的图像才能投射到计算机屏幕，投影矩阵就是被用来做这样的投影变换。首先，它会把所有的顶点数据从视觉坐标系（eye c...">
+  
+  <title>OpenGL Projection Matrix(译) [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2016/09/27/立方体贴图/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        立方体贴图
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg"/>
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>OpenGL Projection Matrix(译)</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2016-10-08</span>
+      
+        <span id = "post-title-updated">修改于 2016-10-09</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/OpenGL/">OpenGL</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/高级OpenGL/">高级OpenGL</a>
+      
+      </span>
+      
+    </p>
+    
+    <h1 id="OpenGL投影矩阵"><a href="#OpenGL投影矩阵" class="headerlink" title="OpenGL投影矩阵"></a>OpenGL投影矩阵</h1><p>近期看到OpenGL矩阵变换，发现一篇外国人<a href="https://disqus.com/by/songho/" target="_blank" rel="external">songho</a>写的文章<a href="http://www.songho.ca/opengl/gl_projectionmatrix.html" target="_blank" rel="external">OpenGL Projection Matrix</a>还不错，搜了一下，国内竟然没有翻译，就自己动动手翻一下，方便自己查阅。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>电脑的显示器是一个2D的平面，OpenGL渲染的3D场景一定要转换为2D的图像才能投射到计算机屏幕，投影矩阵就是被用来做这样的投影变换。首先，它会把所有的顶点数据从视觉坐标系（eye coordinates）转换到裁剪坐标系（clip coordinates）。然后，转换为裁剪坐标系的坐标除以w分量，转换为标准设备坐标（normalized device coordinates (NDC)）。</p>
+<p>因此，我们必须要记住，裁剪（平截头体裁剪）和标准化设备坐标（NDC）变换都归结到投影矩阵，以下的两个部分描述了怎么通过6个边界值来创建一个投影矩阵：left, right, bottom, top, near, far。</p>
+<p>需要注意的是，平截头体裁剪（clipping）在除以w分量之前，是在裁剪坐标系中执行的。在裁剪坐标系中，x, y, z分量都会与w分量进行比较，如果裁剪坐标小于-w,或者大于w分量，那么这个顶点就会被丢弃掉。即裁剪坐标必须要满足 -w &lt; x, y, z &lt; w。</p>
+<p>裁剪后，OpenGL会重新构造多边形的边界。以下是一个三角形被平截头体裁剪。</p>
+<div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_frustumclip.png" width="35%"> </p> </div>
+
+<h2 id="透视投影-Perspective-Projection"><a href="#透视投影-Perspective-Projection" class="headerlink" title="透视投影(Perspective Projection)"></a>透视投影(Perspective Projection)</h2><p>在透视投影中，一个在截棱锥体（truncated pyramid frustum）（视觉坐标系（eye coordinates））被映射到一个立方体（NDC）中；x坐标从[l,r]映射到[1,-1]， y坐标从[b,t]映射到[-1,1]，z坐标从[n,f]映射到[-1,1]。</p>
+<div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix01.png" width="50%"> </p> </div><br>需要注意的是，视觉坐标系用的是右手坐标系，标准化设备坐标系（NDC）用的是左手坐标系。也就是说，在视觉坐标系中，摄像机是从原点向-Z轴看的，而在标准化设备坐标系（NDC）是从原点向+Z轴看的。因为glFrustum()传入的近距离（near）和远距离（far）的值只能是正数，所以在构造投影矩阵时我们需要把这两个值取反。<br><br>在OpenGL中，视觉坐标系中3D坐标点是要被投影到投影平面的近平面，下面的图就展示了如何将一个视觉坐标系中的点（xe, ye, ze）投影到近平面的（xp, yp, zp）。<br><br>平截头体俯视图<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix03.png" width="35%"> </p> </div><br>从平截头体的俯视图可以看出，通过相似三角形，可以计算出，在视觉坐标系下xe是如何映射到xp。<br><br>${x_p \over x_e} = {-n \over z_e}$<br><br>${x_p} = {-n \cdot x_e \over z_e} = {n \cdot x_e \over -z_e}$<br><br>平截头体侧视图<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix04.png" width="35%"> </p> </div><br>从平截头体的侧视图可以看出，yp通过相同的方法可以得到。<br><br>${y_p \over y_e} = {-n \over z_e}$<br><br>${y_p} = {-n·y_e \over z_e} = {n \cdot y_e \over -z_e}$<br><br>需要注意的是，xp 和 yp都依赖于ze，他们都与-ze成反比。换句话说，他们都要除以-ze，这是构建投影矩阵的第一步。在投影矩阵乘以视觉坐标系之后，裁剪坐标系依旧是以一个齐次坐标系。最后，他要除以齐次坐标的w分量才能成为标准设备坐标系（NDC）。<br>（注：翻译此文时，mathajx有些问题，可以在<a href="https://www.mathjax.org/" target="_blank" rel="external">mathajx官网</a>中测试通过，但在blog中无法使用复杂的公式，只好用图片）<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform08.png" width="40%"> </p> </div><br><!-- mathajx有问题，此处直接用图片 --><br><!-- $$
+\begin{pmatrix} 
+x_{clip} \\
+y_{clip} \\
+z_{clip} \\
+w_{clip}
+\end{pmatrix} = M_{projection}\cdot 
+\begin{pmatrix}
+x_{eye} \\
+y_{eye} \\
+z_{eye} \\
+w_{eye} \\
+\end{pmatrix}
+$$ ， $$
+\begin{pmatrix}
+x_{ndc} \\
+y_{ndc} \\
+z_{ndc} \\
+\end{pmatrix} = \begin{pmatrix}
+x_{clip}/w_{clip} \\
+y_{clip}/w_{clip} \\
+z_{clip}/w_{clip}
+\end{pmatrix}
+$$ --><br>因此，我们可以把裁剪坐标系下的w分量设置为-ze，所以投影矩阵的第4排就变为(0, 0, -1, 0).<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform09.png" width="40%"> </p> </div><br><!-- mathajx有问题，此处直接用图片 --><br><!-- $$
+\begin{pmatrix} 
+x_{clip} \\
+y_{clip} \\
+z_{clip} \\
+w_{clip}
+\end{pmatrix} = 
+\begin{pmatrix} 
+\cdot & \cdot & \cdot & \cdot \\ 
+\cdot & \cdot & \cdot & \cdot \\
+\cdot & \cdot & \cdot & \cdot \\
+0 & 0 & -1 & 0
+\end{pmatrix}
+\begin{pmatrix}
+x_{eye} \\
+y_{eye} \\
+z_{eye} \\
+w_{eye} \\
+\end{pmatrix} --><br>下一步，我们要把xp和yp用线性关系映射到标准化设备坐标系下的xn和yn，即[l,r] =&gt; [-1,1] ; [b,t] =&gt; [-1,1]。<br><br>因此，我们可以把裁剪坐标系下的w分量设置为-ze，所以投影矩阵的第4排就变为(0, 0, -1, 0).<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform10.png" width="60%"> </p> </div><br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform11.png" width="60%"> </p> </div><br>然后我们把xp和yp带入到上面的方程里面。<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform12.png" width="60%"> </p> </div><br>注意，我们为了做透视除法（xc/wc, yc/wc）,上面的两项的每一个方程都除以-ze。在这里，我们就把wc换成-ze，在因此在括号里面的式子就变成xc，yc。<br>通过这些方程，我们就找到了投影矩阵的第1行和第2行。<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform13.png" width="40%"> </p> </div><br><!-- $$
+\begin{pmatrix} 
+x_{clip} \\
+y_{clip} \\
+z_{clip} \\
+w_{clip}
+\end{pmatrix} = 
+\begin{pmatrix} 
+2n \over r-l  & 0 & r+l \over r-l & 0 \\ 
+0 & 2n \over t-b & t+b \over t-b & 0 \\
+\cdot & \cdot & \cdot & \cdot \\
+0 & 0 & -1 & 0
+\end{pmatrix}
+\begin{pmatrix}
+x_{eye} \\
+y_{eye} \\
+z_{eye} \\
+w_{eye} \\
+\end{pmatrix}
+$$  --><br>现在我们只剩下投影矩阵的第三行没有解决。zn同其他的解决方法不同，因为在视觉坐标系里面，ze在近平面上一直被投影为-n。但是我们需要唯一的z值来处理裁剪和深度测试。另外，我们一定要可以进行反投影（逆转换）。我们知道z值不依赖于x或者y值，因此我们可以借w分量来找到zn和ze的关系。我们可以像这样指定投影矩阵的第三行：<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform14.png" width="40%"> </p> </div><br><!-- $$
+\begin{pmatrix} 
+x_{clip} \\
+y_{clip} \\
+z_{clip} \\
+w_{clip}
+\end{pmatrix} = 
+\begin{pmatrix} 
+2n \over r-l  & 0 & r+l \over r-l & 0 \\ 
+0 & 2n \over t-b & t+b \over t-b & 0 \\
+0 & 0 & A & B \\
+0 & 0 & -1 & 0
+\end{pmatrix}
+\begin{pmatrix}
+x_{eye} \\
+y_{eye} \\
+z_{eye} \\
+w_{eye} \\
+\end{pmatrix}
+$$ ，$$
+z_n = z_c / w_c =\frac {Az_e + Bw_e}  {-z_e}
+$$ --><br>在视觉坐标系中，we等于1，因此这个方程变为：<br>$$<br>z_n = Az_e + B \over -z_e<br>$$<br>为了找到系数A，B的值，我们使用(ze, zn)的关系：(-n, -1), (-f, 1)，然后把他们带入到上面的方程中：<br>$$<br>\begin{cases}<br>\frac {-An + B} {n} = -1 \\<br>\frac {-Af + B} {f} = 1<br>\end{cases}<br>\rightarrow<br>\begin{cases}<br>-An + B  = -n \quad (1) \\<br>-Af + B = f \quad (2)<br>\end{cases}<br>$$<br><br>为了解方程，我们重写等式(1):<br>$$<br>B = An - n \quad (1’)<br>$$<br><br>把等式1’带入到等式2中，可以解出A:<br>$$<br>-Af + (An - n) = f \quad (2)<br>$$<br><br>$$<br>-(f - n)A = f + n<br>$$<br><br>$$<br>A = - \frac {f+n} {f-n}<br>$$<br><br>把A带入到等式1中，可以得到B:<br>$$<br>(\frac {f + n} {f - n})n + B = -n \quad (1)<br>$$<br>$$<br>B = -n - (\frac {f + n} {f-n}) n = -(1 + \frac {f + n} {f-n})n = -(\frac {f-n + f+n} {f-n})n = -\frac {2fn} {f-n}<br>$$<br><br>我们算出了A和B，因此，ze和zn的关系变为：<br>$$<br>z_n = \frac{-\frac {f+n} {f-n} z_e - \frac {2fn} {f-n}} {-z_e} \quad (3)<br>$$<br><br>最后我们算出了全部的投影矩阵。完整的投影矩阵是这样的：<br>$$<br>\begin{pmatrix}<br>\frac {2n}{r-l} &amp; 0 &amp; \frac {r+l}{r-l} &amp; 0 \\<br>0 &amp; \frac {2n}{t-b} &amp; \frac {t+b}{t-b} &amp; 0 \\<br>0 &amp; 0 &amp; \frac {-(f+n)}{f-n} &amp; \frac {-2fn}{f-n} \\<br>0 &amp; 0 &amp; -1 &amp; 0 \\<br>\end{pmatrix}<br>$$<br><br>上面这个投影矩阵是针对普通的平截头体，如果这个视窗体（viewing volume）是对称的，也就是说 $r=-l,t=-b$，它可以被简化为：<br>$$<br>\begin{cases}<br>r + l = 0 \\<br>r - l = 2r \quad (width)<br>\end{cases}<br>\quad,\quad<br>\begin{cases}<br>t + b  = 0  \\<br>t - b = 2t \quad (height)<br>\end{cases}<br>$$<br>$$<br>\begin{pmatrix}<br>\frac {n}{r} &amp; 0 &amp; 0 &amp; 0 \\<br>0 &amp; \frac {n}{t} &amp; 0 &amp; 0 \\<br>0 &amp; 0 &amp; \frac {-(f+n)}{f-n} &amp; \frac {-2fn}{f-n} \\<br>0 &amp; 0 &amp; -1 &amp; 0 \\<br>\end{pmatrix}<br>$$<br><br>在我们往下进行之前，再仔细看一下$z_e$和$z_n$之间的关系，也就是等式3。你可能会注意到这个等式是有理函数，而且$z_e$和$z_n$之间的关系是非线性的。这就意味着，在近平面时有非常高的精度，在远平面时精度比较低。如果[-n,-f]的范围变得很大，他会引起深度精度问题(z冲突)，即：如果$z_e$在远平面处小范围的变动，那么就不会影响$z_n$的值。n到f之间的距离应该尽量的短，来减少深度缓冲区精度问题。<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix07.png" width="50%"> </p> </div>
+
+<h2 id="正射投影-Orthographic-Projection"><a href="#正射投影-Orthographic-Projection" class="headerlink" title="正射投影(Orthographic Projection)"></a>正射投影(Orthographic Projection)</h2><p>构造正射投影的投影矩阵要比透视投影简单的多。<br>所有在视觉空间中的$x_e, y_e, z_e$分量都是线性映射到标准设备坐标系中。我们只需要缩放一个立方体到一个正方体中，然后把它移到原点即可。</p>
+<div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix02.png" width="50%"> </p> </div><br>下面，让我们找出线性关系找出，投影矩阵中的各个元素。<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform15.png" width="55%"> </p> </div><br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform16.png" width="55%"> </p> </div><br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform17.png" width="55%"> </p> </div>
+
+<p>因为对正射投影来说，w分量用不上，所以投影矩阵的第4行为(0, 0, 0, 1)。因此正射投影的完整投影矩阵为：<br>$$<br>\begin{pmatrix}<br>\frac {2}{r-l} &amp; 0 &amp; 0 &amp; -\frac{r+l}{r-l} \\<br>0 &amp; \frac {2}{t-b} &amp; 0 &amp; -\frac{t+b}{t-b} \\<br>0 &amp; 0 &amp; \frac {-2}{f-n} &amp; -\frac {f+n}{f-n} \\<br>0 &amp; 0 &amp; 0 &amp; 1 \\<br>\end{pmatrix}<br>$$</p>
+<p>上面这个投影矩阵是针对普通的平截头体，如果这个视窗体（viewing volume）是对称的，即：$r=-l,t=-b$，这个投影矩阵会更简单：<br>$$<br>\begin{cases}<br>r + l = 0 \\<br>r - l = 2r \quad (width)<br>\end{cases}<br>\quad,\quad<br>\begin{cases}<br>t + b  = 0  \\<br>t - b = 2t \quad (height)<br>\end{cases}<br>$$<br>$$<br>\begin{pmatrix}<br>\frac {1}{r} &amp; 0 &amp; 0 &amp; 0 \\<br>0 &amp; \frac {1}{t} &amp; 0 &amp; 0 \\<br>0 &amp; 0 &amp; \frac {-2}{f-n} &amp; -\frac {f+n}{f-n} \\<br>0 &amp; 0 &amp; 0 &amp; 1 \\<br>\end{pmatrix}<br>$$</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#OpenGL投影矩阵"><span class="toc-text">OpenGL投影矩阵</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#透视投影-Perspective-Projection"><span class="toc-text">透视投影(Perspective Projection)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#正射投影-Orthographic-Projection"><span class="toc-text">正射投影(Orthographic Projection)</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2016/09/27/立方体贴图/" class="next">下一篇 立方体贴图 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      <div class="ds-thread" data-thread-key="2016/10/08/OpenGL-Projection-Matrix-译/" data-title="OpenGL Projection Matrix(译)" data-url="http://yoursite.com/2016/10/08/OpenGL-Projection-Matrix-译/"></div>
+      
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  <script type="text/javascript">
+var duoshuoQuery = {short_name:"gamerblog"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] 
+   || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+
+
+
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "D7CCC8";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

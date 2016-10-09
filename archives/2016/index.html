@@ -12,7 +12,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
   <meta name="author" content="ZHJ">
@@ -34,12 +34,12 @@
 <link rel="stylesheet" href="/css/jquery.fancybox.css">
 <link rel="stylesheet" href="/css/iconfont/iconfont.css">
 <link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
-<link rel="stylesheet" href="/css/plyr.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
   
 </head>
 
 <body>
-<div class="side-navigate hide-area">
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
   
   
 </div>
@@ -113,7 +113,7 @@
     
       <span class="posts-count">
       共
-      2
+      3
       
         文章
       
@@ -132,6 +132,10 @@
       
       
     
+      
+      
+      
+    
     
     
       
@@ -141,13 +145,54 @@
         
           <span class="posts-count">
           共
-          2
+          3
           
             文章
           
           </span>
         
         </h3>
+      
+      <div class="post-title-item">
+  
+  <a href="/2016/10/08/OpenGL-Projection-Matrix-译/">
+  
+    OpenGL Projection Matrix(译)
+  
+  </a>
+  <p class="page-title-sub">
+    <span id = "post-title-date">10-8</span>
+    
+    <span id = "post-title-categories">分类
+    
+    
+      
+      
+      <a href="/categories/OpenGL/">OpenGL</a>
+    
+    </span>
+    
+    
+    <span id = "post-title-tags">
+    标签
+    
+    
+      
+      
+      <a href="/tags/高级OpenGL/">高级OpenGL</a>
+    
+    </span>
+    
+    
+      <br>
+      
+      
+    
+  </p>
+  
+</div>
+    
+      
       
       <div class="post-title-item">
   
@@ -252,6 +297,28 @@
 
 </div>
 
+
+
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 
 <div id="user-card">
@@ -397,7 +464,7 @@ $(".video-container iframe").each(function(i){
   $(this).parent().html(plyrContainer);
 });
 plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
-</script>
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
 </body>
 </html>
 

@@ -1,0 +1,252 @@
+<html>
+<head>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><title>CubmapStudy_r.cpp</title>
+<meta http-equiv="content-type" content="text/html; charset=GBK">
+<style type="text/css">
+<!--.line_num {color: #666666; background-color: #E8E8E8;}//-->
+</style><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</head>
+<body bgcolor=#FFFFFF text=#000000>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><pre style="font: 9pt Verdana, Fixedsys, Verdana, Tahoma;">
+<span class="line_num"><font color=#e8e8e8>000</font>1 </span><font color=#800080>#include "CubmapStudy_r.h"</font>
+<span class="line_num"><font color=#e8e8e8>000</font>2 </span><font color=#800080>#include "BrowseDir.h"</font>
+<span class="line_num"><font color=#e8e8e8>000</font>3 </span><font color=#800080>#include &lt;SOIL\SOIL.h&gt;</font>
+<span class="line_num"><font color=#e8e8e8>000</font>4 </span>
+<span class="line_num"><font color=#e8e8e8>000</font>5 </span>
+<span class="line_num"><font color=#e8e8e8>000</font>6 </span>CubMapStudyR::CubMapStudyR()
+<span class="line_num"><font color=#e8e8e8>000</font>7 </span>{
+<span class="line_num"><font color=#e8e8e8>000</font>8 </span>    skyboxShader <font color=#AA5500>=</font> <font color=#0000FF>new</font> ShaderHandle(<font color=#FF00FF>"cubmapstudy2"</font>);
+<span class="line_num"><font color=#e8e8e8>000</font>9 </span>    cubeShader <font color=#AA5500>=</font> <font color=#0000FF>new</font> ShaderHandle(<font color=#FF00FF>"cubmapcube2"</font>);
+<span class="line_num"><font color=#e8e8e8>00</font>10 </span>    camera <font color=#AA5500>=</font> <font color=#0000FF>new</font> Camera();
+<span class="line_num"><font color=#e8e8e8>00</font>11 </span>    glEnable(GL_DEPTH_TEST);
+<span class="line_num"><font color=#e8e8e8>00</font>12 </span>    initTextrueID();
+<span class="line_num"><font color=#e8e8e8>00</font>13 </span>    initVAO();
+<span class="line_num"><font color=#e8e8e8>00</font>14 </span>    GLFWwindow<font color=#AA5500>*</font> window <font color=#AA5500>=</font> RenderDelegate::getInstance()<font color=#AA5500>-</font><font color=#AA5500>&gt;</font>getWindowHandle();
+<span class="line_num"><font color=#e8e8e8>00</font>15 </span>    glfwSetKeyCallback(window, &Camera::key_callback);
+<span class="line_num"><font color=#e8e8e8>00</font>16 </span>    glfwSetCursorPosCallback(window, &Camera::mouse_callback);
+<span class="line_num"><font color=#e8e8e8>00</font>17 </span>    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+<span class="line_num"><font color=#e8e8e8>00</font>18 </span>    glfwSetScrollCallback(window, &Camera::scroll_callback);
+<span class="line_num"><font color=#e8e8e8>00</font>19 </span>}
+<span class="line_num"><font color=#e8e8e8>00</font>20 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>21 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>22 </span><font color=#0000FF>void</font> CubMapStudyR::initTextrueID()
+<span class="line_num"><font color=#e8e8e8>00</font>23 </span>{
+<span class="line_num"><font color=#e8e8e8>00</font>24 </span><font color=#008000>    //��ʼ�����պ�������</font>
+<span class="line_num"><font color=#e8e8e8>00</font>25 </span>    BrowseDir<font color=#AA5500>*</font> browseDir <font color=#AA5500>=</font> BrowseDir::getInstance(<font color=#FF00FF>"skybox"</font>);
+<span class="line_num"><font color=#e8e8e8>00</font>26 </span>    map<font color=#AA5500>&lt;</font>string, string<font color=#AA5500>&gt;</font> filePath <font color=#AA5500>=</font> browseDir-<font color=#AA5500>&gt;</font>getAllFilePath();
+<span class="line_num"><font color=#e8e8e8>00</font>27 </span>    vector<font color=#AA5500>&lt;</font>string<font color=#AA5500>&gt;</font> fileNames <font color=#AA5500>=</font> browseDir-<font color=#AA5500>&gt;</font>getAllFileNames();
+<span class="line_num"><font color=#e8e8e8>00</font>28 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>29 </span>    glGenTextures(1, &this-<font color=#AA5500>&gt;</font>skyBoxTextureID);
+<span class="line_num"><font color=#e8e8e8>00</font>30 </span>    glBindTexture(GL_TEXTURE_CUBE_MAP, this-<font color=#AA5500>&gt;</font>skyBoxTextureID);
+<span class="line_num"><font color=#e8e8e8>00</font>31 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>32 </span><font color=#008000>    //��С������</font>
+<span class="line_num"><font color=#e8e8e8>00</font>33 </span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+<span class="line_num"><font color=#e8e8e8>00</font>34 </span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+<span class="line_num"><font color=#e8e8e8>00</font>35 </span><font color=#008000>    //���Ʒ�ʽ</font>
+<span class="line_num"><font color=#e8e8e8>00</font>36 </span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+<span class="line_num"><font color=#e8e8e8>00</font>37 </span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+<span class="line_num"><font color=#e8e8e8>00</font>38 </span>    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+<span class="line_num"><font color=#e8e8e8>00</font>39 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>40 </span>    <font color=#0000FF>unsigned</font> <font color=#0000FF>char</font><font color=#AA5500>*</font> image <font color=#AA5500>=</font> nullptr;
+<span class="line_num"><font color=#e8e8e8>00</font>41 </span>    <font color=#0000FF>int</font> width, height, channels;
+<span class="line_num"><font color=#e8e8e8>00</font>42 </span>    <font color=#0000FF>for</font> (size_t i <font color=#AA5500>=</font> 0 ; i <font color=#AA5500>&lt;</font> fileNames.size(); i ++ )
+<span class="line_num"><font color=#e8e8e8>00</font>43 </span>    {
+<span class="line_num"><font color=#e8e8e8>00</font>44 </span>        cout <font color=#AA5500>&lt;</font><font color=#AA5500>&lt;</font> filePath<font color=#AA5500>[</font>fileNames<font color=#AA5500>[</font>i]].c_str() <font color=#AA5500>&lt;</font><font color=#AA5500>&lt;</font> endl;
+<span class="line_num"><font color=#e8e8e8>00</font>45 </span>        image <font color=#AA5500>=</font> SOIL_load_image(filePath<font color=#AA5500>[</font>fileNames<font color=#AA5500>[</font>i]].c_str(), &width, &height, &channels, SOIL_LOAD_RGB);
+<span class="line_num"><font color=#e8e8e8>00</font>46 </span>        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X <font color=#AA5500>+</font> i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+<span class="line_num"><font color=#e8e8e8>00</font>47 </span>        SOIL_free_image_data(image);
+<span class="line_num"><font color=#e8e8e8>00</font>48 </span>    }
+<span class="line_num"><font color=#e8e8e8>00</font>49 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>50 </span>    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+<span class="line_num"><font color=#e8e8e8>00</font>51 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>52 </span><font color=#008000>    //��ʼ����������</font>
+<span class="line_num"><font color=#e8e8e8>00</font>53 </span>    glGenTextures(1, &this-<font color=#AA5500>&gt;</font>cubeTexutrueID);
+<span class="line_num"><font color=#e8e8e8>00</font>54 </span>    glBindTexture(GL_TEXTURE_2D, this-<font color=#AA5500>&gt;</font>cubeTexutrueID);
+<span class="line_num"><font color=#e8e8e8>00</font>55 </span><font color=#008000>    //��С������</font>
+<span class="line_num"><font color=#e8e8e8>00</font>56 </span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+<span class="line_num"><font color=#e8e8e8>00</font>57 </span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+<span class="line_num"><font color=#e8e8e8>00</font>58 </span><font color=#008000>    //���Ʒ�ʽ</font>
+<span class="line_num"><font color=#e8e8e8>00</font>59 </span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+<span class="line_num"><font color=#e8e8e8>00</font>60 </span>    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+<span class="line_num"><font color=#e8e8e8>00</font>61 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>62 </span>    image <font color=#AA5500>=</font> SOIL_load_image(<font color=#FF00FF>"../resource/container.jpg"</font>, &width, &height, &channels, SOIL_LOAD_RGB);
+<span class="line_num"><font color=#e8e8e8>00</font>63 </span>    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+<span class="line_num"><font color=#e8e8e8>00</font>64 </span>    SOIL_free_image_data(image);
+<span class="line_num"><font color=#e8e8e8>00</font>65 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>66 </span>    glBindTexture(GL_TEXTURE_2D, 0);
+<span class="line_num"><font color=#e8e8e8>00</font>67 </span>}
+<span class="line_num"><font color=#e8e8e8>00</font>68 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>69 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>70 </span><font color=#0000FF>void</font> CubMapStudyR::initVAO()
+<span class="line_num"><font color=#e8e8e8>00</font>71 </span>{
+<span class="line_num"><font color=#e8e8e8>00</font>72 </span>    GLfloat cubeVertices[] <font color=#AA5500>=</font> {
+<span class="line_num"><font color=#e8e8e8>00</font>73 </span><font color=#008000>         // Positions          // Texture Coords</font>
+<span class="line_num"><font color=#e8e8e8>00</font>74 </span>        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>75 </span>         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>76 </span>         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>77 </span>         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>78 </span>        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>79 </span>        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>80 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>81 </span>        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>82 </span>         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>83 </span>         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>84 </span>         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>85 </span>        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>86 </span>        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>87 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>88 </span>        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>89 </span>        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>90 </span>        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>91 </span>        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>92 </span>        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>93 </span>        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>94 </span>
+<span class="line_num"><font color=#e8e8e8>00</font>95 </span>         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>96 </span>         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>97 </span>         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>98 </span>         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>00</font>99 </span>         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>100 </span>         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>101 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>102 </span>        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>103 </span>         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>104 </span>         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>105 </span>         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>106 </span>        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>107 </span>        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>108 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>109 </span>        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>110 </span>         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>111 </span>         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>112 </span>         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>113 </span>        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>114 </span>        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+<span class="line_num"><font color=#e8e8e8>0</font>115 </span>    };
+<span class="line_num"><font color=#e8e8e8>0</font>116 </span>    GLfloat skyboxVertices[] <font color=#AA5500>=</font> {
+<span class="line_num"><font color=#e8e8e8>0</font>117 </span><font color=#008000>        // Positions          </font>
+<span class="line_num"><font color=#e8e8e8>0</font>118 </span>        -1.0f,  1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>119 </span>        -1.0f, -1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>120 </span>         1.0f, -1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>121 </span>         1.0f, -1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>122 </span>         1.0f,  1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>123 </span>        -1.0f,  1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>124 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>125 </span>        -1.0f, -1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>126 </span>        -1.0f, -1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>127 </span>        -1.0f,  1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>128 </span>        -1.0f,  1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>129 </span>        -1.0f,  1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>130 </span>        -1.0f, -1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>131 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>132 </span>         1.0f, -1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>133 </span>         1.0f, -1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>134 </span>         1.0f,  1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>135 </span>         1.0f,  1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>136 </span>         1.0f,  1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>137 </span>         1.0f, -1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>138 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>139 </span>        -1.0f, -1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>140 </span>        -1.0f,  1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>141 </span>         1.0f,  1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>142 </span>         1.0f,  1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>143 </span>         1.0f, -1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>144 </span>        -1.0f, -1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>145 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>146 </span>        -1.0f,  1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>147 </span>         1.0f,  1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>148 </span>         1.0f,  1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>149 </span>         1.0f,  1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>150 </span>        -1.0f,  1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>151 </span>        -1.0f,  1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>152 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>153 </span>        -1.0f, -1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>154 </span>        -1.0f, -1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>155 </span>         1.0f, -1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>156 </span>         1.0f, -1.0f, -1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>157 </span>        -1.0f, -1.0f,  1.0f,
+<span class="line_num"><font color=#e8e8e8>0</font>158 </span>         1.0f, -1.0f,  1.0f
+<span class="line_num"><font color=#e8e8e8>0</font>159 </span>    };
+<span class="line_num"><font color=#e8e8e8>0</font>160 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>161 </span><font color=#008000>    //���պ���</font>
+<span class="line_num"><font color=#e8e8e8>0</font>162 </span>    GLuint skyboxVBO;
+<span class="line_num"><font color=#e8e8e8>0</font>163 </span>    glGenBuffers(1, &skyboxVBO);
+<span class="line_num"><font color=#e8e8e8>0</font>164 </span>    glGenVertexArrays(1, &this-<font color=#AA5500>&gt;</font>skyBoxVAO);
+<span class="line_num"><font color=#e8e8e8>0</font>165 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>166 </span>    glBindVertexArray(this-<font color=#AA5500>&gt;</font>skyBoxVAO);
+<span class="line_num"><font color=#e8e8e8>0</font>167 </span>    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+<span class="line_num"><font color=#e8e8e8>0</font>168 </span>    glBufferData(GL_ARRAY_BUFFER, <font color=#0000FF>sizeof</font>(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+<span class="line_num"><font color=#e8e8e8>0</font>169 </span>    glEnableVertexAttribArray(0);
+<span class="line_num"><font color=#e8e8e8>0</font>170 </span>    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 <font color=#AA5500>*</font> <font color=#0000FF>sizeof</font>(GLfloat), (GLvoid<font color=#AA5500>*</font>)0);
+<span class="line_num"><font color=#e8e8e8>0</font>171 </span>    glBindVertexArray(0);
+<span class="line_num"><font color=#e8e8e8>0</font>172 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>173 </span><font color=#008000>    //����������</font>
+<span class="line_num"><font color=#e8e8e8>0</font>174 </span>    GLuint cubeVBO;
+<span class="line_num"><font color=#e8e8e8>0</font>175 </span>    glGenBuffers(1, &cubeVBO);
+<span class="line_num"><font color=#e8e8e8>0</font>176 </span>    glGenVertexArrays(1, &this-<font color=#AA5500>&gt;</font>cubeVAO);
+<span class="line_num"><font color=#e8e8e8>0</font>177 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>178 </span>    glBindVertexArray(this-<font color=#AA5500>&gt;</font>cubeVAO);
+<span class="line_num"><font color=#e8e8e8>0</font>179 </span>    glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
+<span class="line_num"><font color=#e8e8e8>0</font>180 </span>    glBufferData(GL_ARRAY_BUFFER, <font color=#0000FF>sizeof</font>(cubeVertices), &cubeVertices, GL_STATIC_DRAW);
+<span class="line_num"><font color=#e8e8e8>0</font>181 </span>    glEnableVertexAttribArray(0);
+<span class="line_num"><font color=#e8e8e8>0</font>182 </span>    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 <font color=#AA5500>*</font> <font color=#0000FF>sizeof</font>(GLfloat), (GLvoid<font color=#AA5500>*</font>)0);
+<span class="line_num"><font color=#e8e8e8>0</font>183 </span>    glEnableVertexAttribArray(1);
+<span class="line_num"><font color=#e8e8e8>0</font>184 </span>    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 <font color=#AA5500>*</font> <font color=#0000FF>sizeof</font>(GLfloat), (GLvoid<font color=#AA5500>*</font>)(3 <font color=#AA5500>*</font> <font color=#0000FF>sizeof</font>(GLfloat)));
+<span class="line_num"><font color=#e8e8e8>0</font>185 </span>    glBindVertexArray(0);
+<span class="line_num"><font color=#e8e8e8>0</font>186 </span>}
+<span class="line_num"><font color=#e8e8e8>0</font>187 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>188 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>189 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>190 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>191 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>192 </span><font color=#0000FF>void</font> CubMapStudyR::render()
+<span class="line_num"><font color=#e8e8e8>0</font>193 </span>{
+<span class="line_num"><font color=#e8e8e8>0</font>194 </span>    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+<span class="line_num"><font color=#e8e8e8>0</font>195 </span>    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+<span class="line_num"><font color=#e8e8e8>0</font>196 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>197 </span>    this-<font color=#AA5500>&gt;</font>camera-<font color=#AA5500>&gt;</font>setDeltaTime(glfwGetTime());
+<span class="line_num"><font color=#e8e8e8>0</font>198 </span>    this-<font color=#AA5500>&gt;</font>camera-<font color=#AA5500>&gt;</font>DoMovement();
+<span class="line_num"><font color=#e8e8e8>0</font>199 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>200 </span>    mat4 model(1.0f);
+<span class="line_num"><font color=#e8e8e8>0</font>201 </span>    mat4 view(1.0f);
+<span class="line_num"><font color=#e8e8e8>0</font>202 </span>    mat4 projection(1.0f);
+<span class="line_num"><font color=#e8e8e8>0</font>203 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>204 </span>    view <font color=#AA5500>=</font> this-<font color=#AA5500>&gt;</font>camera-<font color=#AA5500>&gt;</font>GetLookAt();
+<span class="line_num"><font color=#e8e8e8>0</font>205 </span>    projection <font color=#AA5500>=</font> perspective(radians(Camera::aspect), 800.0f / 600.0f, 0.1f, 1000.0f);
+<span class="line_num"><font color=#e8e8e8>0</font>206 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>207 </span><font color=#008000>    //�������պ���</font>
+<span class="line_num"><font color=#e8e8e8>0</font>208 </span>    glDepthMask(GL_FALSE);
+<span class="line_num"><font color=#e8e8e8>0</font>209 </span>    skyboxShader-<font color=#AA5500>&gt;</font>UseProgram();
+<span class="line_num"><font color=#e8e8e8>0</font>210 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>211 </span>    glActiveTexture(GL_TEXTURE0);
+<span class="line_num"><font color=#e8e8e8>0</font>212 </span>    glBindTexture(GL_TEXTURE_CUBE_MAP, this-<font color=#AA5500>&gt;</font>skyBoxTextureID);
+<span class="line_num"><font color=#e8e8e8>0</font>213 </span>    glUniformMatrix4fv(glGetUniformLocation(skyboxShader-<font color=#AA5500>&gt;</font>getProgram(), <font color=#FF00FF>"view"</font>), 1, GL_FALSE, value_ptr(mat4(mat3(view))));
+<span class="line_num"><font color=#e8e8e8>0</font>214 </span>    glUniformMatrix4fv(glGetUniformLocation(skyboxShader-<font color=#AA5500>&gt;</font>getProgram(), <font color=#FF00FF>"projection"</font>), 1, GL_FALSE, value_ptr(projection));
+<span class="line_num"><font color=#e8e8e8>0</font>215 </span>    glUniform1i(glGetUniformLocation(skyboxShader-<font color=#AA5500>&gt;</font>getProgram(), <font color=#FF00FF>"cubemap"</font>), 0);
+<span class="line_num"><font color=#e8e8e8>0</font>216 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>217 </span>    glBindVertexArray(this-<font color=#AA5500>&gt;</font>skyBoxVAO);
+<span class="line_num"><font color=#e8e8e8>0</font>218 </span>    glDrawArrays(GL_TRIANGLES, 0, 36);
+<span class="line_num"><font color=#e8e8e8>0</font>219 </span>    glBindVertexArray(0);
+<span class="line_num"><font color=#e8e8e8>0</font>220 </span>    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+<span class="line_num"><font color=#e8e8e8>0</font>221 </span>    glDepthMask(GL_TRUE);
+<span class="line_num"><font color=#e8e8e8>0</font>222 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>223 </span><font color=#008000>    //��������</font>
+<span class="line_num"><font color=#e8e8e8>0</font>224 </span>    model <font color=#AA5500>=</font> translate(model, vec3(0.0f, 0.0f, 0.7f));
+<span class="line_num"><font color=#e8e8e8>0</font>225 </span>    model <font color=#AA5500>=</font> scale(model, vec3(0.3f, 0.3f, 0.3f));
+<span class="line_num"><font color=#e8e8e8>0</font>226 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>227 </span>    cubeShader-<font color=#AA5500>&gt;</font>UseProgram();
+<span class="line_num"><font color=#e8e8e8>0</font>228 </span>    glActiveTexture(GL_TEXTURE0);
+<span class="line_num"><font color=#e8e8e8>0</font>229 </span>    glBindTexture(GL_TEXTURE_2D, this-<font color=#AA5500>&gt;</font>cubeTexutrueID);
+<span class="line_num"><font color=#e8e8e8>0</font>230 </span>    glUniformMatrix4fv(glGetUniformLocation(cubeShader-<font color=#AA5500>&gt;</font>getProgram(), <font color=#FF00FF>"view"</font>), 1, GL_FALSE, value_ptr(view));
+<span class="line_num"><font color=#e8e8e8>0</font>231 </span>    glUniformMatrix4fv(glGetUniformLocation(cubeShader-<font color=#AA5500>&gt;</font>getProgram(), <font color=#FF00FF>"projection"</font>), 1, GL_FALSE, value_ptr(projection));
+<span class="line_num"><font color=#e8e8e8>0</font>232 </span>    glUniformMatrix4fv(glGetUniformLocation(cubeShader-<font color=#AA5500>&gt;</font>getProgram(), <font color=#FF00FF>"model"</font>), 1, GL_FALSE, value_ptr(model));
+<span class="line_num"><font color=#e8e8e8>0</font>233 </span>    glUniform1i(glGetUniformLocation(cubeShader-<font color=#AA5500>&gt;</font>getProgram(), <font color=#FF00FF>"Texture1"</font>), 0);
+<span class="line_num"><font color=#e8e8e8>0</font>234 </span>
+<span class="line_num"><font color=#e8e8e8>0</font>235 </span>    glBindVertexArray(this-<font color=#AA5500>&gt;</font>cubeVAO);
+<span class="line_num"><font color=#e8e8e8>0</font>236 </span>    glDrawArrays(GL_TRIANGLES, 0, 36);
+<span class="line_num"><font color=#e8e8e8>0</font>237 </span>    glBindVertexArray(0);
+<span class="line_num"><font color=#e8e8e8>0</font>238 </span>    glBindTexture(GL_TEXTURE_2D, 0);
+<span class="line_num"><font color=#e8e8e8>0</font>239 </span>}
+</pre><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
