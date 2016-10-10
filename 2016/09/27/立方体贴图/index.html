@@ -126,7 +126,7 @@
     <p class="page-title-sub">
       <span id = "post-title-date">撰写于 2016-09-27</span>
       
-        <span id = "post-title-updated">修改于 2016-10-08</span>
+        <span id = "post-title-updated">修改于 2016-10-10</span>
       
       
       <span id = "post-title-categories">分类
@@ -161,6 +161,8 @@
 <h3 id="渲染立方体贴图"><a href="#渲染立方体贴图" class="headerlink" title="渲染立方体贴图"></a>渲染立方体贴图</h3><p>立方体贴图最重要的一个应用就是绘制天空盒子，绘制天空盒子跟绘制普通的2D的纹理没有什么区别，加载纹理，设置顶点数据，编译着色器，绘制即可。运行结果如下：</p>
 <p><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="skybox1.png" width="35%"> </p><br></div><br>好了，到此为止一个完美的天空盒子已经显示出来了，but还有一个问题，设想如果摄像机往前移动（任意方向），往前走一段距离后就走出了天空盒子，跑出了“天空”，是不是很尴尬，所以在摄像机移动的时候，应该去除掉位移，保留旋转，这样就永远走不出“天空”了，那么如何保留旋转，去除位移呢？只需要用view原来的矩阵（4X4矩阵）的3×3部分去除平移，代码如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mat4 view = <span class="keyword">this</span>-&gt;camera-&gt;GetLookAt();</div><div class="line">view = mat4(mat3(view));</div></pre></td></tr></table></figure></p>
 <p>现在就是一个完美的显示出一个天空盒子了，具体的源码可以在这里看到：<a href="/code/CubmapStudy_r.h.html">头文件</a> 和 <a href="/code/CubmapStudy_r.cpp.html">源文件</a></p>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>虽然说天空盒子已经显示出来了，但是有一个性能上的问题，由于我们是先渲染天空盒子，后渲染物体（为什么物体没有被挡着呢，是因为我们在绘制天空盒子是没有向深度缓冲区写入数据 glDepthMask(GL_FALSE)），就会造成即使物体挡到了天空盒子，挡住的那部分的天空盒子还是会被渲染，造成性能的浪费。那我们可以先绘制物体，后绘制天空盒子，但是会造成天空盒子遮挡到z值比他大的物体（个人理解）。所以我们可以这样处理，因为透视除法是在顶点着色器后面执行的，我们可以把想办法把z值搞成1.0（最大值），这样就会让OpenGL认为天空盒子的z值是最大的，永远被其他物体遮挡。如何让透视除法后z值最大呢，因为透视除法只是x/w,y/w,z/w,所以只需让 z=w 即可，我们可以在顶点着色器中这样做:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">vec4 tempPosition = projection * view * vec4(position, <span class="number">1.0f</span>);</div><div class="line">gl_Position = vec4(tempPosition.x, tempPosition.y, tempPosition.w, tempPosition.w);</div></pre></td></tr></table></figure></p>
+<p>这样性能就会有稍微的提升！</p>
 <p>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a></p>
 
   </article>
@@ -169,7 +171,7 @@
   <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
   <div class="random-toc">
     <h2>目录</h2>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是立方体贴图？"><span class="toc-text">什么是立方体贴图？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何创建一个立方体贴图？"><span class="toc-text">如何创建一个立方体贴图？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#绑定纹理"><span class="toc-text">绑定纹理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#纹理数据"><span class="toc-text">纹理数据</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#渲染立方体贴图"><span class="toc-text">渲染立方体贴图</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是立方体贴图？"><span class="toc-text">什么是立方体贴图？</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何创建一个立方体贴图？"><span class="toc-text">如何创建一个立方体贴图？</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#绑定纹理"><span class="toc-text">绑定纹理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#纹理数据"><span class="toc-text">纹理数据</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#渲染立方体贴图"><span class="toc-text">渲染立方体贴图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#优化"><span class="toc-text">优化</span></a></li></ol>
   </div>
 </div>
 
