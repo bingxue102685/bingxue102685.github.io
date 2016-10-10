@@ -163,7 +163,7 @@
 <p>现在就是一个完美的显示出一个天空盒子了，具体的源码可以在这里看到：<a href="/code/CubmapStudy_r.h.html">头文件</a> 和 <a href="/code/CubmapStudy_r.cpp.html">源文件</a></p>
 <h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><p>虽然说天空盒子已经显示出来了，但是有一个性能上的问题，由于我们是先渲染天空盒子，后渲染物体（为什么物体没有被挡着呢，是因为我们在绘制天空盒子是没有向深度缓冲区写入数据 glDepthMask(GL_FALSE)），就会造成即使物体挡到了天空盒子，挡住的那部分的天空盒子还是会被渲染，造成性能的浪费。那我们可以先绘制物体，后绘制天空盒子，但是会造成天空盒子遮挡到z值比他大的物体（个人理解）。所以我们可以这样处理，因为透视除法是在顶点着色器后面执行的，我们可以把想办法把z值搞成1.0（最大值），这样就会让OpenGL认为天空盒子的z值是最大的，永远被其他物体遮挡。如何让透视除法后z值最大呢，因为透视除法只是x/w,y/w,z/w,所以只需让 z=w 即可，我们可以在顶点着色器中这样做:<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">vec4 tempPosition = projection * view * vec4(position, <span class="number">1.0f</span>);</div><div class="line">gl_Position = vec4(tempPosition.x, tempPosition.y, tempPosition.w, tempPosition.w);</div></pre></td></tr></table></figure></p>
 <p>这样性能就会有稍微的提升！</p>
-<p>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a></p>
+<p></p><p></p><br>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a><p></p>
 
   </article>
   <div class="random-toc-area">
