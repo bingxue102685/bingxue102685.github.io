@@ -17,9 +17,11 @@
   
   
   
-    <meta name="description" content="接口块随着我们的程序做的越来越大，着色器程序也会变得很复杂，着色器程序的输入输出变量需要更好的组织管理，不能再零散的分布，而且变量类型也需要扩展，数组和结构体也要利用起来，这就用到了接口块(Interface Blocks)。示例：顶点着色器12345678910out VS_OUT&#123;	vec3 Normal;	vec3 Position;&#125; vs_out;void ma...">
+    <meta name="description" content="一直想搞懂Lua的继承机制，但是不经常使用，以前搞懂了，现在就忘了，现在做一个备忘，方便查阅，另外这也是从别人那里“搞”来的，写的不错，就拿来一用。
+简介Lua的表本质其实是个类似HashMap的东西，其元素是很多的Key-Value对，如果尝试访问了一个表中并不存在的元素时，就会触发Lua的一套查找机制，也是凭借这个机制来模拟了类似“类”的行为。
+举例说明：12tempTable = &#...">
   
-  <title>高级GLSL(2) [ 奔跑的蜗牛 ]</title>
+  <title>Lua元表、__index是如何工作的 [ 奔跑的蜗牛 ]</title>
   
   
     <link rel="shortcut icon" href="/favicon.ico">
@@ -39,21 +41,21 @@
 <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
   
     <div class="item prev">
-      <a href="/2016/10/12/高级GLSL3/">
+      <a href="/2016/12/14/cocos2d-x中class的定义/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
-        高级GLSL(3)
+        cocos2d-x中class的定义
       </div>
     </div>
   
   
     <div class="item next">
-      <a href="/2016/10/11/Built-in-Variable-GLSL-译/">
+      <a href="/2016/10/12/高级GLSL3/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
-        Built-in Variable (GLSL)(译)
+        高级GLSL(3)
       </div>
     </div>
   
@@ -121,11 +123,11 @@
       
       
   <article id="post">
-    <h1>高级GLSL(2)</h1>
+    <h1>Lua元表、__index是如何工作的</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2016-10-11</span>
+      <span id = "post-title-date">撰写于 2016-12-14</span>
       
-        <span id = "post-title-updated">修改于 2016-10-12</span>
+        <span id = "post-title-updated">修改于 2016-12-14</span>
       
       
       <span id = "post-title-categories">分类
@@ -133,7 +135,7 @@
       
         
         
-        <a href="/categories/OpenGL/">OpenGL</a>
+        <a href="/categories/高级Lua/">高级Lua</a>
       
       </span>
       
@@ -144,16 +146,26 @@
       
         
         
-        <a href="/tags/高级OpenGL/">高级OpenGL</a>
+        <a href="/tags/Lua/">Lua</a>
       
       </span>
       
     </p>
     
-    <h2 id="接口块"><a href="#接口块" class="headerlink" title="接口块"></a>接口块</h2><p>随着我们的程序做的越来越大，着色器程序也会变得很复杂，着色器程序的输入输出变量需要更好的组织管理，不能再零散的分布，而且变量类型也需要扩展，数组和结构体也要利用起来，这就用到了接口块(Interface Blocks)。示例：<br>顶点着色器<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">out VS_OUT</div><div class="line">&#123;</div><div class="line">	vec3 Normal;</div><div class="line">	vec3 Position;</div><div class="line">&#125; vs_out;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	vs_out.Normal = mat3(transpose(inverse(model))) * normal;</div><div class="line">	vs_out.Position = vec3(model * vec4(position, <span class="number">1.0f</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>片段着色器<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">in VS_OUT</div><div class="line">&#123;</div><div class="line">	vec3 Normal;</div><div class="line">	vec3 Position;</div><div class="line">&#125; vs_in;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">float</span> ratio = <span class="number">1.00</span> / <span class="number">1.52</span>;</div><div class="line">	vec3 I = normalize(vs_in.Position - cameraPos);</div><div class="line">	vec3 R = refract(I, normalize(vs_in.Normal), ratio);</div><div class="line">	color = texture(skybox, R);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>跨着色器互传接口块时，接口块的名字一定要相同。（以后会有用处吧）</p>
-<p></p><p></p><br>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a><p></p>
+    <p>一直想搞懂Lua的继承机制，但是不经常使用，以前搞懂了，现在就忘了，现在做一个备忘，方便查阅，另外这也是从别人那里“搞”来的，写的不错，就拿来一用。</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Lua的表本质其实是个类似HashMap的东西，其元素是很多的Key-Value对，如果尝试访问了一个表中并不存在的元素时，就会触发Lua的一套查找机制，也是凭借这个机制来模拟了类似“类”的行为。</p>
+<p>举例说明：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">tempTable = &#123;&#125;</div><div class="line">print(tempTable.memberA) --这里试图打印tempTable并不存在的成员memberA</div></pre></td></tr></table></figure></p>
+<p>执行结果：nil<br>输出为nil的原因很简单，tempTable中并没有memberA这个成员，这符合我们平时对HashMap的认知。但对于Lua表，如果tempTable有元表，情况就不同了。</p>
+<h2 id="什么是元表"><a href="#什么是元表" class="headerlink" title="什么是元表"></a>什么是元表</h2><p>元表像是一个“操作指南”，里面包含了一系列操作的解决方案，例如__index方法就是定义了这个表在索引失败的情况下该怎么办。</p>
+<h2 id="index元方法"><a href="#index元方法" class="headerlink" title="__index元方法"></a>__index元方法</h2><p>按照之前的说法，如果A的元表是B，那么如果访问了一个A中不存在的成员，就会访问查找B中有没有这个成员。这个过程大体是这样，但却不完全是这样，实际上，即使将A的元表设置为B，而且B中也确实有这个成员，返回结果仍然会是nil，原因就是B的<strong>index元方法没有赋值。别忘了我们之前说过的：“元表是一个操作指南”，定义了元表，只是有了操作指南，但不应该在操作指南里面去查找元素，而</strong>index方法则是“操作指南”的“索引失败时该怎么办”。这么说有点绕。所以举个例子：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">father = &#123;  </div><div class="line">    house=<span class="number">1</span>  </div><div class="line">&#125;  </div><div class="line">son = &#123;  </div><div class="line">    car=<span class="number">1</span>  </div><div class="line">&#125;  </div><div class="line">setmetatable(son, father) --把son的metatable设置为father  </div><div class="line">print(son.house)</div></pre></td></tr></table></figure></p>
+<p>输出的结果是nil，但如果把代码改为：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">father = &#123;  </div><div class="line">    house=<span class="number">1</span>  </div><div class="line">&#125;  </div><div class="line">father.__index = father -- 把father的__index方法指向自己  </div><div class="line">son = &#123;  </div><div class="line">    car=<span class="number">1</span>  </div><div class="line">&#125;  </div><div class="line">setmetatable(son, father)  </div><div class="line">print(son.house)</div></pre></td></tr></table></figure></p>
+<p>输出的结果为1，符合预期。</p>
+<p>在上述例子中，访问son.house时，son中没有house这个成员，但Lua接着发现son有元表father，注意：此时，Lua并不是直接在father中找名为house的成员，而是调用father的<strong>index方法，如果</strong>index方法为nil，则返回nil，如果是一个表（上例中father的<strong>index方法等于自己，就是这种情况），那么就到</strong>index方法所指的这个表中查找名为house的成员，于是，最终找到了house成员。</p>
+<p>注：<strong>index方法除了可以是一个表，还可以是一个函数，如果是一个函数，</strong>index方法被调用时将返回该函数的返回值。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>到这里，总结一下Lua查找一个表元素时的规则，其实就是如下3个步骤:</p>
+<p>1.在表中查找，如果找到，返回该元素，找不到则继续</p>
+<p>2.判断该表是否有元表（操作指南），如果没有元表，返回nil，有元表则继续</p>
+<p>3.判断元表有没有<strong>index方法，如果</strong>index方法为nil，则返回nil；如果<strong>index方法是一个表，则重复1、2、3；如果</strong>index方法是一个函数，则返回该函数的返回值 </p>
 
   </article>
   <div class="random-toc-area">
@@ -161,20 +173,20 @@
   <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
   <div class="random-toc">
     <h2>目录</h2>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#接口块"><span class="toc-text">接口块</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是元表"><span class="toc-text">什么是元表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#index元方法"><span class="toc-text">__index元方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol>
   </div>
 </div>
 
   
 <nav id="pagination">
   
-    <a href="/2016/10/12/高级GLSL3/" class="prev">&larr; 上一篇 高级GLSL(3)</a>
+    <a href="/2016/12/14/cocos2d-x中class的定义/" class="prev">&larr; 上一篇 cocos2d-x中class的定义</a>
   
 
   
 
   
-    <a href="/2016/10/11/Built-in-Variable-GLSL-译/" class="next">下一篇 Built-in Variable (GLSL)(译) &rarr;</a>
+    <a href="/2016/10/12/高级GLSL3/" class="next">下一篇 高级GLSL(3) &rarr;</a>
   
 </nav>
 

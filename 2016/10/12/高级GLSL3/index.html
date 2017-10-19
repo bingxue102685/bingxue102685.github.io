@@ -38,6 +38,15 @@
 <body>
 <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
   
+    <div class="item prev">
+      <a href="/2016/12/14/Lua元表、-index示如何工作的/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Lua元表、__index是如何工作的
+      </div>
+    </div>
+  
   
     <div class="item next">
       <a href="/2016/10/11/高级GLSL2/">
@@ -116,7 +125,7 @@
     <p class="page-title-sub">
       <span id = "post-title-date">撰写于 2016-10-12</span>
       
-        <span id = "post-title-updated">修改于 2016-10-13</span>
+        <span id = "post-title-updated">修改于 2016-10-21</span>
       
       
       <span id = "post-title-categories">分类
@@ -162,6 +171,7 @@
 <p>运行效果图：</p>
 <p><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="advancedglsl_ubo.png" width="60%"> </p></div><br>学完这部分后，对VAO也是有点感触，简单的解释一下VAO（个人理解）:<br>VAO：怎么理解VAO呢，全称是顶点数组对象(Vertex Array Object)，绑定后，任何随后的设置顶点属性都会存贮在VAO中（glEnableVertexAttribArray、glDisableVertexAttribArray、glVertexAttribPointer），其实VAO中存储的一系列绑定的VBO的起始位置，跨度，数据长度等属性信息，当渲染时，OpenGL会用vertex shader中layout的值，找到当前绑定的VAO中对应layout的属性信息，然后进一步找到VBO中顶点信息。</p>
 <p></p><p></p><br>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a><p></p>
+<p>再说一次，像均值和高斯这种计算方法，意味着对临近点或者临近点权重的计算。这个平均像素值可能会也可能不会等于临近点。但是，中值像素一点存在于临近点中，相对于均值，使用中值来替换中间的像素，可以明显减少噪点（椒盐噪点）</p>
 
   </article>
   <div class="random-toc-area">
@@ -175,6 +185,8 @@
 
   
 <nav id="pagination">
+  
+    <a href="/2016/12/14/Lua元表、-index示如何工作的/" class="prev">&larr; 上一篇 Lua元表、__index是如何工作的</a>
   
 
   
@@ -190,8 +202,8 @@
 
 
       
-      <div class="ds-thread" data-thread-key="2016/10/12/高级GLSL3/" data-title="高级GLSL(3)" data-url="http://yoursite.com/2016/10/12/高级GLSL3/"></div>
       
+      <div id="uyan_frame"></div>
       
       
     </div>
@@ -209,19 +221,11 @@
 
 </div>
 
-  <script type="text/javascript">
-var duoshuoQuery = {short_name:"gamerblog"};
-(function() {
-  var ds = document.createElement('script');
-  ds.type = 'text/javascript';ds.async = true;
-  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-  ds.charset = 'UTF-8';
-  (document.getElementsByTagName('head')[0] 
-   || document.getElementsByTagName('body')[0]).appendChild(ds);
-})();
-</script>
 
 
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2146884"></script>
+<!-- UY END -->
 
 
   <script type="text/x-mathjax-config">

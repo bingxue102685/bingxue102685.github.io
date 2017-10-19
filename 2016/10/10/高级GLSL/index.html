@@ -126,7 +126,7 @@ GLSL内建变量什么是内建变量？GLSL为各个着色阶段定义了一些
     <p class="page-title-sub">
       <span id = "post-title-date">撰写于 2016-10-10</span>
       
-        <span id = "post-title-updated">修改于 2016-10-11</span>
+        <span id = "post-title-updated">修改于 2016-10-13</span>
       
       
       <span id = "post-title-categories">分类
@@ -168,7 +168,6 @@ GLSL内建变量什么是内建变量？GLSL为各个着色阶段定义了一些
 <h3 id="in-bool-gl-FrontFacing"><a href="#in-bool-gl-FrontFacing" class="headerlink" title="in bool gl_FrontFacing"></a>in bool gl_FrontFacing</h3><p>当前片段是正面的一部分，那么该变量是true，否则就是false。当然如果你开了面剔除（glEnable(GL_CULL_FACE)），那么反面的东西就没有任何东西，使用gl_FrontFacing就没有任何意义。</p>
 <h3 id="out-float-gl-FragDepth"><a href="#out-float-gl-FragDepth" class="headerlink" title="out float gl_FragDepth"></a>out float gl_FragDepth</h3><p>设置片段的深度值。（暂时不是重点，不再详细描述）</p>
 <p></p><p></p><br>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a><p></p>
-<p>VAO：怎么理解VAO呢，全称是顶点数组对象(Vertex Array Object)，绑定后，任何随后的设置顶点属性都会存贮在VAO中（glEnableVertexAttribArray、glDisableVertexAttribArray、glVertexAttribPointer），其实VAO中存储的一系列绑定的VBO的起始位置，跨度，数据长度等属性信息，当渲染时，OpenGL会用vertex shader中layout的值，找到当前绑定的VAO中对应layout的属性信息，然后进一步找到VBO中顶点信息，传递给vertex shader。</p>
 
   </article>
   <div class="random-toc-area">
@@ -199,8 +198,8 @@ GLSL内建变量什么是内建变量？GLSL为各个着色阶段定义了一些
 
 
       
-      <div class="ds-thread" data-thread-key="2016/10/10/高级GLSL/" data-title="高级GLSL(1)" data-url="http://yoursite.com/2016/10/10/高级GLSL/"></div>
       
+      <div id="uyan_frame"></div>
       
       
     </div>
@@ -218,19 +217,11 @@ GLSL内建变量什么是内建变量？GLSL为各个着色阶段定义了一些
 
 </div>
 
-  <script type="text/javascript">
-var duoshuoQuery = {short_name:"gamerblog"};
-(function() {
-  var ds = document.createElement('script');
-  ds.type = 'text/javascript';ds.async = true;
-  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-  ds.charset = 'UTF-8';
-  (document.getElementsByTagName('head')[0] 
-   || document.getElementsByTagName('body')[0]).appendChild(ds);
-})();
-</script>
 
 
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2146884"></script>
+<!-- UY END -->
 
 
   <script type="text/x-mathjax-config">
