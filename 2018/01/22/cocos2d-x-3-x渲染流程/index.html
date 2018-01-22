@@ -1,0 +1,384 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta name="baidu-site-verification" content="2kT43Dluf4" />
+  <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="虽然学习了opengl，但是没怎么实践，就先看一下cocoos2d-x是怎么处理的，学习一下，不看不知道，一看吓一跳，代码的拼凑感太强了，完全不像是一个完整的系统，可能是后期很多人修改的缘故吧，不纠结了，大致学习一下就行。
+入口win32入口当然是从main函数开始，cocoos2d-x的每个平台的入口文件都不一样，cocoos2d-x把这些差异性的文件都提取了出来，单独处理，这些入口源码不...">
+  
+  <title>cocos2d-x 3.x渲染流程 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2017/10/27/回归/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        回归
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg"/>
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>cocos2d-x 3.x渲染流程</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2018-01-22</span>
+      
+        <span id = "post-title-updated">修改于 2018-01-22</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/游戏开发/">游戏开发</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/cocos2d-x/">cocos2d-x</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>虽然学习了opengl，但是没怎么实践，就先看一下<em>cocoos2d-x</em>是怎么处理的，学习一下，不看不知道，一看吓一跳，代码的拼凑感太强了，完全不像是一个完整的系统，可能是后期很多人修改的缘故吧，不纠结了，大致学习一下就行。</p>
+<h2 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h2><p>win32入口当然是从main函数开始，<em>cocoos2d-x</em>的每个平台的入口文件都不一样，<em>cocoos2d-x</em>把这些差异性的文件都提取了出来，单独处理，这些入口源码不是研究重点，也没什么可研究，大致提一下。</p>
+<ol>
+<li>初始化窗口参数</li>
+<li>创建并设置窗口</li>
+<li>初始化lua引擎状态</li>
+</ol>
+<h2 id="窗口系统"><a href="#窗口系统" class="headerlink" title="窗口系统"></a>窗口系统</h2><p>没什么意外，win32嘛，窗口系统依旧使用的glfw，其他的也想不到用什么了，开源，好用，而且还在更新，不再赘述，附上官网<a href="http://www.glfw.org/" target="_blank" rel="external">glfw官网</a></p>
+<h2 id="渲染部分"><a href="#渲染部分" class="headerlink" title="渲染部分"></a>渲染部分</h2><h3 id="渲染入口"><a href="#渲染入口" class="headerlink" title="渲染入口"></a>渲染入口</h3><p>win32的渲染入口在<em>Application:run()</em>函数里面，下面把核心部分拿出来。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="keyword">int</span> Application::run()</div><div class="line">&#123;</div><div class="line">    <span class="comment">/*</span></div><div class="line">    .</div><div class="line">    .</div><div class="line">    .</div><div class="line">    */</div><div class="line">    <span class="comment">//此处为一个死循环，windowShouldClose()为true时退出，由glfwSetWindowShouldClose控制，当点击窗口的关闭按钮时会设置为true</span></div><div class="line">    <span class="keyword">while</span>(!glview-&gt;windowShouldClose())</div><div class="line">    &#123;</div><div class="line">    	<span class="comment">//获取精确的时间（从机器开机到现在的时间）</span></div><div class="line">        QueryPerformanceCounter(&amp;nNow);</div><div class="line">        <span class="comment">//如果上次渲染的时间和当前时间差 大于 设置的帧率 （一般是1/60s）则开始渲染，保证帧率</span></div><div class="line">        <span class="keyword">if</span> (nNow.QuadPart - nLast.QuadPart &gt; _animationInterval.QuadPart)</div><div class="line">        &#123;</div><div class="line">            nLast.QuadPart = nNow.QuadPart - (nNow.QuadPart % _animationInterval.QuadPart);</div><div class="line">            </div><div class="line">            director-&gt;mainLoop();</div><div class="line">            glview-&gt;pollEvents();</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//否则暂停1ms</span></div><div class="line">        <span class="keyword">else</span></div><div class="line">        &#123;</div><div class="line">            Sleep(<span class="number">1</span>);</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">/*</span></div><div class="line">    .</div><div class="line">    .</div><div class="line">    .</div><div class="line">    */</div><div class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="主循环"><a href="#主循环" class="headerlink" title="主循环"></a>主循环</h3><p>如果满足了帧率，则开始进行循环代码<em>DisplayLinkDirector::mainLoop()</em>。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> DisplayLinkDirector::mainLoop()</div><div class="line">&#123;</div><div class="line">	<span class="comment">//如果清理Director(只有调用了 director-&gt;end() 后，_purgeDirectorInNextLoop置为true)</span></div><div class="line">    <span class="keyword">if</span> (_purgeDirectorInNextLoop)</div><div class="line">    &#123;</div><div class="line">        _purgeDirectorInNextLoop = <span class="literal">false</span>;</div><div class="line">        purgeDirector();</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//如果 _invalid 为false，则开始渲染（当调用 director-&gt;stopAnimation()，设置_invalid为true，则不进行渲染）</span></div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (! _invalid)</div><div class="line">    &#123;</div><div class="line">    	<span class="comment">//渲染场景</span></div><div class="line">        drawScene();</div><div class="line">     </div><div class="line">        <span class="comment">//清理自动回收池（cocos2d-x的内存管理机制，稍后会进行说明）</span></div><div class="line">        PoolManager::getInstance()-&gt;getCurrentPool()-&gt;clear();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="渲染场景"><a href="#渲染场景" class="headerlink" title="渲染场景"></a>渲染场景</h3><p><em>cocos2d-x</em>就是通过每一帧drawScene进行渲染场景。这里面用到了Render类，自从<em>cocos2d-x 3.0</em>以后，渲染部分拿了出来，组成了单独一个类。以前的都是放在了每个可渲染节点的draw函数里面，draw函数可以看到渲染代码。而现在的draw函数里面只是生成了一个渲染命令，然后加入渲染队列，交由Render类进行具体渲染。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Draw the Scene</span></div><div class="line"><span class="keyword">void</span> Director::drawScene()</div><div class="line">&#123;</div><div class="line">	<span class="comment">//计算出两次渲染 调用的时间 放入_delaTime</span></div><div class="line">    calculateDeltaTime();</div><div class="line">    </div><div class="line">    <span class="comment">//当两次渲染的间隔时间过小，基本等于0，则不再进行渲染，直接返回</span></div><div class="line">    <span class="keyword">if</span>(_deltaTime &lt; FLT_EPSILON)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//无所谓的函数，空函数，不用处理</span></div><div class="line">    <span class="keyword">if</span> (_openGLView)</div><div class="line">    &#123;</div><div class="line">        _openGLView-&gt;pollEvents();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (! _paused)</div><div class="line">    &#123;</div><div class="line">    	<span class="comment">//调用_scheduler的update函数</span></div><div class="line">        _scheduler-&gt;update(_deltaTime);</div><div class="line">        _eventDispatcher-&gt;dispatchEvent(_eventAfterUpdate);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//清理OpenGL颜色缓冲区和深度缓冲区</span></div><div class="line">    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);</div><div class="line"></div><div class="line">    <span class="comment">//切换场景。为了防止闪烁，切换场景一定要在未渲染之前进行。</span></div><div class="line">    <span class="keyword">if</span> (_nextScene)</div><div class="line">    &#123;</div><div class="line">        setNextScene();</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//设置opengl当前矩阵为 modelview 矩阵 </span></div><div class="line">    pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);</div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (_runningScene)</div><div class="line">    &#123;</div><div class="line">        <span class="comment">//clear draw stats</span></div><div class="line">        _renderer-&gt;clearDrawStats();</div><div class="line">        </div><div class="line">        <span class="comment">//渲染当前场景</span></div><div class="line">        _runningScene-&gt;render(_renderer);</div><div class="line">        </div><div class="line">        _eventDispatcher-&gt;dispatchEvent(_eventAfterVisit);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//绘制观察者节点</span></div><div class="line">    <span class="keyword">if</span> (_notificationNode)</div><div class="line">    &#123;</div><div class="line">        _notificationNode-&gt;visit(_renderer, Mat4::IDENTITY, <span class="number">0</span>);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (_displayStats)</div><div class="line">    &#123;</div><div class="line">        showStats();</div><div class="line">    &#125;</div><div class="line">    _renderer-&gt;render();</div><div class="line"></div><div class="line">    _eventDispatcher-&gt;dispatchEvent(_eventAfterDraw);</div><div class="line"></div><div class="line">    popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);</div><div class="line"></div><div class="line">    _totalFrames++;</div><div class="line"></div><div class="line">    <span class="comment">// swap buffers</span></div><div class="line">    <span class="keyword">if</span> (_openGLView)</div><div class="line">    &#123;</div><div class="line">    	<span class="comment">//交换双缓冲区</span></div><div class="line">        _openGLView-&gt;swapBuffers();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (_displayStats)</div><div class="line">    &#123;</div><div class="line">        calculateMPF();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面的代码，核心的代码为<em>_runningScene-&gt;render(_renderer);</em>，即调用场景的render函数。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Scene::render(Renderer* renderer)</div><div class="line">&#123;</div><div class="line">    <span class="keyword">auto</span> director = Director::getInstance();</div><div class="line">    Camera* defaultCamera = <span class="literal">nullptr</span>;</div><div class="line">    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; transform = getNodeToParentTransform();</div><div class="line">    <span class="comment">//是否有自定义的其他camera，如果有，则分别处理不同camera下的节点</span></div><div class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; camera : _cameras)</div><div class="line">    &#123;</div><div class="line">        Camera::_visitingCamera = camera;</div><div class="line">        <span class="keyword">if</span> (Camera::_visitingCamera-&gt;getCameraFlag() == CameraFlag::DEFAULT)</div><div class="line">        &#123;</div><div class="line">            defaultCamera = Camera::_visitingCamera;</div><div class="line">            <span class="keyword">continue</span>;</div><div class="line">        &#125;</div><div class="line">        </div><div class="line">        director-&gt;pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);</div><div class="line">        director-&gt;loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, Camera::_visitingCamera-&gt;getViewProjectionMatrix());</div><div class="line">        </div><div class="line">        <span class="comment">//visit the scene</span></div><div class="line">        visit(renderer, transform, <span class="number">0</span>);</div><div class="line">        renderer-&gt;render();</div><div class="line">        </div><div class="line">        director-&gt;popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//如果没有自定义的camera，则直接遍历，渲染</span></div><div class="line">    <span class="keyword">if</span> (defaultCamera)</div><div class="line">    &#123;</div><div class="line">        Camera::_visitingCamera = defaultCamera;</div><div class="line">        <span class="comment">//加载透视矩阵</span></div><div class="line">        director-&gt;pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);</div><div class="line">        director-&gt;loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION, Camera::_visitingCamera-&gt;getViewProjectionMatrix());</div><div class="line">        </div><div class="line">        <span class="comment">//遍历场景</span></div><div class="line">        visit(renderer, transform, <span class="number">0</span>);</div><div class="line">        <span class="comment">//渲染</span></div><div class="line">        renderer-&gt;render();</div><div class="line">        </div><div class="line">        director-&gt;popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_PROJECTION);</div><div class="line">    &#125;</div><div class="line">    Camera::_visitingCamera = <span class="literal">nullptr</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>下面提一下<em>visit</em>函数，<em>renderer-&gt;render()</em>不在这里说明，下一篇会具体解读，<em>visit</em>函数会遍历每个节点下面的子节点，并调用节点自身的draw函数。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> Node::visit(Renderer* renderer, <span class="keyword">const</span> Mat4 &amp;parentTransform, <span class="keyword">uint32_t</span> parentFlags)</div><div class="line">&#123;</div><div class="line">    <span class="comment">// quick return if not visible. children won't be drawn.</span></div><div class="line">    <span class="comment">//不可见直接返回</span></div><div class="line">    <span class="keyword">if</span> (!_visible)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    &#125;</div><div class="line">    <span class="comment">//暂时不知道干嘛</span></div><div class="line">    <span class="keyword">uint32_t</span> flags = processParentFlags(parentTransform, parentFlags);</div><div class="line"></div><div class="line">    <span class="comment">// IMPORTANT:</span></div><div class="line">    <span class="comment">// To ease the migration to v3.0, we still support the Mat4 stack,</span></div><div class="line">    <span class="comment">// but it is deprecated and your code should not rely on it</span></div><div class="line">    <span class="comment">//设置当前操作矩阵为模型视图矩阵。即将物体坐标系专为视觉坐标系。</span></div><div class="line">    Director* director = Director::getInstance();</div><div class="line">    director-&gt;pushMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);</div><div class="line">    director-&gt;loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewTransform);</div><div class="line">    <span class="comment">//在当前相机下，该node是否可见，只有node的flag同相机的掩码相同才会可见</span></div><div class="line">    <span class="keyword">bool</span> visibleByCamera = isVisitableByVisitingCamera();</div><div class="line"></div><div class="line">    <span class="keyword">int</span> i = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span>(!_children.empty())</div><div class="line">    &#123;</div><div class="line">    	<span class="comment">//按localzorder从小到大排序，如果localzorder相同，则按照添加的先后顺序</span></div><div class="line">        sortAllChildren();</div><div class="line">        <span class="comment">//先遍历localzorder小于0的节点，先把这些节点加入到渲染队列</span></div><div class="line">        <span class="keyword">for</span>( ; i &lt; _children.size(); i++ )</div><div class="line">        &#123;</div><div class="line">            <span class="keyword">auto</span> node = _children.at(i);</div><div class="line"></div><div class="line">            <span class="keyword">if</span> ( node &amp;&amp; node-&gt;_localZOrder &lt; <span class="number">0</span> )</div><div class="line">                node-&gt;visit(renderer, _modelViewTransform, flags);</div><div class="line">            <span class="keyword">else</span></div><div class="line">                <span class="keyword">break</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="comment">//再渲染自己</span></div><div class="line">        <span class="keyword">if</span> (visibleByCamera)</div><div class="line">            <span class="keyword">this</span>-&gt;draw(renderer, _modelViewTransform, flags);</div><div class="line">        <span class="comment">//再遍历其他普通的节点（即localzorder大于等于0的）</span></div><div class="line">        <span class="keyword">for</span>(<span class="keyword">auto</span> it=_children.cbegin()+i; it != _children.cend(); ++it)</div><div class="line">            (*it)-&gt;visit(renderer, _modelViewTransform, flags);</div><div class="line">    &#125;</div><div class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (visibleByCamera)</div><div class="line">    &#123;</div><div class="line">    	<span class="comment">//没有子节点，则直接渲染，但draw函数里面并没有进行渲染，而是生成了一条渲染命令，加入到渲染队列中。</span></div><div class="line">        <span class="keyword">this</span>-&gt;draw(renderer, _modelViewTransform, flags);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    director-&gt;popMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW);</div><div class="line">    </div><div class="line">    <span class="comment">// FIX ME: Why need to set _orderOfArrival to 0??</span></div><div class="line">    <span class="comment">// Please refer to https://github.com/cocos2d/cocos2d-x/pull/6920</span></div><div class="line">    <span class="comment">// reset for next frame</span></div><div class="line">    <span class="comment">// _orderOfArrival = 0;</span></div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p><em>draw</em>函数里面并没有进行渲染，而是生成了一条渲染命令，加入到渲染队列中，下面以<em>sprite::draw()</em>为例，进行说明。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">void Sprite::draw(Renderer *renderer, const Mat4 &amp;transform, uint32_t flags)</div><div class="line">&#123;</div><div class="line">    //此处用于判断 node 通过 transform 变化后，是否已经出屏幕了，也就是检测是否被裁剪</div><div class="line">    _insideBounds = (flags &amp; FLAGS_TRANSFORM_DIRTY) ? renderer-&gt;checkVisibility(transform, _contentSize) : _insideBounds;</div><div class="line">    //如果变化之后 还在 屏幕内 则进行渲染</div><div class="line">    if(_insideBounds)</div><div class="line">    &#123;</div><div class="line">    	//初始化渲染命令</div><div class="line">        _quadCommand.init(_globalZOrder, _texture-&gt;getName(), getGLProgramState(), _blendFunc, &amp;_quad, 1, transform);</div><div class="line">        //加入渲染队列</div><div class="line">        renderer-&gt;addCommand(&amp;_quadCommand);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>以上即为<em>cocos2d-x 3.x</em>的整个渲染流程，但其中并没有提及如何渲染，即<em>Render</em>的相关功能，会在其后的文章中进行说明。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#入口"><span class="toc-text">入口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#窗口系统"><span class="toc-text">窗口系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#渲染部分"><span class="toc-text">渲染部分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#渲染入口"><span class="toc-text">渲染入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#主循环"><span class="toc-text">主循环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#渲染场景"><span class="toc-text">渲染场景</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2017/10/27/回归/" class="next">下一篇 回归 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+      <div id="uyan_frame"></div>
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2146884"></script>
+<!-- UY END -->
+
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+  </script>
+
+  <script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+      for (i=0; i < all.length; i += 1) {
+        all[i].SourceElement().parentNode.className += ' has-jax';
+      }
+    });
+  </script>
+  <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "D7CCC8";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+
+</body>
+</html>
+
