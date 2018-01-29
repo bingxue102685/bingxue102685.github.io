@@ -1,8 +1,8 @@
 body {
-  background-color: #d7ccc8;
+  background-color: #34495e;
   margin: 0px;
-  font-family: "Microsoft YaHei", Lato, "Microsoft Jhenghei", "Hiragino Sans GB", sans-serif;
-  font-size: 15px;
+  font-family: Lato, "Microsoft Jhenghei", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  font-size: 18px;
 }
 @media (max-width: 860px) {
   body {
@@ -78,7 +78,6 @@ a:hover {
   background-color: #ecf0f1;
 }
 #random-index a {
-  text-transform: uppercase;
   padding: 5px;
 }
 #random-index .title {
@@ -448,6 +447,12 @@ article img {
 .instagram:hover {
   color: #fd1d1d;
 }
+.stackoverflow:hover {
+  color: #f48024;
+}
+.segmentfault:hover {
+  color: #005f3c;
+}
 .side-navigate {
   position: fixed;
   top: 60%;
@@ -583,7 +588,7 @@ figure.highlight td.gutter {
   padding-right: 20px;
 }
 figure.highlight .line {
-  white-space: pre-wrap;
+  height: 22px;
 }
 code {
   font-family: Consolas, Monaco, Courier New, Lucida Console;
@@ -594,6 +599,7 @@ code {
 }
 table .line {
   font-family: Consolas, Monaco, Courier New, Lucida Console;
+  height: 22px;
 }
 blockquote {
   background-color: #eee;

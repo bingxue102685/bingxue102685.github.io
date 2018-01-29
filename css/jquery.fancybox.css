@@ -256,16 +256,6 @@
 	background: #000;
 	background: rgba(0, 0, 0, .8);
 }
-.self_define_image #img_image {
-	border:3px #dcdcdc solid; 
-	border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-}
-.self_define_image #img_text {
-	text-align: center;
-}
 
 /*Retina graphics!*/
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
