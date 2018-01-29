@@ -2,8 +2,6 @@
 
 
 
-  
-
 
 
 
@@ -19,9 +17,10 @@
   
   
   
-    <meta name="description" content="">
+    <meta name="description" content="在学习高级GLSL时，看到了这个官方文档，觉得还是翻译一下好。原文: www.opengl.org/wiki/Built-inVariable(GLSL)
+内建变量(Built-in Variable (GLSL))OpenGL着色语言为各个着色阶段定义了一些特殊变量，这些内建变量有一些特殊属性。他们通常用来表达一些固定功能，通常，这些变量都以“gl_”开头，用户自定义的变量不可以这样开头。...">
   
-  <title>分类: OpenGL [ 奔跑的蜗牛 ]</title>
+  <title>Built-in Variable (GLSL)(译) [ 奔跑的蜗牛 ]</title>
   
   
     <link rel="shortcut icon" href="/favicon.ico">
@@ -40,6 +39,24 @@
 <body>
 <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
   
+    <div class="item prev">
+      <a href="/2016/12/14/Lua元表、-index示如何工作的/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Lua元表、__index是如何工作的
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2016/11/15/环境贴图/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        环境贴图
+      </div>
+    </div>
   
 </div>
 <div id="outer-container" class="hide-area">
@@ -79,7 +96,7 @@
           </li>
         
           
-            <li class="active">
+            <li>
           
             <a href="/categories">分类</a>
             
@@ -104,391 +121,72 @@
     <div id="content-inner">
       
       
-  <article id="page">
-    
+  <article id="post">
+    <h1>Built-in Variable (GLSL)(译)</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2016-12-11</span>
       
-    
+        <span id = "post-title-updated">修改于 2018-01-29</span>
       
-    
       
-    
-      
-    
-      
-        <h1 class="center-title">
-          分类
-          
-        </h1>
-      
-    
-    <ul class="category-list">
-      
-        <li class="category-list-item">
-        
-          <a href="/categories/翻译/">翻译</a>
-        
-          <span class="category-list-count">2</span>
-        </li>
-      
-        <li class="category-list-item">
-        
-          <a href="/categories/高级Lua/">高级Lua</a>
-        
-          <span class="category-list-count">1</span>
-        </li>
-      
-        <li class="category-list-item">
-        
-          <a href="/categories/游戏开发/">游戏开发</a>
-        
-          <span class="category-list-count">3</span>
-        </li>
-      
-        <li class="category-list-item">
-        
-          <a href="/categories/琐事/">琐事</a>
-        
-          <span class="category-list-count">1</span>
-        </li>
-      
-        <li class="category-list-item">
-        
-          <a class="active" href="/categories/OpenGL/">OpenGL</a>
-        
-          <span class="category-list-count">6</span>
-        </li>
-      
-    </ul>
-    
+      <span id = "post-title-categories">分类
       
       
         
+        
+        <a href="/categories/翻译/">翻译</a>
+      
+      </span>
       
       
-    
+      <span id = "post-title-tags">
+      标签
       
       
         
-      
-      
-    
-      
-      
         
+        <a href="/tags/OpenGL文章翻译/">OpenGL文章翻译</a>
       
+      </span>
       
+    </p>
     
-      
-      
-        
-      
-      
-    
-      
-      
-        
-      
-      
-    
-      
-      
-        
-      
-      
-    
-      
-      
-        
-      
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/11/15/环境贴图/">
-  
-    环境贴图
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">11-15</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/10/27/立方体贴图/">
-  
-    立方体贴图
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">10-27</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/08/10/高级GLSL/">
-  
-    高级GLSL(1)
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">8-10</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/07/11/高级GLSL2/">
-  
-    高级GLSL(2)
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">7-11</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/06/12/高级GLSL3/">
-  
-    高级GLSL(3)
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">6-12</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/09/10/高级数据/">
-  
-    高级数据
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">9-10</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
+    <p>在学习<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/08%20Advanced%20GLSL/" target="_blank" rel="external">高级GLSL</a>时，看到了这个官方文档，觉得还是翻译一下好。<br>原文: www.opengl.org/wiki/Built-in<em>Variable</em>(GLSL)</p>
+<h2 id="内建变量-Built-in-Variable-GLSL"><a href="#内建变量-Built-in-Variable-GLSL" class="headerlink" title="内建变量(Built-in Variable (GLSL))"></a>内建变量(Built-in Variable (GLSL))</h2><p>OpenGL着色语言为各个着色阶段定义了一些特殊变量，这些内建变量有一些特殊属性。他们通常用来表达一些固定功能，通常，这些变量都以“gl_”开头，用户自定义的变量不可以这样开头。<br>注意：这篇文章只描述了在OpengGL着色器语言中核心的预定义变量。Any variables that are from the compatibility profiles are not listed here.</p>
+<h3 id="顶点着色器输入变量-Vertex-shader-inputs"><a href="#顶点着色器输入变量-Vertex-shader-inputs" class="headerlink" title="顶点着色器输入变量(Vertex shader inputs)"></a>顶点着色器输入变量(Vertex shader inputs)</h3><p>顶点着色器有下面两个内建输入变量。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">in <span class="keyword">int</span> gl_VertexID;</div><div class="line">in <span class="keyword">int</span> gl_InstanceID;</div></pre></td></tr></table></figure></p>
+<h4 id="gl-VertexID"><a href="#gl-VertexID" class="headerlink" title="gl_VertexID"></a>gl_VertexID</h4><p>表示当前正在处理的顶点的索引。当我们使用非索引渲染时，它表示当前顶点的真实索引（已经被处理过的顶点的数量）。当使用索引渲染时，它是用来获取缓冲区顶点的索引。</p>
+
   </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#内建变量-Built-in-Variable-GLSL"><span class="toc-text">内建变量(Built-in Variable (GLSL))</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#顶点着色器输入变量-Vertex-shader-inputs"><span class="toc-text">顶点着色器输入变量(Vertex shader inputs)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#gl-VertexID"><span class="toc-text">gl_VertexID</span></a></li></ol></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2016/12/14/Lua元表、-index示如何工作的/" class="prev">&larr; 上一篇 Lua元表、__index是如何工作的</a>
+  
 
   
 
+  
+    <a href="/2016/11/15/环境贴图/" class="next">下一篇 环境贴图 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
       
+      
+      <div id="uyan_frame"></div>
       
       
     </div>
@@ -507,6 +205,10 @@
 </div>
 
 
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2146884"></script>
+<!-- UY END -->
 
 
   <script type="text/x-mathjax-config">
@@ -633,6 +335,8 @@ var unsplashConfig = {"gravity":"north"};
 var turnoffBackgroundImage = false;
 
 
+
+  turnoffBackgroundImage = true;
 
 
 var backgroundColor = "D7CCC8";

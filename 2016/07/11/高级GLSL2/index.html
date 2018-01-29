@@ -2,8 +2,6 @@
 
 
 
-  
-
 
 
 
@@ -19,9 +17,9 @@
   
   
   
-    <meta name="description" content="">
+    <meta name="description" content="接口块随着我们的程序做的越来越大，着色器程序也会变得很复杂，着色器程序的输入输出变量需要更好的组织管理，不能再零散的分布，而且变量类型也需要扩展，数组和结构体也要利用起来，这就用到了接口块(Interface Blocks)。示例：顶点着色器12345678910out VS_OUT&#123;	vec3 Normal;	vec3 Position;&#125; vs_out;void ma...">
   
-  <title>分类: OpenGL [ 奔跑的蜗牛 ]</title>
+  <title>高级GLSL(2) [ 奔跑的蜗牛 ]</title>
   
   
     <link rel="shortcut icon" href="/favicon.ico">
@@ -40,6 +38,24 @@
 <body>
 <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
   
+    <div class="item prev">
+      <a href="/2016/08/10/高级GLSL/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        高级GLSL(1)
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2016/06/12/高级GLSL3/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        高级GLSL(3)
+      </div>
+    </div>
   
 </div>
 <div id="outer-container" class="hide-area">
@@ -79,7 +95,7 @@
           </li>
         
           
-            <li class="active">
+            <li>
           
             <a href="/categories">分类</a>
             
@@ -104,391 +120,72 @@
     <div id="content-inner">
       
       
-  <article id="page">
-    
+  <article id="post">
+    <h1>高级GLSL(2)</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2016-07-11</span>
       
-    
+        <span id = "post-title-updated">修改于 2018-01-29</span>
       
-    
       
-    
-      
-    
-      
-        <h1 class="center-title">
-          分类
-          
-        </h1>
-      
-    
-    <ul class="category-list">
-      
-        <li class="category-list-item">
-        
-          <a href="/categories/翻译/">翻译</a>
-        
-          <span class="category-list-count">2</span>
-        </li>
-      
-        <li class="category-list-item">
-        
-          <a href="/categories/高级Lua/">高级Lua</a>
-        
-          <span class="category-list-count">1</span>
-        </li>
-      
-        <li class="category-list-item">
-        
-          <a href="/categories/游戏开发/">游戏开发</a>
-        
-          <span class="category-list-count">3</span>
-        </li>
-      
-        <li class="category-list-item">
-        
-          <a href="/categories/琐事/">琐事</a>
-        
-          <span class="category-list-count">1</span>
-        </li>
-      
-        <li class="category-list-item">
-        
-          <a class="active" href="/categories/OpenGL/">OpenGL</a>
-        
-          <span class="category-list-count">6</span>
-        </li>
-      
-    </ul>
-    
+      <span id = "post-title-categories">分类
       
       
         
+        
+        <a href="/categories/OpenGL/">OpenGL</a>
+      
+      </span>
       
       
-    
+      <span id = "post-title-tags">
+      标签
       
       
         
-      
-      
-    
-      
-      
         
+        <a href="/tags/高级OpenGL/">高级OpenGL</a>
       
+      </span>
       
+    </p>
     
-      
-      
-        
-      
-      
-    
-      
-      
-        
-      
-      
-    
-      
-      
-        
-      
-      
-    
-      
-      
-        
-      
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/11/15/环境贴图/">
-  
-    环境贴图
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">11-15</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/10/27/立方体贴图/">
-  
-    立方体贴图
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">10-27</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/08/10/高级GLSL/">
-  
-    高级GLSL(1)
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">8-10</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/07/11/高级GLSL2/">
-  
-    高级GLSL(2)
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">7-11</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/06/12/高级GLSL3/">
-  
-    高级GLSL(3)
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">6-12</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
-      
-      
-        
-          
-        
-      
-      
-      <div class="post-title-item">
-  
-  <a href="/2016/09/10/高级数据/">
-  
-    高级数据
-  
-  </a>
-  <p class="page-title-sub">
-    <span id = "post-title-date">9-10</span>
-    
-    <span id = "post-title-categories">分类
-    
-    
-      
-      
-      <a href="/categories/OpenGL/">OpenGL</a>
-    
-    </span>
-    
-    
-    <span id = "post-title-tags">
-    标签
-    
-    
-      
-      
-      <a href="/tags/高级OpenGL/">高级OpenGL</a>
-    
-    </span>
-    
-    
-      <br>
-      
-      
-    
-  </p>
-  
-</div>
-      
-    
+    <h2 id="接口块"><a href="#接口块" class="headerlink" title="接口块"></a>接口块</h2><p>随着我们的程序做的越来越大，着色器程序也会变得很复杂，着色器程序的输入输出变量需要更好的组织管理，不能再零散的分布，而且变量类型也需要扩展，数组和结构体也要利用起来，这就用到了接口块(Interface Blocks)。示例：<br>顶点着色器<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">out VS_OUT</div><div class="line">&#123;</div><div class="line">	vec3 Normal;</div><div class="line">	vec3 Position;</div><div class="line">&#125; vs_out;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	vs_out.Normal = mat3(transpose(inverse(model))) * normal;</div><div class="line">	vs_out.Position = vec3(model * vec4(position, <span class="number">1.0f</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>片段着色器<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">in VS_OUT</div><div class="line">&#123;</div><div class="line">	vec3 Normal;</div><div class="line">	vec3 Position;</div><div class="line">&#125; vs_in;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">float</span> ratio = <span class="number">1.00</span> / <span class="number">1.52</span>;</div><div class="line">	vec3 I = normalize(vs_in.Position - cameraPos);</div><div class="line">	vec3 R = refract(I, normalize(vs_in.Normal), ratio);</div><div class="line">	color = texture(skybox, R);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>跨着色器互传接口块时，接口块的名字一定要相同。（以后会有用处吧）</p>
+<p></p><p></p><br>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a><p></p>
+
   </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#接口块"><span class="toc-text">接口块</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2016/08/10/高级GLSL/" class="prev">&larr; 上一篇 高级GLSL(1)</a>
+  
 
   
 
+  
+    <a href="/2016/06/12/高级GLSL3/" class="next">下一篇 高级GLSL(3) &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
       
+      
+      <div id="uyan_frame"></div>
       
       
     </div>
@@ -507,6 +204,10 @@
 </div>
 
 
+
+  <!-- UY BEGIN -->
+<script type="text/javascript" src="http://v2.uyan.cc/code/uyan.js?uid=2146884"></script>
+<!-- UY END -->
 
 
   <script type="text/x-mathjax-config">
@@ -633,6 +334,8 @@ var unsplashConfig = {"gravity":"north"};
 var turnoffBackgroundImage = false;
 
 
+
+  turnoffBackgroundImage = true;
 
 
 var backgroundColor = "D7CCC8";
