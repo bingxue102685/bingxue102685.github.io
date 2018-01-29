@@ -126,7 +126,7 @@
     <p class="page-title-sub">
       <span id = "post-title-date">撰写于 2016-10-08</span>
       
-        <span id = "post-title-updated">修改于 2016-10-11</span>
+        <span id = "post-title-updated">修改于 2018-01-29</span>
       
       
       <span id = "post-title-categories">分类
@@ -247,7 +247,7 @@ $$ --><br>在视觉坐标系中，we等于1，因此这个方程变为：<br>$$<
 
 <p>因为对正射投影来说，w分量用不上，所以投影矩阵的第4行为(0, 0, 0, 1)。因此正射投影的完整投影矩阵为：<br>$$<br>\begin{pmatrix}<br>\frac {2}{r-l} &amp; 0 &amp; 0 &amp; -\frac{r+l}{r-l} \\<br>0 &amp; \frac {2}{t-b} &amp; 0 &amp; -\frac{t+b}{t-b} \\<br>0 &amp; 0 &amp; \frac {-2}{f-n} &amp; -\frac {f+n}{f-n} \\<br>0 &amp; 0 &amp; 0 &amp; 1 \\<br>\end{pmatrix}<br>$$</p>
 <p>上面这个投影矩阵是针对普通的平截头体，如果这个视窗体（viewing volume）是对称的，即：$r=-l,t=-b$，这个投影矩阵会更简单：<br>$$<br>\begin{cases}<br>r + l = 0 \\<br>r - l = 2r \quad (width)<br>\end{cases}<br>\quad,\quad<br>\begin{cases}<br>t + b  = 0  \\<br>t - b = 2t \quad (height)<br>\end{cases}<br>$$<br>$$<br>\begin{pmatrix}<br>\frac {1}{r} &amp; 0 &amp; 0 &amp; 0 \\<br>0 &amp; \frac {1}{t} &amp; 0 &amp; 0 \\<br>0 &amp; 0 &amp; \frac {-2}{f-n} &amp; -\frac {f+n}{f-n} \\<br>0 &amp; 0 &amp; 0 &amp; 1 \\<br>\end{pmatrix}<br>$$</p>
-<p>(最后，强烈推荐去看一下原文下面的评论，也是很经典，高手云集！)</p>
+<p>(最后，强烈推荐去看一下原文下面的评论，也是很经典，高手云集!)</p>
 
   </article>
   <div class="random-toc-area">
