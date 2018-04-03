@@ -16,9 +16,10 @@
   
   
   
-    <meta name="description" content="cocos2d-x 3.x中的内存管理很简单：引用计数。凡是继承自Node的类，初始化时，就会自动调用父类（Ref）中autorelease函数，在该函数中，初始化的对象会被加入到内存管理池（PoolManager）中（也就是加到一个vector中）。12345Ref* Ref::autorelease()&#123;    PoolManager::getInstance()-&gt;ge...">
+    <meta name="description" content="前言一直有颗躁动的心，不想在做游戏了，技术能力到了瓶颈，很难突破了，需要高人指点了。本来想做大数据方向，奈何起步较晚，想做大数据的时候，牛人已经很多了。刚好区块链炒的很火，貌似国家也支持这个东西，干脆就赌一把，把所有身家压都在区块链上边。决定用1个月时间把原理部分搞懂个7、8成，然后就去尝试找工作。话不多说，转入正题。把最近几天学的东西，整理成blog。
+什么是区块链从技术角度上来讲，区块链...">
   
-  <title>cocos2d-x 3.x内存管理 [ 奔跑的蜗牛 ]</title>
+  <title>区块链初见 [ 奔跑的蜗牛 ]</title>
   
   
     <link rel="shortcut icon" href="/favicon.ico">
@@ -38,21 +39,21 @@
 <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
   
     <div class="item prev">
-      <a href="/2018/02/26/区块链初见/">
+      <a href="/2018/04/03/集合的另一种实现方式/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
-        区块链初见
+        集合的另一种实现方式
       </div>
     </div>
   
   
     <div class="item next">
-      <a href="/2018/01/22/coco2d-x-3-x-Render类/">
+      <a href="/2018/01/30/cocos2d-x-3-x内存管理/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
-        coco2d-x 3.x Render类
+        cocos2d-x 3.x内存管理
       </div>
     </div>
   
@@ -120,11 +121,11 @@
       
       
   <article id="post">
-    <h1>cocos2d-x 3.x内存管理</h1>
+    <h1>区块链初见</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2018-01-30</span>
+      <span id = "post-title-date">撰写于 2018-02-26</span>
       
-        <span id = "post-title-updated">修改于 2018-01-30</span>
+        <span id = "post-title-updated">修改于 2018-02-26</span>
       
       
       <span id = "post-title-categories">分类
@@ -132,7 +133,7 @@
       
         
         
-        <a href="/categories/游戏开发/">游戏开发</a>
+        <a href="/categories/区块链原理/">区块链原理</a>
       
       </span>
       
@@ -143,15 +144,16 @@
       
         
         
-        <a href="/tags/cocos2d-x/">cocos2d-x</a>
+        <a href="/tags/区块链/">区块链</a>
       
       </span>
       
     </p>
     
-    <p><strong>cocos2d-x 3.x</strong>中的内存管理很简单：引用计数。凡是继承自Node的类，初始化时，就会自动调用父类（Ref）中<strong>autorelease</strong>函数，在该函数中，初始化的对象会被加入到<strong>内存管理池（PoolManager）</strong>中（也就是加到一个vector中）。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">Ref* Ref::autorelease()</div><div class="line">&#123;</div><div class="line">    PoolManager::getInstance()-&gt;getCurrentPool()-&gt;addObject(<span class="keyword">this</span>);</div><div class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>节点对象，每<strong>retain()</strong>一次，该对象的引用计数变量（_referenceCount）就会加1，每<strong>release()</strong>一次，引用计数变量就减1。在绘制每一帧结束时调用<strong>PoolManager::getInstance()-&gt;getCurrentPool()-&gt;clear()</strong>，clear函数会自动清理加入到内存管理池中的对象，只要是对象的引用计数为0就delete掉。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*AutoreleasePool::clear() 函数*/</span></div><div class="line"><span class="keyword">void</span> AutoreleasePool::clear()</div><div class="line">&#123;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(COCOS2D_DEBUG) &amp;&amp; (COCOS2D_DEBUG &gt; 0)</span></div><div class="line">    _isClearing = <span class="literal">true</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;Ref*&gt; releasings;</div><div class="line">    releasings.swap(_managedObjectArray);</div><div class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;obj : releasings)</div><div class="line">    &#123;</div><div class="line">        obj-&gt;release();</div><div class="line">    &#125;</div><div class="line"><span class="meta">#<span class="meta-keyword">if</span> defined(COCOS2D_DEBUG) &amp;&amp; (COCOS2D_DEBUG &gt; 0)</span></div><div class="line">    _isClearing = <span class="literal">false</span>;</div><div class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*Ref::release() 函数*/</span></div><div class="line"><span class="keyword">void</span> Ref::release()</div><div class="line">&#123;</div><div class="line">    CCASSERT(_referenceCount &gt; <span class="number">0</span>, <span class="string">"reference count should greater than 0"</span>);</div><div class="line">    --_referenceCount;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (_referenceCount == <span class="number">0</span>)</div><div class="line">    &#123;</div><div class="line">        <span class="keyword">delete</span> <span class="keyword">this</span>;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>上面有一个很有意思的STL函数：swap。在使用vector时，如果想清理其中的空间，或者里面有很多无无效数据，怎么办？使用clear()？然而，clear后，内存还是没有释放掉，容器的容量还是一样的，这就要使用神奇的swap函数。先创建一个临时拷贝与原先的vector一致，值得注意的是，此时的拷贝 其容量是尽可能小的符合所需数据的。紧接着将该拷贝与原先的vector进行 交换。好了此时，执行交换后，临时变量会被销毁，内存得到释放。此时的v即为原先的临时拷贝，而交换后的临时拷贝则为容量非常大的vector（不过已经被销毁），大致的过程如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&#123;</div><div class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; tmp = ivec;   </div><div class="line">    ivec.swap(tmp);</div><div class="line">&#125;</div><div class="line"><span class="comment">/* 加一对大括号是可以让tmp退出&#123;&#125;的时候自动析构 */</span></div></pre></td></tr></table></figure></p>
+    <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>一直有颗躁动的心，不想在做游戏了，技术能力到了瓶颈，很难突破了，需要高人指点了。本来想做大数据方向，奈何起步较晚，想做大数据的时候，牛人已经很多了。刚好区块链炒的很火，貌似国家也支持这个东西，干脆就赌一把，把所有身家压都在区块链上边。决定用1个月时间把原理部分搞懂个7、8成，然后就去尝试找工作。话不多说，转入正题。把最近几天学的东西，整理成blog。</p>
+<h2 id="什么是区块链"><a href="#什么是区块链" class="headerlink" title="什么是区块链"></a>什么是区块链</h2><p>从技术角度上来讲，区块链本质上是一个去中心化的分布式账本数据库。要想理解这句话，就要先搞懂一个关键字：<strong>去中心化</strong>。</p>
+<h3 id="去中心化"><a href="#去中心化" class="headerlink" title="去中心化"></a>去中心化</h3><p>要想搞懂<strong>去中心化</strong>，需要先明白什么是<strong>中心化</strong>。中心化，顾名思义就是要有一个中心机构去管理用户（或者客户端）。现代社会的经济体系中有很多都是中心化的经济体系，比如银行，支付宝，微信，包括各种应用中的B/S，C/S，都是这种中心化的体系。比如A客户端过银联转账给B客户，A需要向银行发起请求，银行接到请求后，会把A客户账本中的资金减少，同时把B客户账本中的资金增加。然后通知B客户，该转账业务完成。也就是客户所有的操作都有通过银行这个中心机构来处理。为什么人们会选择银行呢？信任！因为人们对银行，支付宝这些机构都很信任，觉得这些机构都很安全，但同时也要为这份信任买单。那这个体系有没有什么问题呢？当然有，而且是非常大的问题。还是拿银行来举例，由于所有的操作都要经过银行来处理，那银行一旦发生错误或者倒闭，客户的损失将会非常巨大。这时候，就需要去中心化的体系出现了。去中心化体系中没有中心机构这个概念，所有的操作都是P2P的。比如A借给B十万，那A和B同时声称完成了这笔交易，那这笔交易就算是完成了。但这也引出了另外两个问题：如果B赖账了，说没有借过A钱：或者B说借了A十块钱，不是十万；或者A说我借给了B五十万，其实只借了十万。也就是，没有了第三方的信任机构，如何保证交易信息的可信度和准确性。这就用到了区块链技术。</p>
+<p><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="quzhongxinhua.jpg" width="60%"> </p></div><br>为了方便理解，先举一个简单的区中心借贷模型：如果A借给B十万元，B也收到了A转给他的十万元，A就在人群中广播：我是A，我借给了B十万元，B收到后，也在人群中广播：我是B，A借给我十万元。这时候人群中所有人都听到了这个消息，所有人都拿着一个记账的小册子，记下：A借给B十万元。如果A或者B想耍赖，那所有人都会拿出小册子来对比这个交易记录，来共同监督他们。有人可能会说，凭啥我要帮你记录交易信息？我的记账小册子不要钱吗？为了激励大家记账，大家事先约定，谁先听到这句话并记账，就给谁一百元。这时候大家都会聚精会神的听这句话，抢占第一个记账的权利。这时，是不是想到了<strong>“比特币挖矿”</strong>。</p>
 
   </article>
   <div class="random-toc-area">
@@ -159,20 +161,20 @@
   <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
   <div class="random-toc">
     <h2>目录</h2>
-    
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是区块链"><span class="toc-text">什么是区块链</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#去中心化"><span class="toc-text">去中心化</span></a></li></ol></li></ol>
   </div>
 </div>
 
   
 <nav id="pagination">
   
-    <a href="/2018/02/26/区块链初见/" class="prev">&larr; 上一篇 区块链初见</a>
+    <a href="/2018/04/03/集合的另一种实现方式/" class="prev">&larr; 上一篇 集合的另一种实现方式</a>
   
 
   
 
   
-    <a href="/2018/01/22/coco2d-x-3-x-Render类/" class="next">下一篇 coco2d-x 3.x Render类 &rarr;</a>
+    <a href="/2018/01/30/cocos2d-x-3-x内存管理/" class="next">下一篇 cocos2d-x 3.x内存管理 &rarr;</a>
   
 </nav>
 

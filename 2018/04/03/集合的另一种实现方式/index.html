@@ -1,0 +1,341 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="##集合是什么集合是一种数据结构，类似于数组，但是其中的元素有以下三个特征：1.确定性 2.互异性3.无序性
+##如何实现集合此处，不讨论集合的用法，重点讨论，如何实现集合这种数据结构。可能第一个想到的就是使用map这种数据结构实现，当然map是很灵活，但是会增大内存空间的使用。我们可以使用一种更好的形式来表示它。我们使用字节数组来表示集合，数组的每一个元素的每一位都表示集合里面的一个值。这...">
+  
+  <title>集合的另一种实现方式 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2018/02/26/区块链初见/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        区块链初见
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg"/>
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>集合的另一种实现方式</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2018-04-03</span>
+      
+        <span id = "post-title-updated">修改于 2018-04-03</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/go语言/">go语言</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/go杂记/">go杂记</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>##集合是什么<br>集合是一种数据结构，类似于数组，但是其中的元素有以下三个特征：<br><strong>1.确定性 </strong><br><strong>2.互异性</strong><br><strong>3.无序性</strong></p>
+<p>##如何实现集合<br>此处，不讨论集合的用法，重点讨论，如何实现集合这种数据结构。可能第一个想到的就是使用map这种数据结构实现，当然map是很灵活，但是会增大内存空间的使用。我们可以使用一种更好的形式来表示它。我们使用字节数组来表示集合，数组的每一个元素的每一位都表示集合里面的一个值。这样就可以保证集合的三个特性。具体如何实现呢？</p>
+<p>##go语言的集合实现</p>
+<p>###定义包含字节数组的结构体及相关方法<br><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">type</span> IntSet <span class="keyword">struct</span> &#123;</div><div class="line">	words []<span class="keyword">int64</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*集合是否包含某个元素*/</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *IntSet)</span> <span class="title">Has</span><span class="params">(x <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123;</div><div class="line">	word, bit := x/<span class="number">64</span>, <span class="keyword">uint</span>(x%<span class="number">64</span>)</div><div class="line">	<span class="keyword">return</span> word &lt; <span class="built_in">len</span>(s.words) &amp;&amp; s.words[word]&amp;(<span class="number">1</span>&lt;&lt;bit) != <span class="number">0</span></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*向集合中添加元素*/</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *IntSet)</span> <span class="title">Add</span><span class="params">(x <span class="keyword">int</span>)</span></span> &#123;</div><div class="line">	word, bit := x/<span class="number">64</span>, <span class="keyword">uint</span>(x%<span class="number">64</span>)</div><div class="line">	<span class="keyword">for</span> word &gt;= <span class="built_in">len</span>(s.words) &#123;</div><div class="line">		s.words = <span class="built_in">append</span>(s.words, <span class="number">0</span>)</div><div class="line">	&#125;</div><div class="line">	s.words[word] |= <span class="number">1</span> &lt;&lt; bit</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*集合的并集操作*/</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *IntSet)</span> <span class="title">UnionWith</span><span class="params">(t *IntSet)</span></span> &#123;</div><div class="line">	<span class="keyword">for</span> i, tword := <span class="keyword">range</span> t.words &#123;</div><div class="line">		<span class="keyword">if</span> i &lt; <span class="built_in">len</span>(s.words) &#123;</div><div class="line">			s.words[i] |= tword</div><div class="line">		&#125; <span class="keyword">else</span> &#123;</div><div class="line">			<span class="built_in">append</span>(s.words, tword)</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*集合的交集操作*/</span></div><div class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *IntSet)</span> <span class="title">Intersection</span><span class="params">(t *IntSet)</span> *<span class="title">IntSet</span></span> &#123;</div><div class="line">	dest := <span class="built_in">new</span>(IntSet)</div><div class="line">	<span class="keyword">for</span> i, tword := <span class="keyword">range</span> t.words &#123;</div><div class="line">		<span class="keyword">if</span> i &lt; <span class="built_in">len</span>(s.words) &#123;</div><div class="line">			<span class="keyword">for</span> j := <span class="number">0</span>; j &lt; <span class="number">64</span>; j++ &#123;</div><div class="line">				bitvalue := <span class="keyword">int64</span>(<span class="number">1</span> &lt;&lt; <span class="keyword">uint</span>(j))</div><div class="line">				<span class="keyword">if</span> (tword&amp;bitvalue != <span class="number">0</span>) &amp;&amp; (s.words[i]&amp;bitvalue != <span class="number">0</span>) &#123;</div><div class="line">					<span class="keyword">for</span> k := <span class="built_in">len</span>(dest.words) - <span class="number">1</span>; k &lt;= i; k++ &#123;</div><div class="line">						dest.words = <span class="built_in">append</span>(dest.words, <span class="number">0</span>)</div><div class="line">					&#125;</div><div class="line">					dest.words[i] |= bitvalue</div><div class="line">				&#125;</div><div class="line">			&#125;</div><div class="line">		&#125;	</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> dest</div><div class="line">&#125;</div><div class="line"><span class="comment">/*集合的字符串转换</span></div><div class="line">func (s *IntSet) String() string &#123;</div><div class="line">	var buf bytes.Buffer</div><div class="line">	buf.WriteByte('&#123;')</div><div class="line">	for i, word := range s.words &#123;</div><div class="line">		if word == 0 &#123;</div><div class="line">			continue</div><div class="line">		&#125;</div><div class="line"></div><div class="line">		for j := 0; j &lt; 64; j++ &#123;</div><div class="line">			if word&amp;(1&lt;&lt;uint(j)) != 0 &#123;</div><div class="line">				if buf.Len() &gt; len("&#123;") &#123;</div><div class="line">					buf.WriteByte(' ')</div><div class="line">				&#125;</div><div class="line">				fmt.Fprintf(&amp;buf, "%d", 64*i + j)</div><div class="line">			&#125;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	buf.WriteByte('&#125;')</div><div class="line">	return buf.String()</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="使用该集合定义"><a href="#使用该集合定义" class="headerlink" title="使用该集合定义"></a>使用该集合定义</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</div><div class="line">	<span class="keyword">var</span> x, y IntSet</div><div class="line">	x.Add(<span class="number">1</span>)</div><div class="line">	x.Add(<span class="number">144</span>)</div><div class="line">	x.Add(<span class="number">9</span>)</div><div class="line">	fmt.Println(x.String())</div><div class="line"></div><div class="line">	y.Add(<span class="number">9</span>)</div><div class="line">	y.Add(<span class="number">32</span>)</div><div class="line">	fmt.Println(x.String())</div><div class="line"></div><div class="line">	fmt.Println((x.Intersection(y)).String()) <span class="comment">/*&#123;9&#125;*/</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用该集合定义"><span class="toc-text">使用该集合定义</span></a></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2018/02/26/区块链初见/" class="next">下一篇 区块链初见 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+
