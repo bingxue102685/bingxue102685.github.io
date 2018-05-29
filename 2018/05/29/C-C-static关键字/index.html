@@ -1,0 +1,403 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="static可用在面向对象和面向过程的程序设计中，作用也不大相同，首先说明一下在面向过程中作用和使用方式。
+C/C++内存分布先看一下，一个可运行的C/C++程序中，内存是如何分布的。
+
+全局数据区: 存放全局变量和静态全局变量，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和静态变量放在一块区域。整个程序结束，才会释放。
+
+堆区: 存放程序员分配并手动释放的区域，像malloc(...">
+  
+  <title>C/C++ static关键字 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2018/05/25/Lua垃圾回收/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Lua垃圾回收
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg"/>
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>C/C++ static关键字</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2018-05-29</span>
+      
+        <span id = "post-title-updated">修改于 2018-05-29</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/C/">C++</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/C/">C++</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>static可用在面向对象和面向过程的程序设计中，作用也不大相同，首先说明一下在面向过程中作用和使用方式。</p>
+<h3 id="C-C-内存分布"><a href="#C-C-内存分布" class="headerlink" title="C/C++内存分布"></a>C/C++内存分布</h3><p>先看一下，一个可运行的C/C++程序中，内存是如何分布的。</p>
+<ul>
+<li><p><strong>全局数据区:</strong> 存放全局变量和静态全局变量，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和静态变量放在一块区域。整个程序结束，才会释放。</p>
+</li>
+<li><p><strong>堆区:</strong> 存放程序员分配并手动释放的区域，像malloc(c), new(c++)</p>
+</li>
+<li><p><strong>栈区:</strong> 由编译器自动分配释放，像局部变量，函数参数等等。会随着作用域结束而释放空间</p>
+</li>
+<li><p><strong>代码区</strong></p>
+</li>
+</ul>
+<h3 id="面向过程中的static"><a href="#面向过程中的static" class="headerlink" title="面向过程中的static"></a>面向过程中的static</h3><p>在面向过程的中，static是用来修饰变量和函数的，大致的作用就是<strong>隐藏函数和变量</strong>。</p>
+<h4 id="修饰全局变量"><a href="#修饰全局变量" class="headerlink" title="修饰全局变量"></a>修饰全局变量</h4><p>static修饰的全局变量就是<strong>静态全局变量</strong>，那跟普通的全局变量有什么区别呢？先说一下在同一个文件里面的区别</p>
+<ul>
+<li><strong>同文件的全局变量和静态全局变量</strong><br>看一下如下源码:<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* int i = 1 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> i = <span class="number">1</span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">()</span> </span></div><div class="line">&#123; </div><div class="line">  i += <span class="number">1</span>; </div><div class="line">  <span class="keyword">return</span> i; </div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>上面的代码，无论是全局变量，还是静态全局变量，调用foo()后，结果都是相同的，那就意味着，在同文件中，全局变量和静态全局变量的作用都是一样的，都可以在文件中共享。</p>
+<ul>
+<li><strong>不同文件的全局变量和静态变量</strong></li>
+</ul>
+<p>不同文件中的全局变量和静态变量差别很大，先看一个示例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* 源文件: a.c */</span></div><div class="line"><span class="comment">/* int i = 10 */</span></div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> i = <span class="number">20</span>;</div><div class="line"></div><div class="line"><span class="comment">/* 源文件: b.c */</span></div><div class="line"><span class="keyword">extern</span> <span class="keyword">int</span> i;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="comment">/*int i = 20*/</span></div><div class="line">	<span class="built_in">printf</span>(<span class="string">"i: %d"</span>, i);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>以上代码编译可以通过，但是运行就会报错：<strong>无法解析的外部符号 “int i”</strong> 。也就是说在 <strong>b.c</strong> 中获取不到在 <strong>a.c</strong> 中定义的静态全局变量，而且如果在 <strong>b.c</strong> 中在定义一个 <strong>int i = 20;</strong> 是不会报错的。所以可以总结一下两点：</p>
+<ul>
+<li><ul>
+<li>1). 静态全局变量只能在同文件中使用，不用被其他文件使用。</li>
+<li>2). 其他文件可以定义相同名字的变量，不会发生冲突。</li>
+</ul>
+</li>
+</ul>
+<p>如果替换成全局变量，就可以正确编译运行。全局变量可以被其他任意声包含它文件使用，没有限制。</p>
+<ul>
+<li><strong>静态全局函数和普通全局函数</strong><br>static修饰的全局函数和静态全局变量的作用效果是一样的。也是只能在本文件中使用，不用被其他文件使用。不再赘述，直接举个例子：<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* 源文件: a.c */</span></div><div class="line"><span class="comment">/* void fn() */</span></div><div class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">fn</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"this is a static func in a"</span>)</div><div class="line">&#125;</div><div class="line"><span class="comment">/* 源文件: b.c */</span></div><div class="line"><span class="function"><span class="keyword">extern</span> <span class="keyword">void</span> <span class="title">fn</span><span class="params">()</span></span>;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	fn();</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>编译依旧可以通过，运行报错: <strong>无法解析的外部符号 “int __cdecl fn(void)”</strong> 。</p>
+<p>注：<strong>extern</strong> 在此处的作用是：此处只是声明，函数的实现是其他文件中定义的！</p>
+<ul>
+<li><strong>静态局部变量和普通局部变量</strong><br>是的，static同样可以修饰局部变量，基本上就是函数内定义的的静态局部变量，跟普通的局部变量有什么区别呢？通过上面介绍的内存分布可以知道，局部变量的内存是在栈的分配的，随着函数或者代码块的执行结束，就自动释放掉了。但是静态变量是在全局数据区分配的，并不会随着函数执行结束而释放掉，存在整个程序运行期间。那究竟是什么运行的呢？<ul>
+<li>1). 声明在函数的静态局部变量，只会被初始化一次，并且可以保存数值，直到下次赋新值</li>
+<li>2). 从某种意义上来说，这个静态局部变量只属于这个函数</li>
+<li>3). 在函数内定义的静态局部变量只能在该函数内使用，其他的函数无法使用，其他函数也可以定义同名的静态局部变量</li>
+</ul>
+</li>
+</ul>
+<p>来看一段示例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">fn</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">static</span> <span class="keyword">int</span> a = <span class="number">10</span>;</div><div class="line">	a--;</div><div class="line">	<span class="built_in">printf</span>(<span class="string">"a: %d"</span>, a);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; ++i)</div><div class="line">	&#123;</div><div class="line">		fn();</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行以上代码，可产生这种结果：a: 9, a: 8, a: 7…，可以看出 a 只被初始化了一次，以后的每次的调用 fn()，就会自动跳过 static int a = 10;，使用上次保存的值，进行下面的操作。而局部变量每次都会初始化。全局变量的话，就不再仅受函数的控制，给程序的维护带来不便！</p>
+<h3 id="面向对象中的static"><a href="#面向对象中的static" class="headerlink" title="面向对象中的static"></a>面向对象中的static</h3><p>在OO中，static主要是用来修饰成员变量和成员函数的。</p>
+<h4 id="静态数据成员"><a href="#静态数据成员" class="headerlink" title="静态数据成员"></a>静态数据成员</h4><p>类的普通数据成员在每个对象里面都有一份，单独存放，互不相干。但是static修饰的静态成员变量是仅有一份的，只为类所有，所有对象共享。所以静态成员变量叫做<strong>类变量</strong>，普通成员变量叫<strong>实例变量</strong>，看一下的代码：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bs.h */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Rectangle</div><div class="line">&#123;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">	<span class="keyword">int</span> m_w, m_h;</div><div class="line">	<span class="keyword">static</span> <span class="keyword">int</span> s_snum;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	Rectangle(<span class="keyword">int</span> w, <span class="keyword">int</span> h);</div><div class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">GetSum</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="comment">/*bs.cpp*/</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">"bs.h"</span></span></div><div class="line"></div><div class="line"><span class="keyword">int</span> Rectangle::s_snum = <span class="number">0</span>;</div><div class="line"></div><div class="line">Rectangle::Rectangle(<span class="keyword">int</span> w, <span class="keyword">int</span> h)</div><div class="line">&#123;</div><div class="line">	m_h = h;</div><div class="line">	m_w = w;</div><div class="line">	s_snum += (m_h * m_w);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> Rectangle::GetSum()</div><div class="line">&#123;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"sum = "</span> &lt;&lt; s_snum &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">/*main.cpp*/</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">"bs.h"</span></span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"sizeof(Rectangle) = "</span> &lt;&lt; <span class="keyword">sizeof</span>(Rectangle) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">	Rectangle rect1 = Rectangle(<span class="number">3</span>, <span class="number">4</span>);</div><div class="line">	rect1.GetSum();</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"sizeof(rect1) = "</span> &lt;&lt; <span class="keyword">sizeof</span>(rect1) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">	<span class="keyword">auto</span> rect2 = Rectangle(<span class="number">5</span>, <span class="number">6</span>);</div><div class="line">	rect2.GetSum();</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"sizeof(rect2) = "</span> &lt;&lt; <span class="keyword">sizeof</span>(rect2) &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">	Rectangle::GetSum();</div><div class="line">	getchar();</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>运行结果如下：</p>
+<p><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="r2.jpg" width="50%"> </p><br></div><br>可以看出，静态成员变量并不占用 Rectangle 的内存空间，因为静态成员变量是在__全局数据区(静态区)分配的。而且静态成员变量只分配一次存储空间，只被初始化一次，所以 s_snum 可以保持数值不变，直到下次赋值。<br>也就是说，你每new一个Rectangle，并不会为static int s_sum的构建一份内存拷贝，它是不管你new了多少Rectangle的实例，因为它只与类Rectangle挂钩，而跟你每一个Rectangle的对象没关系。</p>
+<p>注：静态数据成员定义时要分配空间，所以不能在类声明中定义。int Rectangle::s_snum = 0;就是在定义静态数据成员。</p>
+<h4 id="静态成员函数"><a href="#静态成员函数" class="headerlink" title="静态成员函数"></a>静态成员函数</h4><p>类的静态成员函数跟静态成员变量是一样的，上面的例子中已经有体现。可以使用类名访问，也可以是用实例访问。静态成员函数的特点：</p>
+<ul>
+<li>1.静态成员之间可以相互访问，包括静态成员函数访问静态数据成员和访问静态成员函数;</li>
+<li>2.非静态成员函数可以任意地访问静态成员函数和静态数据成员;</li>
+<li>3.静态成员函数不能访问非静态成员函数和非静态数据成员;</li>
+<li>4.调用静态成员函数，可以用成员访问操作符(.)和(-&gt;)为一个类的对象或指向类对象的指针调用静态成员函数,也可以用类名::函数名调用(因为他本来就是属于类的，用类名调用很正常)</li>
+</ul>
+<p><strong>很重要的一点：</strong><br>普通的成员函数一般都隐含了一个this指针，this指针指向类的对象本身，因为普通成员函数总是具体的属于某个类的具体对象的。通常情况下，this是缺省的。如函数fn()实际上是this-&gt;fn()。但是与普通函数相比，静态成员函数由于不是与任何的对象相联系，因此它不具有this指针。从这个意义上讲，它无法访问属于类对象的非静态数据成员，也无法访问非静态成员函数，它只能调用其余的静态成员函数。</p>
+<p>上面的一点也引出了一个面试题：<strong>const 和 static能同时修饰一个成员函数吗？</strong><br>答案是：不能，因为const修饰的函数，是不能修改成员变量的值？那C++是怎么做的呢？会把传入的this指针加const修饰，但是static又要求不能有this指针，所以是冲突的！</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#C-C-内存分布"><span class="toc-text">C/C++内存分布</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#面向过程中的static"><span class="toc-text">面向过程中的static</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#修饰全局变量"><span class="toc-text">修饰全局变量</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#面向对象中的static"><span class="toc-text">面向对象中的static</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#静态数据成员"><span class="toc-text">静态数据成员</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#静态成员函数"><span class="toc-text">静态成员函数</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2018/05/25/Lua垃圾回收/" class="next">下一篇 Lua垃圾回收 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+
