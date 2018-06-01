@@ -1,0 +1,375 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="前言如果你说你是搞C++的，那么const肯定是经常的看到的，如果你一脸懵逼，那就GUN回去，再看一遍C++Primer，或者看我这篇文章。话不多说，转入正题
+什么是constconst 就是constant的缩写，意思是： 不变的，永恒的，持续的。 也就是被const修饰的变量不会发生改变，被const修饰的成员函数中，不能修改成员函数的值。一般别用来修饰内置类型变量、对象、成员反函数、返...">
+  
+  <title>const关键字 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2018/05/30/如何实现单例/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        如何实现单例
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2018/05/29/C-C-static关键字/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        C/C++ static关键字
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onClick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg"/>
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>const关键字</h1>
+    <p class="page-title-sub">
+      <span id = "post-title-date">撰写于 2018-05-30</span>
+      
+        <span id = "post-title-updated">修改于 2018-05-30</span>
+      
+      
+      <span id = "post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/C-C/">C/C++</a>
+      
+      </span>
+      
+      
+      <span id = "post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/C-C/">C/C++</a>
+      
+      </span>
+      
+    </p>
+    
+    <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>如果你说你是搞C++的，那么<strong>const</strong>肯定是经常的看到的，如果你一脸懵逼，那就GUN回去，再看一遍<strong>C++Primer</strong>，或者看我这篇文章。话不多说，转入正题</p>
+<h3 id="什么是const"><a href="#什么是const" class="headerlink" title="什么是const"></a>什么是const</h3><p><strong>const</strong> 就是constant的缩写，意思是： 不变的，永恒的，持续的。 也就是被const修饰的变量不会发生改变，被const修饰的成员函数中，不能修改成员函数的值。一般别用来修饰<strong>内置类型变量</strong>、<strong>对象</strong>、<strong>成员反函数</strong>、<strong>返回值</strong>、<strong>函数参数</strong>。</p>
+<h4 id="修饰普通内置类型变量"><a href="#修饰普通内置类型变量" class="headerlink" title="修饰普通内置类型变量"></a>修饰普通内置类型变量</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">const</span> <span class="keyword">int</span> a = <span class="number">7</span>;</div><div class="line"><span class="keyword">int</span> b = a;</div><div class="line"><span class="comment">/*以下会编译报错：表达式必须是可修改的左值*/</span></div><div class="line">a = <span class="number">8</span>;</div></pre></td></tr></table></figure>
+<p>a被定义为常量，可以把a赋值给非常量的b，但是a不是再次赋值，编译报错：表达式必须是可修改的左值。<br>但是如果你非要想改变怎么办？有人说可以用指针啊！对！可以用指针改变a的值。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">const</span> <span class="keyword">int</span> a = <span class="number">7</span>;</div><div class="line">	<span class="keyword">int</span> *b = (<span class="keyword">int</span> *)&amp;a;</div><div class="line">	*b = <span class="number">8</span>;</div><div class="line">	<span class="built_in">cout</span> &lt;&lt; a &lt;&lt; <span class="built_in">endl</span>;</div><div class="line">	system(<span class="string">"pause"</span>);</div><div class="line">	<span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>运行以上代码，发现输出依旧是7，并没有发生变化啊，其实不然，其实a在内存中值已经发生了变化，但是编译器搞了点事情，如果你断点调试的话，就会发现，其实a的值已经改变了，如下图：</p>
+<div class="self_define_image"> <p id="img_text"> <img id="img_image" src="break.jpg" width="70%"> </p><br></div>
+
+<p>但是a却不知道自己发生了变化，这是为什么呢？这就牵涉到程序运行过程中，内存的处理。如果想让程序正常运行，可以加一个volatile修饰:<strong>volatile const int a = 7;</strong>。 这里就不细说了，在<a href="">volatile</a>这篇中，会详细介绍。总之如果一个变量声明为const，就不要尝试修改它的值，否则会发生意想不到的结果。</p>
+<h4 id="修饰指针变量"><a href="#修饰指针变量" class="headerlink" title="修饰指针变量"></a>修饰指针变量</h4><ol>
+<li><strong>const修饰指针指向的内容（ const char * p，char const * p）,则内容不可以变。</strong></li>
+<li><strong>const修饰指针(char * const p)，则指针不能发生变化。</strong></li>
+<li><strong>const修饰指针和指针指向的内容(const char * const p)，则内容和指正都不能发生变化。</strong></li>
+</ol>
+<p>怎么记住这个东西呢：<strong>左定值，右定向，const修饰不变量</strong><br>也就是，const在 * 左边修饰的是值，在 * 右边修饰的的是指向(指针)，是不是很简单（当然，是别人总结的）</p>
+<h4 id="修饰参数和返回值"><a href="#修饰参数和返回值" class="headerlink" title="修饰参数和返回值"></a>修饰参数和返回值</h4><h5 id="修饰值类型传递"><a href="#修饰值类型传递" class="headerlink" title="修饰值类型传递"></a>修饰值类型传递</h5><p>值类型传递，就不用说了，会复制一份到形参，不用const修饰，没啥意义！不再赘述。</p>
+<h5 id="修饰指针类型传递"><a href="#修饰指针类型传递" class="headerlink" title="修饰指针类型传递"></a>修饰指针类型传递</h5><p>修饰指针类型，在上面已经说过了。但是必须要明确一点：<strong>当传指针时，会把指针copy到形参，也就是说实参和形参的是两个不相干的指针，只不过指向的内容是相同的，如果只对指针进行操作，而不是对指针指向的内容操作，毫无意义，除非是在面试中！</strong>。也就是const修饰指针，没任何意义！（个人理解）</p>
+<h5 id="修饰自定义类型传递"><a href="#修饰自定义类型传递" class="headerlink" title="修饰自定义类型传递"></a>修饰自定义类型传递</h5><p>自定义类型，比如结构体，类，联合。一般情况我们都会传入该类型的指针或者引用，如果是直接把值传过来，就会对临时对象进行构造，需要调用构造函数，浪费时间和空间。</p>
+<h5 id="修饰返回值"><a href="#修饰返回值" class="headerlink" title="修饰返回值"></a>修饰返回值</h5><p>少见！</p>
+<h4 id="修饰成员函数"><a href="#修饰成员函数" class="headerlink" title="修饰成员函数"></a>修饰成员函数</h4><p>修饰成员函数，目的是防止成员函数修改被调用对象的值，即在const修饰的成员函数里面不用修改成员变量的值。C++是怎么限制修改的呢？<br>普通的成员函数一般都隐含了一个 <strong>this</strong> 指针，<strong>this</strong> 指针指向调用该函数的对象本身。通常情况下，this是缺省的。如函数a.fn(p1)实际上是fn(&amp;a, p1)。const修饰的成员函数，传入的对象指针this是加了const修饰的，也就是指向的对象不能发生改变。这也是为什么static和const不能同时修饰成员函数的原因：静态成员函数由于不是与任何的对象相联系，因此它不具有this指针。从这个意义上讲，它无法访问属于类对象的非静态数据成员，也无法访问非静态成员函数，它只能调用其他的静态成员函数。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* bs.h */</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></div><div class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</div><div class="line"></div><div class="line"><span class="keyword">class</span> Rectangle</div><div class="line">&#123;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">	<span class="keyword">int</span> m_w, m_h, m_len;</div><div class="line">	<span class="keyword">static</span> <span class="keyword">int</span> s_snum;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	Rectangle(<span class="keyword">int</span> w, <span class="keyword">int</span> h);</div><div class="line">	<span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">GetSum</span><span class="params">()</span> </span>;</div><div class="line">	<span class="function"><span class="keyword">void</span> <span class="title">GetLen</span><span class="params">()</span> <span class="keyword">const</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="comment">/*bs.cpp*/</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">"bs.h"</span></span></div><div class="line"></div><div class="line"><span class="keyword">int</span> Rectangle::s_snum = <span class="number">0</span>;</div><div class="line"></div><div class="line">Rectangle::Rectangle(<span class="keyword">int</span> w, <span class="keyword">int</span> h)</div><div class="line">&#123;</div><div class="line">	m_h = h;</div><div class="line">	m_w = w;</div><div class="line">	s_snum += (m_h * m_w);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> Rectangle::GetSum()</div><div class="line">&#123;</div><div class="line">	m_w = m_w + <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">void</span> Rectangle::GetLen() <span class="keyword">const</span></div><div class="line">&#123;</div><div class="line">	s_snum = (m_h +  m_w) * <span class="number">2</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>上面的类定义了 <strong>void GetLen() const;</strong>，无法在该函数里面修改成员变量，编译就会报错：表达式必须是可修改的左值。</p>
+<p>但是！如果想在const修饰的成员函数中修改某一个成员变量，怎么办呢？在需要修改的成员变量前加 <strong>mutable</strong> 关键字即可！</p>
+<p>总结：</p>
+<ol>
+<li>const的作用就是： 保护</li>
+<li>能用const地方，就用 </li>
+</ol>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是const"><span class="toc-text">什么是const</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#修饰普通内置类型变量"><span class="toc-text">修饰普通内置类型变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修饰指针变量"><span class="toc-text">修饰指针变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修饰参数和返回值"><span class="toc-text">修饰参数和返回值</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#修饰值类型传递"><span class="toc-text">修饰值类型传递</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#修饰指针类型传递"><span class="toc-text">修饰指针类型传递</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#修饰自定义类型传递"><span class="toc-text">修饰自定义类型传递</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#修饰返回值"><span class="toc-text">修饰返回值</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#修饰成员函数"><span class="toc-text">修饰成员函数</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2018/05/30/如何实现单例/" class="prev">&larr; 上一篇 如何实现单例</a>
+  
+
+  
+
+  
+    <a href="/2018/05/29/C-C-static关键字/" class="next">下一篇 C/C++ static关键字 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

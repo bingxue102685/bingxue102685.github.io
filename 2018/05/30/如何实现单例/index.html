@@ -16,10 +16,9 @@
   
   
   
-    <meta name="description" content="在c++的面试中，经常会被问到这个问题，const在不同位置到底有什么区别呢？有const修饰，其实无外乎指针是常量，或者指针指向的值是常量
-const char *ptrconst修饰的是指针指向的值是常量，不可修改，但是需要注意的是，只是不能通过ptr来修改他指向的值，但是如果有另外一个非const的指针变量同样指向该变量，那该变量是可以修改这个值的，示例：1234567891011in...">
+    <meta name="description" content="单例是C++中经常出现的一种设计模式，保证某一类的实例只有一个。cocos2d-x中就用到了很多单例，Director算是一个很常用的单例，先简单看一下cocos2d-x中是怎么做的，以Director为例：1234567891011121314/*CCDirector.cpp*/static DisplayLinkDirector *s_SharedDirector = nullptr;D...">
   
-  <title>const char*、char const*、char *const区别 [ 奔跑的蜗牛 ]</title>
+  <title>如何实现单例 [ 奔跑的蜗牛 ]</title>
   
   
     <link rel="shortcut icon" href="/favicon.ico">
@@ -39,21 +38,21 @@ const char *ptrconst修饰的是指针指向的值是常量，不可修改，但
 <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
   
     <div class="item prev">
-      <a href="/2018/05/25/Lua封装/">
+      <a href="/2018/05/30/C-多线程/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
-        Lua封装
+        C++多线程
       </div>
     </div>
   
   
     <div class="item next">
-      <a href="/2018/05/17/cocos2d-x-3-x-Scheduler解析/">
+      <a href="/2018/05/30/const关键字/">
         <div class="item-icon"></div>
       </a>
       <div class="item-title">
-        cocos2d-x 3.x Scheduler解析
+        const关键字
       </div>
     </div>
   
@@ -121,9 +120,9 @@ const char *ptrconst修饰的是指针指向的值是常量，不可修改，但
       
       
   <article id="post">
-    <h1>const char*、char const*、char *const区别</h1>
+    <h1>如何实现单例</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2018-05-18</span>
+      <span id = "post-title-date">撰写于 2018-05-30</span>
       
         <span id = "post-title-updated">修改于 2018-05-30</span>
       
@@ -150,14 +149,10 @@ const char *ptrconst修饰的是指针指向的值是常量，不可修改，但
       
     </p>
     
-    <p>在c++的面试中，经常会被问到这个问题，const在不同位置到底有什么区别呢？有const修饰，其实无外乎指针是常量，或者指针指向的值是常量</p>
-<h4 id="const-char-ptr"><a href="#const-char-ptr" class="headerlink" title="const char *ptr"></a>const char *ptr</h4><p>const修饰的是指针指向的值是常量，不可修改，但是需要注意的是，只是不能通过ptr来修改他指向的值，但是如果有另外一个非const的指针变量同样指向该变量，那该变量是可以修改这个值的，示例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">	<span class="keyword">char</span> str[] = <span class="string">"hello world"</span>;</div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *ptr = str;</div><div class="line"></div><div class="line">	<span class="comment">/*可以通过str修改*/</span></div><div class="line">	str[<span class="number">0</span>] = <span class="string">'g'</span>;</div><div class="line">	<span class="comment">/*不能通过ptr修改，以下会报错*/</span></div><div class="line">	ptr[<span class="number">0</span>] = <span class="string">'s'</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<h4 id="char-const-ptr"><a href="#char-const-ptr" class="headerlink" title="char const *ptr"></a>char const *ptr</h4><p>同const char *ptr</p>
-<h4 id="char-const-ptr-1"><a href="#char-const-ptr-1" class="headerlink" title="char *const ptr"></a>char *const ptr</h4><p>这个就是const指针，指针不能做任何修改。但是可以修改指针指向的内容。不再做示例。</p>
-<p>总结：</p>
-<ol>
-<li>就近原则，const跟谁最接近就是修饰谁（个人理解）</li>
-</ol>
+    <p>单例是C++中经常出现的一种设计模式，保证某一类的实例只有一个。cocos2d-x中就用到了很多单例，Director算是一个很常用的单例，先简单看一下cocos2d-x中是怎么做的，以Director为例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*CCDirector.cpp*/</span></div><div class="line"><span class="keyword">static</span> DisplayLinkDirector *s_SharedDirector = <span class="literal">nullptr</span>;</div><div class="line"></div><div class="line">Director* Director::getInstance()</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (!s_SharedDirector)</div><div class="line">    &#123;</div><div class="line">        s_SharedDirector = <span class="keyword">new</span> (<span class="built_in">std</span>::nothrow) DisplayLinkDirector();</div><div class="line">        CCASSERT(s_SharedDirector, <span class="string">"FATAL: Not enough memory"</span>);</div><div class="line">        s_SharedDirector-&gt;init();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> s_SharedDirector;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>以上就是cocos2d-x中Director单例的实现，很简单，但是不完美！没有考虑到多线程的安全问题，当然这对cocos2d-x来说已经足够，不用去做多线程的处理，但是在多线程环境里面这个就是有问题了。网上给了很多错误的示例，就不一一展示了，直接说下一最简单，最安全的方法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*Singleton.h*/</span></div><div class="line"><span class="keyword">class</span> Singleton</div><div class="line">&#123;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">	Singleton();</div><div class="line"><span class="keyword">private</span>:</div><div class="line">	<span class="keyword">static</span> Singleton* singleton;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	<span class="function"><span class="keyword">static</span> Singleton* <span class="title">getInstance</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="comment">/*Singleton.cpp*/</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Singleton.h"</span></span></div><div class="line"></div><div class="line">Singleton* Singleton::singleton = <span class="keyword">new</span> Singleton;</div><div class="line"></div><div class="line">Singleton::Singleton()</div><div class="line">&#123;	</div><div class="line">&#125;</div><div class="line"></div><div class="line">Singleton* Singleton::getInstance()</div><div class="line">&#123;</div><div class="line">	<span class="keyword">return</span> singleton;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>有一个地方，<strong>Singleton* Singleton::singleton = new Singleton</strong>，为什么没有括号呢？搜了一下才知道了这点：</p>
+<p>总结一下就是：有括号的，就调用对应的构造函数。没有加括号，如果有自定义的不带参数的构造函数，则调用该构造函数；如果没有定义构造函数，就调用默认的不带参数的构造函数。</p>
 
   </article>
   <div class="random-toc-area">
@@ -165,20 +160,20 @@ const char *ptrconst修饰的是指针指向的值是常量，不可修改，但
   <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
   <div class="random-toc">
     <h2>目录</h2>
-    <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#const-char-ptr"><span class="toc-text">const char *ptr</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#char-const-ptr"><span class="toc-text">char const *ptr</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#char-const-ptr-1"><span class="toc-text">char *const ptr</span></a></li></ol>
+    
   </div>
 </div>
 
   
 <nav id="pagination">
   
-    <a href="/2018/05/25/Lua封装/" class="prev">&larr; 上一篇 Lua封装</a>
+    <a href="/2018/05/30/C-多线程/" class="prev">&larr; 上一篇 C++多线程</a>
   
 
   
 
   
-    <a href="/2018/05/17/cocos2d-x-3-x-Scheduler解析/" class="next">下一篇 cocos2d-x 3.x Scheduler解析 &rarr;</a>
+    <a href="/2018/05/30/const关键字/" class="next">下一篇 const关键字 &rarr;</a>
   
 </nav>
 
