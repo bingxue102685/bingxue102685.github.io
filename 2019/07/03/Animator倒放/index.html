@@ -1,0 +1,392 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="Animator倒放最近需要做一个技能编辑器，需要定位玩家的动作，在动作的某一帧，加入事件帧，用来触发特效。需要可以像在Animation编辑器中一样可以动态拖动时间条来定位某一帧，这就需要动作可以播放、暂停、倒放。但是玩家的动作是在Animator中播放的，处理起来有些复杂。以下是做的几种失败尝试。
+通过speed实现倒放（错误1）第一时间，想到的就是通过speed实现倒放，speed有两...">
+  
+  <title>Animator倒放 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/03/Lamda引起的一个问题/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Lamda引起的一个问题
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/07/03/TLS-SSL/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TLS_SSL
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Animator倒放</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-03</span>
+      
+        <span id="post-title-updated">修改于 2019-07-03</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Unity/">Unity</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/Animator/">Animator</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="Animator倒放"><a href="#Animator倒放" class="headerlink" title="Animator倒放"></a>Animator倒放</h2><p>最近需要做一个技能编辑器，需要定位玩家的动作，在动作的某一帧，加入事件帧，用来触发特效。需要可以像在Animation编辑器中一样可以动态拖动时间条来定位某一帧，这就需要动作可以播放、暂停、倒放。但是玩家的动作是在Animator中播放的，处理起来有些复杂。以下是做的几种失败尝试。</p>
+<h3 id="通过speed实现倒放（错误1）"><a href="#通过speed实现倒放（错误1）" class="headerlink" title="通过speed实现倒放（错误1）"></a>通过speed实现倒放（错误1）</h3><p>第一时间，想到的就是通过speed实现倒放，speed有两种：</p>
+<ul>
+<li>Animator.speed</li>
+<li>AnimatorStateInfo.speed</li>
+<li>AnimatorState.speed</li>
+</ul>
+<p><strong>Animator.speed</strong>: 通过尝试，发现<code>speed=1</code>正常速度播放，<code>speed&lt;=0</code>停止播放，并不能回放，所以这种方法不行！<br><br><strong>AnimatorStateInfo.speed</strong>: 也就是通过<code>Animator.GetCurrentAnimatorStateInfo</code>方法获取到<code>AnimatorStateInfo</code>，然后设置<code>AnimatorStateInfo.speed</code>。是不是觉得一切顺利？！但是！<code>AnimatorStateInfo.speed</code>是只读！readonly！，所以这种方法不行！<br><br><strong>AnimatorState.speed</strong>: 是不是没有见过这个类，是的，这个类不常用，除非你经常做插件，需要跟Unity编辑器打交道，可能会用的到。这个对象可以通过以下方式获取：</p>
+<pre><code>UnityEditor.Animations.AnimatorController ac = animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
+UnityEditor.Animations.AnimatorStateMachine sm = ac.layers[0].stateMachine;
+for (int i = 0; i &lt; sm.states.Length; i++)
+{
+    UnityEditor.Animations.ChildAnimatorState state = sm.states[i];
+    if (state.state.name.Equals(name))
+    state.state.speed = speed;
+}
+</code></pre><p>是不是觉得就要大功告成，然并卵！这个代码在第一行就会报错，就是<code>animator.runtimeAnimatorController</code>无法转为<code>UnityEditor.Animations.AnimatorController</code>类型，以前的版本是可以的，2018的版本是不行的，所以这种方法不行！</p>
+<p>也就是说，通过speed方法，来达到动作的回放，是行不通的，Unity已经把这条路堵死了！</p>
+<h3 id="Time-timeScale（错误2）"><a href="#Time-timeScale（错误2）" class="headerlink" title="Time.timeScale（错误2）"></a>Time.timeScale（错误2）</h3><p><code>Time.timeScale</code>可以加速，可以暂停，那<code>Time.timeScale = -1</code>，会怎么样呢？直接提示：<code>Time.timeScale</code>不能设为-1。而且<code>Time.timeScale</code>会控制所有特效的播放，我只是想要控制当前角色动作的播放。所以这种方法不行！</p>
+<h3 id="Playback（错误3）"><a href="#Playback（错误3）" class="headerlink" title="Playback（错误3）"></a>Playback（错误3）</h3><p>实在没有办法了，只能通过录像回放的形式来处理了。代码如下：</p>
+<pre><code>//录制
+int frameCount = (int)(currentClip.length * currentClip.frameRate);
+animator.speed = 0;
+animator.StopPlayback();
+animator.recorderStartTime = 0;
+animator.StartRecording(frameCount);
+animator.Update(0);
+for (var i = 0; i &lt; frameCount; i++)
+{
+    animator.Update(1.0f / currentClip.frameRate);
+}
+animator.StopRecording();
+animator.speed = 1;
+.
+.
+.
+//回放
+animator.StartPlayback();
+</code></pre><p>是不是觉得很完美，但是在实际使用中问题很多：</p>
+<ol>
+<li>无法正确开始录制。录制时间开始的帧数无法确定，比如我想从idle状态转到attack状态，需要播放attak动作，我用<code>animator.GetCurrentAnimatorClipInfo(0)[0].clip.name</code>来判断是否到这一状态，然后开始录制，但是实际中，录制的动作总会少几帧。其实我觉得使用 <code>normalizeTime == 0</code> 是可以用来判断 clip 是否已经开始播放了，可以准确的录制，但是我没有尝试，原因是录制回放会有一个很大的问题，就是下面这个问题。</li>
+<li>事件帧会无限触发。暂时没有找到原因，我在某一帧加入事件后，在播放录像时该事件会无限触发，无解！</li>
+</ol>
+<h3 id="Animator-Play（正确）"><a href="#Animator-Play（正确）" class="headerlink" title="Animator.Play（正确）"></a>Animator.Play（正确）</h3><p>就在绝望的时候，发现了一个接口:<code>Animator.Play(string stateName, int layer = -1, float normalizedTime = float.NegativeInfinity)</code>，这个接口可以随意播放一个State，normalizedTime可以随意定位动作时间，normalizedTime是关键！！！需要注意的是，这个需要配合 <code>animator.speed</code>使用，如果想要定位到某一帧，需要计算出该帧的 <code>normalizedTime</code>， 并且设置 <code>animator.speed=0</code>，即可实现定位到某一帧，并暂停！</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Animator倒放"><span class="toc-text">Animator倒放</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#通过speed实现倒放（错误1）"><span class="toc-text">通过speed实现倒放（错误1）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Time-timeScale（错误2）"><span class="toc-text">Time.timeScale（错误2）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Playback（错误3）"><span class="toc-text">Playback（错误3）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Animator-Play（正确）"><span class="toc-text">Animator.Play（正确）</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/03/Lamda引起的一个问题/" class="prev">&larr; 上一篇 Lamda引起的一个问题</a>
+  
+
+  
+
+  
+    <a href="/2019/07/03/TLS-SSL/" class="next">下一篇 TLS_SSL &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

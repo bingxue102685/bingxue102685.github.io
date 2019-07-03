@@ -1,0 +1,1160 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="ts语法
+基本类型
+布尔值
+let isDone: boolean = false;
+
+数字
+let decLiteral: number = 5;
+let hexLiteral: number = oxf00d;
+let binaryLiteral: number = 0b1010;
+let octLiberal: number = 0o756;
+
+字符串
+let name: string...">
+  
+  <title>TypeScript语法重点 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+  
+    <div class="item next">
+      <a href="/2019/07/03/AssetBundle使用/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        AssetBundle使用
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>TypeScript语法重点</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-03</span>
+      
+        <span id="post-title-updated">修改于 2019-07-03</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/TypeScript/">TypeScript</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/TS语法/">TS语法</a>
+      
+      </span>
+      
+    </p>
+    
+    <h1 id="ts语法"><a href="#ts语法" class="headerlink" title="ts语法"></a>ts语法</h1><hr>
+<h3 id="基本类型"><a href="#基本类型" class="headerlink" title="基本类型"></a>基本类型</h3><ol>
+<li><p>布尔值</p>
+<pre><code>let isDone: boolean = false;
+</code></pre></li>
+<li><p>数字</p>
+<pre><code>let decLiteral: number = 5;
+let hexLiteral: number = oxf00d;
+let binaryLiteral: number = 0b1010;
+let octLiberal: number = 0o756;
+</code></pre></li>
+<li><p>字符串</p>
+<pre><code>let name: string = &quot;jack&quot;;
+//字符串拼接
+let sentences: string = &quot;Hello, my name is&quot; + name + &quot;.\n&quot; + &quot;My age is&quot; + (age + 1) + &quot;.&quot;;
+</code></pre></li>
+<li><p>数组</p>
+<pre><code>//普通定义
+let list: number[] = [1, 2, 3];
+//泛型定义
+let list: Array&lt;number&gt; = [1, 2, 3];
+</code></pre></li>
+<li><p>元组</p>
+<p> 表示一个已知类型的数组，各元素的类型不必相同</p>
+<pre><code>let x:[string, number];
+//正确初始化
+x = [&quot;hello&quot;, 10];
+//错误初始化
+x = [10, &quot;hello&quot;];
+//访问已知索引的元素
+console.log(x[0].substr(1))
+//访问越界元素，会使用联合类型替代(string|number)
+x[3] = &quot;world&quot;;
+//&quot;string&quot;和&quot;number&quot;都有toString()函数
+console.log(x[5].toString());
+//不能把该元组的元素赋值为，除string|number之外的类型
+x[6] = true; //error
+</code></pre></li>
+<li><p>枚举</p>
+<pre><code>//定义枚举类型，枚举值默认是从0开始的
+enum Color {Red, Green, Blue};
+//定义枚举变量
+let c:Color = Color.Red;
+
+//自定义枚举值
+enum Color {Red = 1，Green, Blue};
+enum Color {Red = 1, Green = 5, Blue = 8};
+
+//使用枚举名
+let colorName: string = Color[5]; //&quot;Green&quot;
+</code></pre></li>
+<li><p>任意值</p>
+<p> 任意值：any，可以赋给该类型变量任意值，编译阶段不会去检查该类型的值。</p>
+<pre><code>let noSure: any = 4;
+noSure = &quot;maybe a string instead&quot;;
+noSure = true;
+</code></pre><p> 注意：any的作用同Object类型有相似之处，但是本质不同，any类型的变量，在编译阶段不会去检查类型，也不会检查方法是否存在，例如：</p>
+<pre><code>let notSure: any = 4;
+//以下方法，编译可以通过，编译器不会检查该方法是否存在，isItExists()可能在运行时存在
+notSure.isItExists();
+</code></pre><p> 但是，Object是不行的，Object类似于所有类型的父类，所有类型的值都可以赋值给Object类型，但是在编译阶段会检查该值类型和方法调用是否正确，例如：</p>
+<pre><code>let prettySure: Object = 4;
+//错误，Object中没有toFiexd
+prettySure.toFiexd();
+</code></pre><p> any的其他用法：</p>
+<pre><code>let list: any[] = [1, true, &quot;free&quot;];
+list[1] = 100;
+</code></pre></li>
+<li><p>void、undefined、null、never</p>
+</li>
+<li><p>object</p>
+<p> <code>object</code>表示非原始类型，也就是除<code>number</code>, <code>string</code>, <code>boolean</code>, <code>sysmbol</code>, <code>null</code>, <code>undefined</code>之外的类型。</p>
+</li>
+<li><p>类型断言</p>
+<p>类型断言跟其他语言里面的类型转换很相似，都是进行类型转换，但是ts里面不会进行类型检查，类型检查交给了程序员来处理，明确告诉编译器：<strong>相信我，我知道自己在干嘛！</strong>，有两种形式的类型断言：</p>
+<pre><code>//1. 尖括号
+let someVaue: any = &quot;This is a string&quot;;
+let strLength: number = (&lt;string&gt;someVlue).length;
+//2. as(推荐)
+let strLength: number = (someValue as string).length;
+</code></pre></li>
+</ol>
+<h3 id="变量声明"><a href="#变量声明" class="headerlink" title="变量声明"></a>变量声明</h3><ol>
+<li>var声明</li>
+</ol>
+<pre><code>//函数外声明
+var a = 10;
+
+//函数内声明
+function f() {
+    var message = &quot;Hello world&quot;;
+    return message;
+}
+
+//闭包声明
+function f() {
+    var a = 10;
+    return function() {
+        var b = a + 1;
+        return b;
+    }        
+}
+var g = f();
+g();    //return 11
+</code></pre><ol start="2">
+<li><p>var变量作用域</p>
+<p> 如果你用过c/c++，java等其他高级语言，你会发现ts/js中的变量的作用域很奇怪，这是应为ts/js中以前是没有块级作用域的概念，例如：    </p>
+<pre><code>function f(isInit: boolean) {
+    if (isInit) {
+        var x = 10;
+    }
+    return x;
+}
+
+f(true);    //return 10
+f(false);    //undefined
+</code></pre><p> 你会发现，虽然 <code>var x = 10</code> 定义在 <code>if</code> 语句块中，但是块外依旧可以访问，这是因为<code>var</code>声明的变量只有两种作用域：<code>1.全局作用域 2.函数作用域</code>。这种方式虽然有方便的地方，但是也会引发很多问题：</p>
+<pre><code>function sumMatrix(matrix: num[][]) {
+    var sum = 0;
+    for (var i = 0; i &lt; matrix.length; i++) {
+        var currentRow = matrix[i];
+        for (var i = 0; i &lt; currentRow.length; i++ {
+            sum += currentRow[i];
+        }
+    }
+    return sum;
+}
+</code></pre><p> 如果以上逻辑运行在<code>C/C++</code>平台上，没有一点问题，因为内层 <code>for</code> 循环的<code>i</code>会屏蔽掉外层 <code>for</code> 的<code>i</code>，但是在<code>ts/js</code>中，这就会引发重大问题，在函数内无论声明多少次 <code>i</code> ，都是引用的同一个变量。</p>
+<p> 还有一个诡异的问题：</p>
+<pre><code>for (var i = 0; i &lt; 10; i++) {
+    //setTimeout延迟若干秒后，执行函数
+    setTimeout(function() {console.log(i);}, 100 * i};
+}
+</code></pre><p> 运行以上函数会输出：<code>10 10 10 10 10 10 10 10 10 10</code> 而不是预想中的：<code>0 1 2 3 4 5 6 7 8 9</code><br><br> 这是因为：循环10次，引用的都是同一个i，循环10次后，i 为10，所有的函数使用的都是同一个i,所以输出的都是10！<br><br> 如何处理呢？只需每次循环的时候，为每次i创建一个备份，单独创建一个函数环境：</p>
+<pre><code>for (var i = 0; i &lt; 10; i++) {
+    function(i) {
+        setTimeout(function() {console.log(i);}, 100 * i};
+    }(i);
+}
+</code></pre></li>
+<li><p>let 声明<br><br>正是因为 <code>var</code>带来了很多不方便的地方，所以<code>let</code>就出现了，它弥补了<code>var</code>块级作用域的缺失。使用方法，同<code>var</code>相同</p>
+<pre><code>function f(input: boolean) {
+    let a = 100;
+    if (input) {
+        let b = a + 1;
+        return b;            
+    }
+    //错误，b没有定义，因为b是let声明的，只在 if 语句中可见
+    return b;
+}
+</code></pre><p>用<code>var</code>声明的变量，无论在何处声明，都可以，但是<code>let</code>不行，let声明的变量必须要在使用前声明</p>
+<pre><code>//var声明的变量，这样写没有问题
+a = a + 1;
+var a = 10;
+
+//但是let声明的变量就不行, 会报错: b is not defined
+b = b + 1;
+let b = 10;
+</code></pre></li>
+<li><p>重定义<br><br>var 声明的变量，无论声明多少次，都不会报错，都是引用的同一个变量：</p>
+<pre><code>//以下正常运行
+function f(x) {
+    var x;
+    var x = 10;
+    if (true) {
+        var x;
+    }
+}
+</code></pre><p> let声明的变量不允许出现这种情况，相同的作用域中，不能出现重定义。</p>
+<pre><code>//错误！
+function f(x) {
+    let x = 10;
+}
+
+//错误！
+function f() {
+    let x = 10;
+    var x = 10;
+}
+</code></pre><p> 但是在不同的作用域中，let声明的变量，允许出现相同定义，内层定义会屏蔽外层定义。</p>
+<pre><code>function g(isInit: boolean) {
+    var x = 10;
+    if (isInit) {
+        let x = 20;
+        return x;
+    }
+    return x;
+}
+
+g(true);    //return 20;
+g(false);    //return 10;
+</code></pre><p>总之，let的使用方式，跟C/C++，Java等其他高级语言默认变量声明，是相似的。</p>
+</li>
+<li><p>const</p>
+<p> 就是常量，被第一次赋值以后不允许再赋值。跟let有相同的作用域规则。<br><br> 注意:只是变量不允许第二次赋值，但是里面包含的成员变量，是不受限制的。当然也可以将成员变量设置为只读的。</p>
+<pre><code>const kitty = {
+    name: &quot;Aurora&quot;,
+    numLives: 9,
+};
+
+//kitty不允许再进行赋值，再次进行赋值操作会报错。
+kitty = {
+    name = &quot;Danielle&quot;,
+    numLives: 12,
+};
+
+//但是可以修改kitty.name 和 kitty.numLives的值。
+kitty.name = &quot;Danielle&quot;;
+kitty.numLives = 12;
+</code></pre></li>
+<li><p>解构</p>
+<p> 解构赋值是<code>ts/js</code>的一种表达式，可以将数组中的值或者对象的属性解包为不同的变量<br></p>
+</li>
+<li><p>数组解构</p>
+<pre><code>//基本的数组解构
+var foo = [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;];
+var [one, two, tree] = foo;
+console.log(one); //&quot;one&quot;
+console.log(two); //&quot;two&quot;
+console.log(three);    //&quot;three&quot;
+
+//声明与赋值分开
+var a, b;
+[a, b] = [1, 2];
+console.log(a);//1
+console.log(b);//2
+
+//默认值
+var a, b;
+[a=5, b=7] = [1];
+console.log(a);//1
+console.log(b);//7
+
+//交换值
+var a = 1;
+var b = 3;
+[a, b] = [b, a];
+console.log(a); //3
+console.log(b);    //1
+
+//函数返回值解构    
+function f() {
+    return [1, 2];
+}
+var a,b;
+[a, b] = f();
+console.log(a); //1
+console.log(b);    //2
+
+//忽略一些值
+function f() {
+    return [1, 2, 3];
+}
+var [a, , b] = f();
+console.log(a); //1
+console.log(b);    //3
+
+//把一个数组的剩余部分赋值给一个变量
+var [a, ...b] = [1, 2, 3];
+console.log(a); //1
+console.log(b);    //[2, 3]
+
+//剩余部分的变量赋值(即...b)，不允许后面跟一个空逗号，所以下面的使用是错误的
+var [a, ...b,] = [1, 2, 3];
+
+//从一个正则表达式匹配项里面解包（操作都一样）
+function parseProtocol(url) { 
+  var parsedURL = /^(\w+)\:\/\/([^\/]+)\/(.*)$/.exec(url);
+  if (!parsedURL) {
+    return false;
+  }
+  console.log(parsedURL); // [&quot;https://developer.mozilla.org/en-US/Web/JavaScript&quot;, &quot;https&quot;, &quot;developer.mozilla.org&quot;, &quot;en-US/Web/JavaScript&quot;]
+
+  var [, protocol, fullhost, fullpath] = parsedURL;
+  return protocol;
+}
+
+console.log(parseProtocol(&apos;https://developer.mozilla.org/en-US/Web/JavaScript&apos;)); // &quot;https&quot;
+</code></pre></li>
+<li><p>对象解构</p>
+<pre><code>//基础赋值
+var o = {p:42, q:true};
+var {p, q} = o;
+console.log(p);    //42
+console.log(q);    //true
+
+//不声明，直接赋值
+var a, b;
+//注：当在没有声明的情况下使用对象字面量解构，则必选要加上（）。因为如果不加（），左边会被认为是一个语句块，并不会被认定为一个对象字面量。
+//相当于：var {a, b} = {a:1, b:2}
+({a, b} = {a:1, b:2});
+
+//赋值给一个新的变量名
+var o = {p:42, q:true};
+var {p: foo, q: bar} = 0;
+console.log(foo);    //42
+console.log(bar);    //true
+
+//默认值
+var {a = 10, b = 5} = {a:3};
+console.log(a); // 3
+console.log(b); // 5
+
+//新的变量名，给出默认值
+var {a: aa = 10, b: bb = 5} = {a: 3};
+console.log(aa); //3
+console.log(bb); //5
+
+//设置函数参数的默认值
+function drawES2015Chart({size = &apos;big&apos;, cords = {x: 0, y: 0}, radius = 25} = {}) {
+  console.log(size, cords, radius);
+  // do some chart drawing
+}
+
+drawES2015Chart({
+  cords: {x: 18, y: 30},
+  radius: 30
+});
+
+//嵌套形式对象的解构
+var metadata = {
+    title: &apos;Scratchpad&apos;,
+    translations: [
+       {
+        locale: &apos;de&apos;,
+        localization_tags: [],
+        last_edit: &apos;2014-04-14T08:43:37&apos;,
+        url: &apos;/de/docs/Tools/Scratchpad&apos;,
+        title: &apos;JavaScript-Umgebung&apos;
+       }
+    ],
+    url: &apos;/en-US/docs/Tools/Scratchpad&apos;
+};
+
+var {title: englishTitle, translations: [{title: localeTitle}]} = metadata;
+
+console.log(englishTitle); // &quot;Scratchpad&quot;
+console.log(localeTitle);  // &quot;JavaScript-Umgebung&quot;
+
+//for解构
+var people = [
+  {
+    name: &apos;Mike Smith&apos;,
+    family: {
+      mother: &apos;Jane Smith&apos;,
+      father: &apos;Harry Smith&apos;,
+      sister: &apos;Samantha Smith&apos;
+    },
+    age: 35
+  },
+  {
+    name: &apos;Tom Jones&apos;,
+    family: {
+      mother: &apos;Norah Jones&apos;,
+      father: &apos;Richard Jones&apos;,
+      brother: &apos;Howard Jones&apos;
+    },
+    age: 25
+  }
+];
+
+for (var {name: n, family: {father: f}} of people) {
+  console.log(&apos;Name: &apos; + n + &apos;, Father: &apos; + f);
+}
+// &quot;Name: Mike Smith, Father: Harry Smith&quot;
+// &quot;Name: Tom Jones, Father: Richard Jones&quot;
+
+//解包对象字段，传递给函数参数
+function userId({id}) {
+  return id;
+}
+
+function whois({displayName, fullName: {firstName: name}}) {
+  console.log(displayName + &apos; is &apos; + name);
+}
+
+var user = { 
+  id: 42, 
+  displayName: &apos;jdoe&apos;,
+  fullName: { 
+      firstName: &apos;John&apos;,
+      lastName: &apos;Doe&apos;
+  }
+};
+
+console.log(&apos;userId: &apos; + userId(user)); // &quot;userId: 42&quot;
+whois(user); // &quot;jdoe is John&quot;
+
+//计算出对象属性名字，然后解构
+let key = &apos;z&apos;;
+let {[key]: foo} = {z: &apos;bar&apos;};
+console.log(foo); // &quot;bar&quot;
+
+//对象解构的剩余部分(剩余部分，必须是可枚举的)
+let {a, b, ...rest} = {a: 10, b: 20, c: 30, d: 40}
+a; // 10 
+b; // 20 
+rest; // { c: 30, d: 40 }
+
+//非法js标识符作为属性名
+//通过提供有效的替代标识符，可以将解构与非法js标识符的属性名一起使用。
+const foo = { &apos;fizz-buzz&apos;: true };
+const { &apos;fizz-buzz&apos;: fizzBuzz } = foo;
+console.log(fizzBuzz); // &quot;true&quot;
+</code></pre></li>
+<li><p>展开</p>
+<p> 展开操作符与解构相反，讲一个数组展开为另一个数组，或者将一个对象展开为另外一个对象：</p>
+<pre><code>//数组
+let first = [1, 2];
+let second = [3, 4];
+let bothPlus = [0, ...first, ..second, 5]; //[0, 1, 2, 3, 4, 5],对first,second进行浅拷贝
+
+//对象：
+//对象的展开比数组的展开要复杂的多。 像数组展开一样，它是从左至右进行处理，但结果仍为对象。 这就意味着出现在展开对象后面的属性会覆盖前面的属性。
+let defaults = { food: &quot;spicy&quot;, price: &quot;$$&quot;, ambiance: &quot;noisy&quot; };
+let search = { ...defaults, food: &quot;rich&quot; }; //{ food: &quot;rich&quot;, price: &quot;$$&quot;, ambiance: &quot;noisy&quot; }
+
+//展开的对象，里面的属性必须是可枚举属性，才可以被展开，方法会被丢失掉
+class C {
+  p = 12;
+  m() {
+  }
+}
+let c = new C();
+let clone = { ...c };
+clone.p; // ok
+clone.m(); // error!
+</code></pre></li>
+</ol>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><ol>
+<li><p>介绍</p>
+<p> ts的接口定义，还是跟其他语言的接口，有点区别的。ts里，接口的就是定义契约（约束）。</p>
+<pre><code>//基本用法
+interface LabelValue {
+    label: string;
+}
+
+function printLabel(labelObj: LabelValue) {
+    console.log(labelObj.lable);
+}
+
+let myObj = {size: 10, label: &quot;Size 10 Object&quot;};
+printLable(myObj);
+</code></pre><p> 注：上面的代码运行起来没有问题，但是会有一个奇怪的问题就是：如果不定义 <code>let myObj = {size: 10, label: &quot;Size 10 Object&quot;}</code>，直接使用 <code>printLable({size: 10, label: &quot;Size 10 Object&quot;})</code>，会报错：<code>Argument of type &#39;{ size: number; lable: string; }&#39; is not assignable to parameter of type &#39;LabelValue&#39;.Object literal may only specify known properties, and &#39;size&#39; does not exist in type &#39;LabelValue&#39;</code>。大致的意思是：对象字面量只能指定已知属性。（暂时不知道什么意思）</p>
+</li>
+<li><p>可选属性</p>
+<p> 有些情况下接口里面的属性，只是在某些条件下存在，有的时候不存在，可以使用可选属性。</p>
+<pre><code>//可选属性
+interface SquareCongfig {
+    color?: string;
+    width?: number;
+}
+
+function createSquare(config: SquareCongfig): { color: string, area: number } {
+    let newSquare = { color: &quot;white&quot;, area: 100 };
+    if (config.color) {
+        newSquare.color = config.color;
+    }
+
+    if (config.width) {
+        newSquare.area = config.width * config.width;
+    }
+    //也可用展开
+    //let newSquare = { color: &quot;white&quot;, area: 100, ...config };
+    return newSquare;
+}
+
+let mySquare = createSquare({ color: &quot;black&quot; })
+console.log(mySquare.color);
+console.log(mySquare.area);
+</code></pre></li>
+<li><p>只读属性</p>
+<p> 顾名思义，对象中属性的值不能被修改，用 <code>readonly</code> 修饰属性即可</p>
+<pre><code>interface Point {
+    readonly x: number;
+    readonly y: number;
+}
+
+let point: Point = {x: 10, y: 20};
+//error： Cannot assign to &apos;x&apos; because it is a constant or a read-only property.
+point.x = 5
+</code></pre><p> 数组也可以只读，只需使用<code>ReadonlyArray&lt;T&gt;</code>定义数组即可，使用方法跟 <code>Array&lt;T&gt;</code> 一样，但是去掉了所有可修改值得方法。</p>
+<pre><code>let a: number[] = [1, 2, 3, 4];
+let ro: ReadonlyArray&lt;number&gt; = a;
+//error
+ro.push(5);
+//error
+ro[0] = 12;
+//error
+ro.length = 10;
+//error
+a = ro;
+//可以强转
+a = ro as number[];
+</code></pre><p> 注：变量用 <code>const</code>， 属性用 <code>readonly</code></p>
+</li>
+<li><p>函数类型</p>
+<pre><code>//函数类型
+interface SearchFunc {
+    (source: string, subString: string): number;
+}
+//使用
+let mySearch: SearchFunc = function (source: string, subString: string) {
+    let result = source.search(subString);
+    return result;
+}
+//不加参数类型，依旧可以根据接口判断出来
+let otherSearch: SearchFunc = function (src, sub) {
+    return src.search(sub);
+}
+</code></pre></li>
+<li><p>可索引类型</p>
+<p> 索引签名表示：当时用<code>number</code>去索引 对象或者数组时，会返回 <code>string</code> 类型的返回值。</p>
+<pre><code>//可索引类型
+interface StringArray {
+    [index: number]: string;
+}
+
+let myArray: StringArray = [&quot;Bob&quot;, &quot;Fred&quot;]
+</code></pre><p> 支持两种类型的索引：<code>string</code> 和 <code>number</code>。可以同时使用两种类型的索引，但是数字索引的返回值必须是字符串索引返回值类型的子类型。这是因为：当时用number来索引时，js会将它转换为string然后再去索引对象，也就是用100去索引和用“100”去索引，两者是等效的，因此，两者要保持一致。</p>
+</li>
+<li><p>类类型</p>
+<pre><code>//接口描述了公共部分，而不是公有和私有部分。
+interface ClockInterface {
+    currentTime: Date;
+    setTime(d: Date);
+}
+
+class Clock implements ClockInterface {
+    currentTime: Date;
+    setTime(d: Date) {
+        this.currentTime = d;
+    }
+    constructor(h: number, m: number) {}
+}
+</code></pre></li>
+<li><p>类静态部分与实例部分（不知所云，先不看了）</p>
+</li>
+<li><p>继承接口</p>
+<pre><code>//一个接口可以继承很多接口
+interface Shape {
+    color: string;
+    (): number;
+}
+
+interface PenStroke {
+    penWidth: number;
+}
+
+interface Square extends Shape, PenStroke {
+    sideLength: number;
+}
+
+let square = &lt;Square&gt; {};
+square.color = &quot;blue&quot;;
+square.sideLength = 10;
+square.penWidth = 5.0;
+</code></pre></li>
+<li><p>混合接口类型</p>
+<pre><code>//一个对象可以同时作为函数和对象使用，并带有额外的属性
+
+interface Counter {
+    (start: number): string;
+    interval: number;
+    reset(): void;
+}
+
+function getCounter(): Counter {
+    let counter = &lt;Counter&gt;function (start: number) { };
+    counter.interval = 123;
+    counter.reset = function () { };
+    return counter;
+}
+
+let c = getCounter();
+c(10);
+c.reset();
+c.interval = 5.0;
+</code></pre></li>
+</ol>
+<h3 id="类"><a href="#类" class="headerlink" title="类"></a>类</h3><p>ts的类跟 <code>java</code> 的类很相似。</p>
+<ol>
+<li><p>继承 </p>
+<pre><code>//继承
+class Animal {
+    name: string;
+    constructor(theName: string) {
+        this.name = theName;
+    }
+    move(distanceInMeters: number = 0) {
+        console.log(this.name + &quot; moved &quot; + distanceInMeters + &quot;m.&quot;);
+    }
+}
+
+class Snake extends Animal {
+    constructor(name: string) {
+        super(name);
+    }
+    move(distanceInMeters = 5) {
+        console.log(&quot;Slithering...&quot;);
+        super.move(distanceInMeters);
+    }
+}
+
+class Horse extends Animal {
+    constructor(name: string) {
+        super(name);
+    }
+    move(distanceInMeters = 45) {
+        console.log(&quot;Golloping...&quot;);
+        super.move(distanceInMeters);
+    }
+}
+let sam = new Snake(&quot;Sammy the Python&quot;);
+let tom: Animal = new Horse(&quot;Tommy the Palomino&quot;);
+
+sam.move();
+tom.move(34);
+</code></pre></li>
+<li><p>权限：public, private, protected</p>
+</li>
+<li><p>readonly: 修饰的属性为只读。</p>
+</li>
+<li><p>参数属性</p>
+<p> 参数属性算是一个语法糖，在构造函数的参数部分，定义并初始化一个成员。</p>
+<pre><code>class Animal {
+    //相当于定义了: priavte name: string
+    constructor(private name: string) {}
+    move(distanceInMeters: number) {
+        console.log(this.name + &quot; moved &quot; + distanceInMeters + &quot;m.&quot;);
+    }
+}
+</code></pre></li>
+<li><p>存取器：getters/setters</p>
+<pre><code>let password = &quot;secret passcode&quot;;
+class Employee {
+    private _fullName: string;
+    get fullName(): string {
+        return this._fullName;
+    }
+
+    set fullName(newName: string) {
+        if (password &amp;&amp; password == &quot;secret passcode&quot;) {
+            this._fullName = newName;
+        } else {
+            console.log(&quot;Error: Can&apos;t update name!&quot;);
+        }
+    }
+}
+let employee = new Employee();
+employee.fullName = &quot;Bob Smith&quot;;
+if (employee.fullName) {
+    alert(employee.fullName);
+}
+</code></pre></li>
+<li><p>静态属性： static</p>
+</li>
+<li><p>抽象类： abstract</p>
+</li>
+<li><p>构造函数：</p>
+<p> 上面例子中，我们使用 let employee = new Employee()，创建一个Employee类型的实例，这个Employee其实是一个构造函数，这个构造函数包含了类所有的静态属性。</p>
+<pre><code>class Greeter {
+    static standardGreeting = &quot;Hello, there&quot;;
+    greeting: string;
+    greet() {
+        if (this.greeting) {
+            return &quot;Hello, &quot; + this.greeting;
+        }
+        else {
+            return Greeter.standardGreeting;
+        }
+    }
+}
+
+let greeter1: Greeter;
+greeter1 = new Greeter();
+console.log(greeter1.greet());
+
+let greeterMaker: typeof Greeter = Greeter;
+greeterMaker.standardGreeting = &quot;Hey there!&quot;;
+
+let greeter2: Greeter = new greeterMaker();
+console.log(greeter2.greet());
+</code></pre></li>
+<li><p>类当接口使用</p>
+<pre><code>class Point {
+    x: number;
+    y: number;
+}
+
+interface Point3d extends Point {
+    z: number;
+}
+
+let point3d: Point3d = {x: 1, y: 2, z: 3};
+</code></pre></li>
+</ol>
+<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><ol>
+<li>定义</li>
+</ol>
+<pre><code>//定义
+function add(x: number, y: number) {
+    return x + y;
+}
+//或者
+let add = function(x: number, y: number): number {return x + y;}
+//完整定义(参数名字无所谓，重在函数的签名；没有返回值，也要写void)
+let add: (x: number, y: number) =&gt; number = function(x: number, y: number): number {return x + y;};
+</code></pre><ol start="2">
+<li><p>可选参数</p>
+<p> 在js中，可以传递任意数量的参数给函数，但是ts不行，传递的函数参数数量，必须要符合函数的定义。</p>
+<pre><code>//函数类型为：(firstName: string, lastName?: string) =&gt; string
+function buildName(firstName: string, lastName?: string) {
+    if (lastName)
+        return firstName + &quot; &quot; + lastName;
+    else
+        return firstName;
+}
+
+let result1 = buildName(&quot;Bob&quot;);  // works correctly now
+let result2 = buildName(&quot;Bob&quot;, &quot;Adams&quot;, &quot;Sr.&quot;);  // error, too many parameters
+let result3 = buildName(&quot;Bob&quot;, &quot;Adams&quot;);  // ah, just right
+</code></pre></li>
+<li><p>参数默认值：同上</p>
+</li>
+<li><p>剩余参数</p>
+<pre><code>function buildName(firstName: string, ...restOfName: string[]) {
+  return firstName + &quot; &quot; + restOfName.join(&quot; &quot;);
+}
+
+let employeeName = buildName(&quot;Joseph&quot;, &quot;Samuel&quot;, &quot;Lucas&quot;, &quot;MacKinzie&quot;);
+//函数类型
+let buildNameFun: (fname: string, ...rest: string[]) =&gt; string = buildName;
+</code></pre><h3 id="高级类型"><a href="#高级类型" class="headerlink" title="高级类型"></a>高级类型</h3></li>
+<li><p>交叉类型： typeA &amp; typeB</p>
+<pre><code>function extend&lt;T, U&gt;(first: T, second: U): T &amp; U {
+    let result = &lt;T &amp; U&gt;{};
+    for (let id in first) {
+        (&lt;any&gt;result)[id] = (&lt;any&gt;first)[id];
+    }
+
+    for (let id in second) {
+        if (!result.hasOwnProperty(id)) {
+            (&lt;any&gt;result)[id] = (&lt;any&gt;second)[id];
+        }
+    }
+    return result;
+}
+
+class PersonOne {
+    constructor(public name: string) {}
+}
+
+interface Loggable {
+    log(): void;
+}
+
+class ConsoleLogger implements Loggable {
+    log() {}
+}
+
+let jim = extend(new PersonOne(&quot;Jim&quot;), new ConsoleLogger());
+var n = jim.name;
+jim.log();
+</code></pre></li>
+<li><p>联合类型： typeA | typeB</p>
+<p> 限制数据类型只能是 typeA 或者 typeB</p>
+<pre><code>function padLeft(value: string, padding: string | number) {
+    // ...
+}
+//Error!只能传入string或者number
+let indentedString = padLeft(&quot;Hello world&quot;, true);
+</code></pre><p> 还有一种情况,当一个变量的类型是 typeA | typeB，那么该变量包含了A和B共有的成员。</p>
+<pre><code>interface Bird {
+    fly():
+    layEggs();
+}
+interface Fish {
+    swim():
+    layEggs();
+}
+
+function getSmallPet(): Fish | Bird {
+    //...
+}
+
+let pet = getSmallPet();
+pet.layEggs();//Okay!
+pet.swim(); //Error!
+</code></pre><p> 怎么让以上代码没有错误呢，使用类型断言：</p>
+<pre><code>if ((&lt;Fish&gt;pet).swim) {
+    (&lt;Fish&gt;pet).swim();
+} else {
+    (&lt;Bird&gt;pet).fly();
+}
+</code></pre><h3 id="可迭代性"><a href="#可迭代性" class="headerlink" title="可迭代性"></a>可迭代性</h3></li>
+</ol>
+<p>当一个对象实现了Symbol.iterator属性时，我们认为他是可迭代性的。Array，Map，Set，String，Int32Array，Uint32Array都是实现了各自的Symbol.iterator。</p>
+<ol>
+<li><p>for…of 值的遍历 （注意对象不能使用！！）</p>
+<pre><code>let someArray = [1, &quot;string&quot;, false];
+
+for (let entry of someArray) {
+    console.log(entry);
+}
+</code></pre></li>
+<li><p>for…in    键的遍历</p>
+<pre><code>for (let index in someArray) {
+    console.log(index); //
+}
+</code></pre></li>
+</ol>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ts语法"><span class="toc-text">ts语法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本类型"><span class="toc-text">基本类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#变量声明"><span class="toc-text">变量声明</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#接口"><span class="toc-text">接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#类"><span class="toc-text">类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#函数"><span class="toc-text">函数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#高级类型"><span class="toc-text">高级类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#可迭代性"><span class="toc-text">可迭代性</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+
+  
+
+  
+    <a href="/2019/07/03/AssetBundle使用/" class="next">下一篇 AssetBundle使用 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

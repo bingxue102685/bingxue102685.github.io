@@ -7,7 +7,7 @@
 
 <!doctype html>
 <html lang="zh-CN">
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -63,8 +63,8 @@
     <div id="menu-inner">
       <div id="brand">
         
-        <a onClick="openUserCard()">
-          <img id="avatar" src="/faceicon.jpg"/>
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
           <div id="homelink">奔跑的蜗牛</div>
         </a>
       </div>
@@ -122,12 +122,12 @@
   <article id="post">
     <h1>高级GLSL(2)</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2016-07-11</span>
+      <span id="post-title-date">撰写于 2016-07-11</span>
       
-        <span id = "post-title-updated">修改于 2018-01-29</span>
+        <span id="post-title-updated">修改于 2018-01-29</span>
       
       
-      <span id = "post-title-categories">分类
+      <span id="post-title-categories">分类
       
       
         
@@ -137,7 +137,7 @@
       </span>
       
       
-      <span id = "post-title-tags">
+      <span id="post-title-tags">
       标签
       
       
@@ -149,10 +149,10 @@
       
     </p>
     
-    <h2 id="接口块"><a href="#接口块" class="headerlink" title="接口块"></a>接口块</h2><p>随着我们的程序做的越来越大，着色器程序也会变得很复杂，着色器程序的输入输出变量需要更好的组织管理，不能再零散的分布，而且变量类型也需要扩展，数组和结构体也要利用起来，这就用到了接口块(Interface Blocks)。示例：<br>顶点着色器<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">out VS_OUT</div><div class="line">&#123;</div><div class="line">	vec3 Normal;</div><div class="line">	vec3 Position;</div><div class="line">&#125; vs_out;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	vs_out.Normal = mat3(transpose(inverse(model))) * normal;</div><div class="line">	vs_out.Position = vec3(model * vec4(position, <span class="number">1.0f</span>));</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>片段着色器<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">in VS_OUT</div><div class="line">&#123;</div><div class="line">	vec3 Normal;</div><div class="line">	vec3 Position;</div><div class="line">&#125; vs_in;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">float</span> ratio = <span class="number">1.00</span> / <span class="number">1.52</span>;</div><div class="line">	vec3 I = normalize(vs_in.Position - cameraPos);</div><div class="line">	vec3 R = refract(I, normalize(vs_in.Normal), ratio);</div><div class="line">	color = texture(skybox, R);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+    <h2 id="接口块"><a href="#接口块" class="headerlink" title="接口块"></a>接口块</h2><p>随着我们的程序做的越来越大，着色器程序也会变得很复杂，着色器程序的输入输出变量需要更好的组织管理，不能再零散的分布，而且变量类型也需要扩展，数组和结构体也要利用起来，这就用到了接口块(Interface Blocks)。示例：<br>顶点着色器<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">out VS_OUT</span><br><span class="line">&#123;</span><br><span class="line">	vec3 Normal;</span><br><span class="line">	vec3 Position;</span><br><span class="line">&#125; vs_out;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	vs_out.Normal = mat3(transpose(inverse(model))) * normal;</span><br><span class="line">	vs_out.Position = vec3(model * vec4(position, <span class="number">1.0f</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>片段着色器<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">in VS_OUT</span><br><span class="line">&#123;</span><br><span class="line">	vec3 Normal;</span><br><span class="line">	vec3 Position;</span><br><span class="line">&#125; vs_in;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">float</span> ratio = <span class="number">1.00</span> / <span class="number">1.52</span>;</span><br><span class="line">	vec3 I = normalize(vs_in.Position - cameraPos);</span><br><span class="line">	vec3 R = refract(I, normalize(vs_in.Normal), ratio);</span><br><span class="line">	color = texture(skybox, R);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>跨着色器互传接口块时，接口块的名字一定要相同。（以后会有用处吧）</p>
-<p></p><p></p><br>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a><p></p>
+<p></p><p></p><br>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="noopener">我的OpenGL工程</a><p></p>
 
   </article>
   <div class="random-toc-area">

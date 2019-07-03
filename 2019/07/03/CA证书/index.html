@@ -1,0 +1,395 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="CA证书为什么要有CA没有接触过CA之前，可能会有这个疑问，既然有了非对称加密，为什么还要用CA证书呢？那是因为非对称加密有一个很严重的缺陷：身份验证，举个例子：
+
+
+客户端C和服务端S，如果要进行通信，服务端S就必须要把自己的公钥pub_S发给客户端。
+这时有一个恶意节点M截获了两者的通信，于是节点M，就自己生成了一对秘钥
+节点M收到客户端C请求公钥消息，就把自己生成的pub_M发给了客户...">
+  
+  <title>CA证书 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/03/TLS-SSL/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TLS_SSL
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2018/06/05/设计模式之工厂模式/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        设计模式之工厂模式
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>CA证书</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-03</span>
+      
+        <span id="post-title-updated">修改于 2019-07-03</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/杂记/">杂记</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/SSL/">SSL</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="CA证书"><a href="#CA证书" class="headerlink" title="CA证书"></a>CA证书</h2><h3 id="为什么要有CA"><a href="#为什么要有CA" class="headerlink" title="为什么要有CA"></a>为什么要有CA</h3><p>没有接触过CA之前，可能会有这个疑问，既然有了非对称加密，为什么还要用CA证书呢？那是因为非对称加密有一个很严重的缺陷：<strong>身份验证</strong>，举个例子：<br></p>
+<p><img src="ca1.png" alt></p>
+<ol>
+<li>客户端C和服务端S，如果要进行通信，服务端S就必须要把自己的公钥pub_S发给客户端。</li>
+<li>这时有一个恶意节点M截获了两者的通信，于是节点M，就自己生成了一对秘钥</li>
+<li>节点M收到客户端C请求公钥消息，就把自己生成的pub_M发给了客户端C</li>
+<li>然后节点M向服务端S发送请求公钥的消息，获取到了服务端的公钥pub_S</li>
+<li>因为客户端C无法通过公钥，获取服务端的身份信息，就认为已经和服务端S建立了可信连接</li>
+<li>然后客户端C就使用服务器M提供的pub_M加密数据，节点M就获取到了数据的明文，就可以窃听，篡改数据了</li>
+</ol>
+<h3 id="如何解决上述问题"><a href="#如何解决上述问题" class="headerlink" title="如何解决上述问题"></a>如何解决上述问题</h3><p>问题的根本在于：<strong>确保获取的公钥途径是合法的</strong>，也就是客户端能够验证服务器的身份信息。这时候，就要引入权威的第三方机构CA。CA负责核实公钥拥有者的信息，并颁发认证证书，同时为使用者提供证书的验证服务，流程如下：<br><br><img src="ca2.png" alt></p>
+<p>大致流程如下：</p>
+<blockquote>
+<p>a、服务方S向第三方机构CA提交公钥、组织信息、个人信息(域名)等信息并申请认证;</p>
+</blockquote>
+<blockquote>
+<p>b、CA通过线上、线下等多种手段验证申请者提供信息的真实性，如组织是否存在、企业是否合法，是否拥有域名的所有权等;</p>
+</blockquote>
+<blockquote>
+<p>c、如信息审核通过，CA会向申请者签发认证文件-证书。证书包含以下信息：申请者公钥、申请者的组织信息和个人信息、签发机构 CA的信息、有效时间、证书序列号等信息的明文，同时包含一个签名;签名的产生算法：首先，使用散列函数计算公开的明文信息的信息摘要，然后，采用 CA的私钥对信息摘要进行加密，密文即签名;</p>
+</blockquote>
+<blockquote>
+<p>d、客户端 C 向服务器 S 发出请求时，S 返回证书文件;</p>
+</blockquote>
+<blockquote>
+<p>e、客户端 C读取证书中的相关的明文信息，采用相同的散列函数计算得到信息摘要，然后，利用对应 CA的公钥解密签名数据，对比证书的信息摘要，如果一致，则可以确认证书的合法性，即公钥合法;</p>
+</blockquote>
+<blockquote>
+<p>f、客户端然后验证证书相关的域名信息、有效时间等信息;</p>
+</blockquote>
+<blockquote>
+<p>g、客户端会内置信任CA的证书信息(包含公钥)，如果CA不被信任，则找不到对应 CA的证书，证书也会被判定非法</p>
+</blockquote>
+<h3 id="CA机构本质是做什么的"><a href="#CA机构本质是做什么的" class="headerlink" title="CA机构本质是做什么的"></a>CA机构本质是做什么的<br></h3><p>本质上来讲：<strong>CA机构就是生成了一个密钥对，并维护CRL（证书吊销列表）</strong>。如果有公司想要申请证书，就要向CA机构提交申请信息（国家，省份，公司的名字，服务器域名，服务器公钥等等），CA机构负责审核该公司提交信息的真实性，然后CA机构根据申请信息生成签名证书。该证书包含<strong>明文信息</strong> （签发机构，有效时间，证书序列号，服务器域名，申请者，公钥等）和<strong>摘要签名</strong>（用自身的私钥对明文信息的摘要进行签名）。（赚钱如此容易！）</p>
+<h3 id="证书链"><a href="#证书链" class="headerlink" title="证书链"></a>证书链</h3><p>从证书的验证流程可以知道，如果想验证服务器的证书是否合法，只需拿<strong>根证书</strong>中公钥对服务器证书签名进行解密，对比服务器证书中明文的摘要，如果相同即为合法证书。<br><br>那<strong>根证书</strong> 是什么呢？<strong>根证书也叫自签名证书，是CA机构用自己的私钥对自己的信息进行签名生成证书</strong><br><br>证书链就很好理解了!<br><br>如果在根证书和服务器证书之间加一级或者多级证书，就构成了证书链，假设证书链的构架是：A-&gt;B-&gt;C-&gt;D…-&gt;M-&gt;N，A是根证书，N是服务器证书，中间B到M都是中间证书，都是由上一级CA机构颁发的，例如证书B就是由拥有证书A的机构颁发的，证书C由拥有证书B的机构颁发的，依次类推，如果想验证证书N的合法性，就要用到证书M，那如何保证证书M合法性呢，那就要继续往上验证，直到根证书。大致流程如下：</p>
+<p><img src="ca3.png" alt></p>
+<h3 id="浏览器中的证书"><a href="#浏览器中的证书" class="headerlink" title="浏览器中的证书"></a>浏览器中的证书</h3><p>浏览器或者系统中会内置一些可信CA机构的证书，以谷歌为例，可以看到谷歌的证书:</p>
+<p><img src="ca4.png" alt></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>通过以上，可以发现，CA原理不复杂，就是用来验证身份。当然，自己本地也可以本地生成根证书，也可以颁发证书，区块链中的MSP模块就用到这CA，所以CA的原理必须要掌握！</p>
+<p>参考：</p>
+<p><a href="https://www.jianshu.com/p/32e51b9ecab4" target="_blank" rel="noopener">CA证书介绍 https://www.jianshu.com/p/32e51b9ecab4</a></p>
+<p><a href="https://blog.csdn.net/win15135173776/article/details/61193997" target="_blank" rel="noopener">什么是证书链 https://blog.csdn.net/win15135173776/article/details/61193997</a></p>
+<p><a href="https://blog.csdn.net/Shen_Guo/article/details/49891459" target="_blank" rel="noopener">SSL 之证书链 https://blog.csdn.net/Shen_Guo/article/details/49891459</a></p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#CA证书"><span class="toc-text">CA证书</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#为什么要有CA"><span class="toc-text">为什么要有CA</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#如何解决上述问题"><span class="toc-text">如何解决上述问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CA机构本质是做什么的"><span class="toc-text">CA机构本质是做什么的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#证书链"><span class="toc-text">证书链</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#浏览器中的证书"><span class="toc-text">浏览器中的证书</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#总结"><span class="toc-text">总结</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/03/TLS-SSL/" class="prev">&larr; 上一篇 TLS_SSL</a>
+  
+
+  
+
+  
+    <a href="/2018/06/05/设计模式之工厂模式/" class="next">下一篇 设计模式之工厂模式 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

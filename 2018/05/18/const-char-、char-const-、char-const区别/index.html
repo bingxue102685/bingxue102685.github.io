@@ -7,7 +7,7 @@
 
 <!doctype html>
 <html lang="zh-CN">
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -64,8 +64,8 @@ const char *ptrconst修饰的是指针指向的值是常量，不可修改，但
     <div id="menu-inner">
       <div id="brand">
         
-        <a onClick="openUserCard()">
-          <img id="avatar" src="/faceicon.jpg"/>
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
           <div id="homelink">奔跑的蜗牛</div>
         </a>
       </div>
@@ -123,12 +123,12 @@ const char *ptrconst修饰的是指针指向的值是常量，不可修改，但
   <article id="post">
     <h1>const char*、char const*、char *const区别</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2018-05-18</span>
+      <span id="post-title-date">撰写于 2018-05-18</span>
       
-        <span id = "post-title-updated">修改于 2018-05-30</span>
+        <span id="post-title-updated">修改于 2018-05-30</span>
       
       
-      <span id = "post-title-categories">分类
+      <span id="post-title-categories">分类
       
       
         
@@ -138,7 +138,7 @@ const char *ptrconst修饰的是指针指向的值是常量，不可修改，但
       </span>
       
       
-      <span id = "post-title-tags">
+      <span id="post-title-tags">
       标签
       
       
@@ -151,7 +151,7 @@ const char *ptrconst修饰的是指针指向的值是常量，不可修改，但
     </p>
     
     <p>在c++的面试中，经常会被问到这个问题，const在不同位置到底有什么区别呢？有const修饰，其实无外乎指针是常量，或者指针指向的值是常量</p>
-<h4 id="const-char-ptr"><a href="#const-char-ptr" class="headerlink" title="const char *ptr"></a>const char *ptr</h4><p>const修饰的是指针指向的值是常量，不可修改，但是需要注意的是，只是不能通过ptr来修改他指向的值，但是如果有另外一个非const的指针变量同样指向该变量，那该变量是可以修改这个值的，示例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	<span class="keyword">int</span> i;</div><div class="line">	<span class="keyword">char</span> str[] = <span class="string">"hello world"</span>;</div><div class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *ptr = str;</div><div class="line"></div><div class="line">	<span class="comment">/*可以通过str修改*/</span></div><div class="line">	str[<span class="number">0</span>] = <span class="string">'g'</span>;</div><div class="line">	<span class="comment">/*不能通过ptr修改，以下会报错*/</span></div><div class="line">	ptr[<span class="number">0</span>] = <span class="string">'s'</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="const-char-ptr"><a href="#const-char-ptr" class="headerlink" title="const char *ptr"></a>const char *ptr</h4><p>const修饰的是指针指向的值是常量，不可修改，但是需要注意的是，只是不能通过ptr来修改他指向的值，但是如果有另外一个非const的指针变量同样指向该变量，那该变量是可以修改这个值的，示例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i;</span><br><span class="line">	<span class="keyword">char</span> str[] = <span class="string">"hello world"</span>;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *ptr = str;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*可以通过str修改*/</span></span><br><span class="line">	str[<span class="number">0</span>] = <span class="string">'g'</span>;</span><br><span class="line">	<span class="comment">/*不能通过ptr修改，以下会报错*/</span></span><br><span class="line">	ptr[<span class="number">0</span>] = <span class="string">'s'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h4 id="char-const-ptr"><a href="#char-const-ptr" class="headerlink" title="char const *ptr"></a>char const *ptr</h4><p>同const char *ptr</p>
 <h4 id="char-const-ptr-1"><a href="#char-const-ptr-1" class="headerlink" title="char *const ptr"></a>char *const ptr</h4><p>这个就是const指针，指针不能做任何修改。但是可以修改指针指向的内容。不再做示例。</p>
 <p>总结：</p>

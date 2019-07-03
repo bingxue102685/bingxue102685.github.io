@@ -7,7 +7,7 @@
 
 <!doctype html>
 <html lang="zh-CN">
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -63,8 +63,8 @@
     <div id="menu-inner">
       <div id="brand">
         
-        <a onClick="openUserCard()">
-          <img id="avatar" src="/faceicon.jpg"/>
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
           <div id="homelink">奔跑的蜗牛</div>
         </a>
       </div>
@@ -122,12 +122,12 @@
   <article id="post">
     <h1>如何实现单例</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2018-05-30</span>
+      <span id="post-title-date">撰写于 2018-05-30</span>
       
-        <span id = "post-title-updated">修改于 2018-05-30</span>
+        <span id="post-title-updated">修改于 2018-05-30</span>
       
       
-      <span id = "post-title-categories">分类
+      <span id="post-title-categories">分类
       
       
         
@@ -137,7 +137,7 @@
       </span>
       
       
-      <span id = "post-title-tags">
+      <span id="post-title-tags">
       标签
       
       
@@ -149,8 +149,8 @@
       
     </p>
     
-    <p>单例是C++中经常出现的一种设计模式，保证某一类的实例只有一个。cocos2d-x中就用到了很多单例，Director算是一个很常用的单例，先简单看一下cocos2d-x中是怎么做的，以Director为例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*CCDirector.cpp*/</span></div><div class="line"><span class="keyword">static</span> DisplayLinkDirector *s_SharedDirector = <span class="literal">nullptr</span>;</div><div class="line"></div><div class="line">Director* Director::getInstance()</div><div class="line">&#123;</div><div class="line">    <span class="keyword">if</span> (!s_SharedDirector)</div><div class="line">    &#123;</div><div class="line">        s_SharedDirector = <span class="keyword">new</span> (<span class="built_in">std</span>::nothrow) DisplayLinkDirector();</div><div class="line">        CCASSERT(s_SharedDirector, <span class="string">"FATAL: Not enough memory"</span>);</div><div class="line">        s_SharedDirector-&gt;init();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">return</span> s_SharedDirector;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
-<p>以上就是cocos2d-x中Director单例的实现，很简单，但是不完美！没有考虑到多线程的安全问题，当然这对cocos2d-x来说已经足够，不用去做多线程的处理，但是在多线程环境里面这个就是有问题了。网上给了很多错误的示例，就不一一展示了，直接说下一最简单，最安全的方法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/*Singleton.h*/</span></div><div class="line"><span class="keyword">class</span> Singleton</div><div class="line">&#123;</div><div class="line"><span class="keyword">private</span>:</div><div class="line">	Singleton();</div><div class="line"><span class="keyword">private</span>:</div><div class="line">	<span class="keyword">static</span> Singleton* singleton;</div><div class="line"><span class="keyword">public</span>:</div><div class="line">	<span class="function"><span class="keyword">static</span> Singleton* <span class="title">getInstance</span><span class="params">()</span></span>;</div><div class="line">&#125;;</div><div class="line"><span class="comment">/*Singleton.cpp*/</span></div><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Singleton.h"</span></span></div><div class="line"></div><div class="line">Singleton* Singleton::singleton = <span class="keyword">new</span> Singleton;</div><div class="line"></div><div class="line">Singleton::Singleton()</div><div class="line">&#123;	</div><div class="line">&#125;</div><div class="line"></div><div class="line">Singleton* Singleton::getInstance()</div><div class="line">&#123;</div><div class="line">	<span class="keyword">return</span> singleton;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+    <p>单例是C++中经常出现的一种设计模式，保证某一类的实例只有一个。cocos2d-x中就用到了很多单例，Director算是一个很常用的单例，先简单看一下cocos2d-x中是怎么做的，以Director为例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*CCDirector.cpp*/</span></span><br><span class="line"><span class="keyword">static</span> DisplayLinkDirector *s_SharedDirector = <span class="literal">nullptr</span>;</span><br><span class="line"></span><br><span class="line">Director* Director::getInstance()</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!s_SharedDirector)</span><br><span class="line">    &#123;</span><br><span class="line">        s_SharedDirector = <span class="keyword">new</span> (<span class="built_in">std</span>::nothrow) DisplayLinkDirector();</span><br><span class="line">        CCASSERT(s_SharedDirector, <span class="string">"FATAL: Not enough memory"</span>);</span><br><span class="line">        s_SharedDirector-&gt;init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> s_SharedDirector;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上就是cocos2d-x中Director单例的实现，很简单，但是不完美！没有考虑到多线程的安全问题，当然这对cocos2d-x来说已经足够，不用去做多线程的处理，但是在多线程环境里面这个就是有问题了。网上给了很多错误的示例，就不一一展示了，直接说下一最简单，最安全的方法：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*Singleton.h*/</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Singleton</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	Singleton();</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">static</span> Singleton* singleton;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	<span class="function"><span class="keyword">static</span> Singleton* <span class="title">getInstance</span><span class="params">()</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">/*Singleton.cpp*/</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">"Singleton.h"</span></span></span><br><span class="line"></span><br><span class="line">Singleton* Singleton::singleton = <span class="keyword">new</span> Singleton;</span><br><span class="line"></span><br><span class="line">Singleton::Singleton()</span><br><span class="line">&#123;	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Singleton* Singleton::getInstance()</span><br><span class="line">&#123;</span><br><span class="line">	<span class="keyword">return</span> singleton;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>有一个地方，<strong>Singleton* Singleton::singleton = new Singleton</strong>，为什么没有括号呢？搜了一下才知道了这点：</p>
 <p>总结一下就是：有括号的，就调用对应的构造函数。没有加括号，如果有自定义的不带参数的构造函数，则调用该构造函数；如果没有定义构造函数，就调用默认的不带参数的构造函数。</p>
 

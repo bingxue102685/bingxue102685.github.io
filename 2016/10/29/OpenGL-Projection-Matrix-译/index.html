@@ -7,7 +7,7 @@
 
 <!doctype html>
 <html lang="zh-CN">
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -64,8 +64,8 @@
     <div id="menu-inner">
       <div id="brand">
         
-        <a onClick="openUserCard()">
-          <img id="avatar" src="/faceicon.jpg"/>
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
           <div id="homelink">奔跑的蜗牛</div>
         </a>
       </div>
@@ -123,12 +123,12 @@
   <article id="post">
     <h1>OpenGL Projection Matrix(译)</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2016-10-29</span>
+      <span id="post-title-date">撰写于 2016-10-29</span>
       
-        <span id = "post-title-updated">修改于 2018-01-29</span>
+        <span id="post-title-updated">修改于 2018-01-29</span>
       
       
-      <span id = "post-title-categories">分类
+      <span id="post-title-categories">分类
       
       
         
@@ -138,7 +138,7 @@
       </span>
       
       
-      <span id = "post-title-tags">
+      <span id="post-title-tags">
       标签
       
       
@@ -150,7 +150,7 @@
       
     </p>
     
-    <h1 id="OpenGL投影矩阵"><a href="#OpenGL投影矩阵" class="headerlink" title="OpenGL投影矩阵"></a>OpenGL投影矩阵</h1><p>近期看到OpenGL矩阵变换，发现一篇外国人<a href="https://disqus.com/by/songho/" target="_blank" rel="external">songho</a>写的文章<a href="http://www.songho.ca/opengl/gl_projectionmatrix.html" target="_blank" rel="external">OpenGL Projection Matrix</a>还不错，搜了一下，国内竟然没有翻译，就自己动动手翻一下，方便自己查阅。</p>
+    <h1 id="OpenGL投影矩阵"><a href="#OpenGL投影矩阵" class="headerlink" title="OpenGL投影矩阵"></a>OpenGL投影矩阵</h1><p>近期看到OpenGL矩阵变换，发现一篇外国人<a href="https://disqus.com/by/songho/" target="_blank" rel="noopener">songho</a>写的文章<a href="http://www.songho.ca/opengl/gl_projectionmatrix.html" target="_blank" rel="noopener">OpenGL Projection Matrix</a>还不错，搜了一下，国内竟然没有翻译，就自己动动手翻一下，方便自己查阅。</p>
 <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>电脑的显示器是一个2D的平面，OpenGL渲染的3D场景一定要转换为2D的图像才能投射到计算机屏幕，投影矩阵就是被用来做这样的投影变换。首先，它会把所有的顶点数据从视觉坐标系（eye coordinates）转换到裁剪坐标系（clip coordinates）。然后，转换为裁剪坐标系的坐标除以w分量，转换为标准设备坐标（normalized device coordinates (NDC)）。</p>
 <p>因此，我们必须要记住，裁剪（平截头体裁剪）和标准化设备坐标（NDC）变换都归结到投影矩阵，以下的两个部分描述了怎么通过6个边界值来创建一个投影矩阵：left, right, bottom, top, near, far。</p>
 <p>需要注意的是，平截头体裁剪（clipping）在除以w分量之前，是在裁剪坐标系中执行的。在裁剪坐标系中，x, y, z分量都会与w分量进行比较，如果裁剪坐标小于-w,或者大于w分量，那么这个顶点就会被丢弃掉。即裁剪坐标必须要满足 -w &lt; x, y, z &lt; w。</p>
@@ -158,7 +158,7 @@
 <div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_frustumclip.png" width="35%"> </p> </div>
 
 <h2 id="透视投影-Perspective-Projection"><a href="#透视投影-Perspective-Projection" class="headerlink" title="透视投影(Perspective Projection)"></a>透视投影(Perspective Projection)</h2><p>在透视投影中，一个在截棱锥体（truncated pyramid frustum）（视觉坐标系（eye coordinates））被映射到一个立方体（NDC）中；x坐标从[l,r]映射到[1,-1]， y坐标从[b,t]映射到[-1,1]，z坐标从[n,f]映射到[-1,1]。</p>
-<div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix01.png" width="50%"> </p> </div><br>需要注意的是，视觉坐标系用的是右手坐标系，标准化设备坐标系（NDC）用的是左手坐标系。也就是说，在视觉坐标系中，摄像机是从原点向-Z轴看的，而在标准化设备坐标系（NDC）是从原点向+Z轴看的。因为glFrustum()传入的近距离（near）和远距离（far）的值只能是正数，所以在构造投影矩阵时我们需要把这两个值取反。<br><br>在OpenGL中，视觉坐标系中3D坐标点是要被投影到投影平面的近平面，下面的图就展示了如何将一个视觉坐标系中的点（xe, ye, ze）投影到近平面的（xp, yp, zp）。<br><br>平截头体俯视图<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix03.png" width="35%"> </p> </div><br>从平截头体的俯视图可以看出，通过相似三角形，可以计算出，在视觉坐标系下xe是如何映射到xp。<br><br>${x_p \over x_e} = {-n \over z_e}$<br><br>${x_p} = {-n \cdot x_e \over z_e} = {n \cdot x_e \over -z_e}$<br><br>平截头体侧视图<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix04.png" width="35%"> </p> </div><br>从平截头体的侧视图可以看出，yp通过相同的方法可以得到。<br><br>${y_p \over y_e} = {-n \over z_e}$<br><br>${y_p} = {-n·y_e \over z_e} = {n \cdot y_e \over -z_e}$<br><br>需要注意的是，xp 和 yp都依赖于ze，他们都与-ze成反比。换句话说，他们都要除以-ze，这是构建投影矩阵的第一步。在投影矩阵乘以视觉坐标系之后，裁剪坐标系依旧是以一个齐次坐标系。最后，他要除以齐次坐标的w分量才能成为标准设备坐标系（NDC）。<br>（注：翻译此文时，mathajx有些问题，可以在<a href="https://www.mathjax.org/" target="_blank" rel="external">mathajx官网</a>中测试通过，但在blog中无法使用复杂的公式，只好用图片）<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform08.png" width="40%"> </p> </div><br><!-- mathajx有问题，此处直接用图片 --><br><!-- $$
+<div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix01.png" width="50%"> </p> </div><br>需要注意的是，视觉坐标系用的是右手坐标系，标准化设备坐标系（NDC）用的是左手坐标系。也就是说，在视觉坐标系中，摄像机是从原点向-Z轴看的，而在标准化设备坐标系（NDC）是从原点向+Z轴看的。因为glFrustum()传入的近距离（near）和远距离（far）的值只能是正数，所以在构造投影矩阵时我们需要把这两个值取反。<br><br>在OpenGL中，视觉坐标系中3D坐标点是要被投影到投影平面的近平面，下面的图就展示了如何将一个视觉坐标系中的点（xe, ye, ze）投影到近平面的（xp, yp, zp）。<br><br>平截头体俯视图<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix03.png" width="35%"> </p> </div><br>从平截头体的俯视图可以看出，通过相似三角形，可以计算出，在视觉坐标系下xe是如何映射到xp。<br><br>${x_p \over x_e} = {-n \over z_e}$<br><br>${x_p} = {-n \cdot x_e \over z_e} = {n \cdot x_e \over -z_e}$<br><br>平截头体侧视图<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_projectionmatrix04.png" width="35%"> </p> </div><br>从平截头体的侧视图可以看出，yp通过相同的方法可以得到。<br><br>${y_p \over y_e} = {-n \over z_e}$<br><br>${y_p} = {-n·y_e \over z_e} = {n \cdot y_e \over -z_e}$<br><br>需要注意的是，xp 和 yp都依赖于ze，他们都与-ze成反比。换句话说，他们都要除以-ze，这是构建投影矩阵的第一步。在投影矩阵乘以视觉坐标系之后，裁剪坐标系依旧是以一个齐次坐标系。最后，他要除以齐次坐标的w分量才能成为标准设备坐标系（NDC）。<br>（注：翻译此文时，mathajx有些问题，可以在<a href="https://www.mathjax.org/" target="_blank" rel="noopener">mathajx官网</a>中测试通过，但在blog中无法使用复杂的公式，只好用图片）<br><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="gl_transform08.png" width="40%"> </p> </div><br><!-- mathajx有问题，此处直接用图片 --><br><!-- $$
 \begin{pmatrix} 
 x_{clip} \\
 y_{clip} \\

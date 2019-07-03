@@ -7,7 +7,7 @@
 
 <!doctype html>
 <html lang="zh-CN">
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -64,8 +64,8 @@ GLSL内建变量什么是内建变量？GLSL为各个着色阶段定义了一些
     <div id="menu-inner">
       <div id="brand">
         
-        <a onClick="openUserCard()">
-          <img id="avatar" src="/faceicon.jpg"/>
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
           <div id="homelink">奔跑的蜗牛</div>
         </a>
       </div>
@@ -123,12 +123,12 @@ GLSL内建变量什么是内建变量？GLSL为各个着色阶段定义了一些
   <article id="post">
     <h1>高级GLSL(1)</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2016-08-10</span>
+      <span id="post-title-date">撰写于 2016-08-10</span>
       
-        <span id = "post-title-updated">修改于 2018-01-29</span>
+        <span id="post-title-updated">修改于 2018-01-29</span>
       
       
-      <span id = "post-title-categories">分类
+      <span id="post-title-categories">分类
       
       
         
@@ -138,7 +138,7 @@ GLSL内建变量什么是内建变量？GLSL为各个着色阶段定义了一些
       </span>
       
       
-      <span id = "post-title-tags">
+      <span id="post-title-tags">
       标签
       
       
@@ -153,20 +153,20 @@ GLSL内建变量什么是内建变量？GLSL为各个着色阶段定义了一些
     <p>我们以前使用GLSL用法也很简单，使用的少量的GLSL内建变量(gl_Position，gl_FragCoord)，数据类型和数据的输入输出方式也很简单。下面会稍微深入了解一下GLSL的其他内建变量，数据类型，数据的输入输入输出方式。</p>
 <h2 id="GLSL内建变量"><a href="#GLSL内建变量" class="headerlink" title="GLSL内建变量"></a>GLSL内建变量</h2><p>什么是内建变量？GLSL为各个着色阶段定义了一些特殊变量，这些内建变量有一些特殊属性。他们通常用来表达一些固定功能，通常，这些变量都以“gl_”开头。<br>我们已经用过一个输出内建变量 gl_Position 和一个输入内建变量 gl_FragCoord，简单的复习一下这两个内建变量。</p>
 <h3 id="out-vec4-gl-Position"><a href="#out-vec4-gl-Position" class="headerlink" title="out vec4 gl_Position"></a>out vec4 gl_Position</h3><p>顶点着色器内建变量，官方文档：输出当前顶点在裁剪坐标系下的位置。</p>
-<h3 id="in-vec4-gl-FragCoord"><a href="#in-vec4-gl-FragCoord" class="headerlink" title="in vec4 gl_FragCoord"></a>in vec4 gl_FragCoord</h3><p>片段着色器内建变量，官方文档：当前片段在窗口坐标系下的位置。左下角为（0，0），右上角为（screenWith, screenHeight）。如果在这个着色阶段，gl_FragDepth没有被写入，那么z值将会写入到深度缓冲区中。gl_FragCoord的w分量是$\frac 1 w_c$。<br>gl_FragCoord有一个用处就是分屏显示，屏幕不同区域渲染的东西不同。示例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (gl_FragCoord.x &gt; <span class="number">400</span>)</div><div class="line">&#123;</div><div class="line">	color = vec4(<span class="number">1.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>);</div><div class="line">&#125;</div><div class="line"><span class="keyword">else</span></div><div class="line">&#123;</div><div class="line">	color = vec4(<span class="number">0.0f</span>, <span class="number">0.0f</span>, <span class="number">1.0f</span>, <span class="number">0.0f</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="in-vec4-gl-FragCoord"><a href="#in-vec4-gl-FragCoord" class="headerlink" title="in vec4 gl_FragCoord"></a>in vec4 gl_FragCoord</h3><p>片段着色器内建变量，官方文档：当前片段在窗口坐标系下的位置。左下角为（0，0），右上角为（screenWith, screenHeight）。如果在这个着色阶段，gl_FragDepth没有被写入，那么z值将会写入到深度缓冲区中。gl_FragCoord的w分量是$\frac 1 w_c$。<br>gl_FragCoord有一个用处就是分屏显示，屏幕不同区域渲染的东西不同。示例：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (gl_FragCoord.x &gt; <span class="number">400</span>)</span><br><span class="line">&#123;</span><br><span class="line">	color = vec4(<span class="number">1.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">&#123;</span><br><span class="line">	color = vec4(<span class="number">0.0f</span>, <span class="number">0.0f</span>, <span class="number">1.0f</span>, <span class="number">0.0f</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>运行效果图：</p>
 <div class="self_define_image"> <p id="img_text"> <img id="img_image" src="advancedglsl_fragcoord.png" width="40%"> </p></div>
 
 
 <p>再介绍几个内建变量。gl_PointSize, gl_VertexID, gl_FrontFacing, gl_FragDepth</p>
-<h3 id="out-float-gl-PointSize"><a href="#out-float-gl-PointSize" class="headerlink" title="out float gl_PointSize"></a>out float gl_PointSize</h3><p>顶点着色器内建变量，官方文档：（输出）设置该点被光栅化后，像素的宽高值，它只有在渲染点图元(point primitives)时才有效。当然可以不在着色器中设置该值，可以使用glPointSize来设置点的大小。还需要注意的是，该功能在OpenGL中是默认关闭的，需要使用时，要打开，方式如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">glEnable(GL_PROGRAM_POINT_SIZE);</div></pre></td></tr></table></figure></p>
-<p>我们可以在顶点着色器中设置gl_PointSize，为gl_Position.z值，这样就会有距离摄像机越远，点越大<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line">	gl_Position = projection * view * model * vec4(position, <span class="number">1.0f</span>);</div><div class="line">	gl_PointSize = gl_Position.z * <span class="number">2</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="out-float-gl-PointSize"><a href="#out-float-gl-PointSize" class="headerlink" title="out float gl_PointSize"></a>out float gl_PointSize</h3><p>顶点着色器内建变量，官方文档：（输出）设置该点被光栅化后，像素的宽高值，它只有在渲染点图元(point primitives)时才有效。当然可以不在着色器中设置该值，可以使用glPointSize来设置点的大小。还需要注意的是，该功能在OpenGL中是默认关闭的，需要使用时，要打开，方式如下：<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">glEnable(GL_PROGRAM_POINT_SIZE);</span><br></pre></td></tr></table></figure></p>
+<p>我们可以在顶点着色器中设置gl_PointSize，为gl_Position.z值，这样就会有距离摄像机越远，点越大<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	gl_Position = projection * view * model * vec4(position, <span class="number">1.0f</span>);</span><br><span class="line">	gl_PointSize = gl_Position.z * <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <p>运行效果图如下：</p>
 <p><div class="self_define_image"> <p id="img_text"> <img id="img_image" src="advancedglsl_point.png" width="40%"> </p></div></p>
 <h3 id="in-int-gl-VertexID"><a href="#in-int-gl-VertexID" class="headerlink" title="in int gl_VertexID"></a>in int gl_VertexID</h3><p>官方文档：表示当前正在处理的顶点的索引。当我们使用非索引渲染时，它表示当前顶点的真实索引（已经被处理过的顶点的数量）。当使用索引渲染时，它是用来获取缓冲区顶点的索引。<br>教程中的说明更容易理解：当使用索引渲染时（即使用glDrawElements渲染时），这个变量保存着当前绘制的顶点的索引。当用的不是索引渲染时（即使用glDrawArrays渲染时），这个变量保存的是从渲染开始到当前处理的这个顶点的（当前顶点）编号。</p>
 <h3 id="in-bool-gl-FrontFacing"><a href="#in-bool-gl-FrontFacing" class="headerlink" title="in bool gl_FrontFacing"></a>in bool gl_FrontFacing</h3><p>当前片段是正面的一部分，那么该变量是true，否则就是false。当然如果你开了面剔除（glEnable(GL_CULL_FACE)），那么反面的东西就没有任何东西，使用gl_FrontFacing就没有任何意义。</p>
 <h3 id="out-float-gl-FragDepth"><a href="#out-float-gl-FragDepth" class="headerlink" title="out float gl_FragDepth"></a>out float gl_FragDepth</h3><p>设置片段的深度值。（暂时不是重点，不再详细描述）</p>
-<p></p><p></p><br>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="external">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="external">我的OpenGL工程</a><p></p>
+<p></p><p></p><br>参考教程：<a href="https://learnopengl-cn.github.io/" target="_blank" rel="noopener">https://learnopengl-cn.github.io/</a><br>学习交流：<a href="https://github.com/bingxue102685/LearnOpenGL" target="_blank" rel="noopener">我的OpenGL工程</a><p></p>
 
   </article>
   <div class="random-toc-area">

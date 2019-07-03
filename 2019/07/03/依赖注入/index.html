@@ -1,0 +1,414 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="依赖注入最近在研究一个框架CatLib，里面核心思想就是依赖注入，那什么是依赖注入呢？其实思想很简单，目的也很明确-解耦。这种模式适合于组件开发！
+什么是控制反转（IOC）IOC的全称是Inversion of Control，控制反转，意思就是：主动控制变为被动接受，举例：
+
+非IOC: A控制着B，A控制着B的生命周期，创建、使用、销毁
+IOC: A接受B，A只有B的使用权，创建和销毁由...">
+  
+  <title>依赖注入 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/03/接口与抽象类/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        接口与抽象类
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/07/03/动态添加事件帧并持久化保存/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        动态添加事件帧并持久化保存
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>依赖注入</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-03</span>
+      
+        <span id="post-title-updated">修改于 2019-07-03</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Unity/">Unity</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/设计模式/">设计模式</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="依赖注入"><a href="#依赖注入" class="headerlink" title="依赖注入"></a>依赖注入</h2><p>最近在研究一个框架<a href="https://github.com/CatLib/Core" target="_blank" rel="noopener">CatLib</a>，里面核心思想就是<strong>依赖注入</strong>，那什么是依赖注入呢？其实思想很简单，目的也很明确-解耦。这种模式适合于组件开发！</p>
+<h3 id="什么是控制反转（IOC）"><a href="#什么是控制反转（IOC）" class="headerlink" title="什么是控制反转（IOC）"></a>什么是控制反转（IOC）</h3><p>IOC的全称是<code>Inversion of Control</code>，<strong>控制反转</strong>，意思就是：主动控制变为被动接受，举例：</p>
+<ul>
+<li>非IOC: A控制着B，A控制着B的生命周期，创建、使用、销毁</li>
+<li>IOC: A接受B，A只有B的使用权，创建和销毁由第三方控制</li>
+</ul>
+<p>那在IOC模式下，谁负责创建和销毁B呢？<strong>容器</strong>！<br><br>那在IOC模式下，B怎么把使用权给A呢，也就是B的实例怎么交给A呢？<strong>依赖注入</strong>！</p>
+<h3 id="什么是依赖注入（DI）"><a href="#什么是依赖注入（DI）" class="headerlink" title="什么是依赖注入（DI）"></a>什么是依赖注入（DI）</h3><p>DI的全称是<code>Dependency Injection</code>，<strong>依赖注入</strong>，其实按我的意思就是<strong>注入依赖</strong>，额，意思都差不多，为什么需要依赖注入呢，举个例子：<br></p>
+<pre><code>public interface Wheel
+{
+    public void Scroll();
+}
+
+public class CarWheel: Wheel
+{
+    private int color;
+    CarWheel(int color)
+    {
+        this.color = color;
+    }
+    Scroll()
+    {
+        Console.WriteLine(&quot;car wheel scroll!&quot;);
+    }
+}
+
+public class Car
+{
+    //汽车轮子
+    private Wheel carWheel = new CarWheel(1);
+    Run()
+    {
+        Wheel.Scroll();
+    }
+}
+</code></pre><p>上面例子展示了 <code>Car</code> 依赖于 <code>CarWheel</code> ，什么是依赖呢？只要A类中用到了B类型，A就依赖于B。这种模式有什么坏处呢，<strong>耦合</strong>！比如说我现在需要在构造轮子时传入轮子的尺寸，那就要更改 <code>Car</code>中<code>CarWheel</code>的构造函数调用，传入尺寸，或者我不想用<code>CarWheel</code>了，我想用另一个实现了<code>Wheel</code>的类型，还是要改动 <code>Car</code>这个类。从另一种抽象方式上来看，可以把<code>Car</code>看成我们要构建的主系统，而<code>Wheel</code>是系统中的plugin，主系统并不强依赖于任何一个插件，但一旦插件被加载，主系统就应该可以准确调用适当插件的功能。</p>
+<blockquote>
+<p>其实不管是面向服务的编程模式，还是基于插件的框架式编程，为了实现松耦合（服务调用者和提供者之间的or框架和插件之间的），都需要在必要的位置实现面向接口编程，在此基础之上，还应该有一种方便的机制实现具体类型之间的运行时绑定，这就是DI所要解决的问题。</p>
+</blockquote>
+<h3 id="依赖注入的实现方式"><a href="#依赖注入的实现方式" class="headerlink" title="依赖注入的实现方式"></a>依赖注入的实现方式</h3><p>先直观感受一下依赖注入和非依赖注入。</p>
+<pre><code>//非依赖注入
+class Employee {  
+    Address address;  
+    Employee() {  
+        address = new Address();  
+    }  
+}
+//依赖注入  
+class Employee {  
+    Address address;  
+    Employee(Address address) {  
+        this.address=address;  
+    }  
+} 
+</code></pre><p>上面就是依赖注入的一种方式：构造器注入，从上面可以看出，在依赖注入中，<code>Employee</code>依赖的<code>Address</code>实例由构造函数传入，<code>Employee</code>不负责<code>address</code>的构造，那谁负责<code>Address</code>实例的构造呢？需要一个容器来完成！容器通过反射的方式，来构造<code>Address</code>实例来注入到<code>Employee</code>的构造函数里面，所以核心就是DI容器！<br><br>依赖注入的三种方式：<br></p>
+<blockquote>
+<ol>
+<li>构造器注入<br></li>
+<li>设值注入<br></li>
+<li>接口注入<br></li>
+</ol>
+</blockquote>
+<p>具体可参考<a href="http://www.cnblogs.com/xingyukun/archive/2007/10/20/931331.html" target="_blank" rel="noopener">深度理解依赖注入</a></p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#依赖注入"><span class="toc-text">依赖注入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是控制反转（IOC）"><span class="toc-text">什么是控制反转（IOC）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#什么是依赖注入（DI）"><span class="toc-text">什么是依赖注入（DI）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖注入的实现方式"><span class="toc-text">依赖注入的实现方式</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/03/接口与抽象类/" class="prev">&larr; 上一篇 接口与抽象类</a>
+  
+
+  
+
+  
+    <a href="/2019/07/03/动态添加事件帧并持久化保存/" class="next">下一篇 动态添加事件帧并持久化保存 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

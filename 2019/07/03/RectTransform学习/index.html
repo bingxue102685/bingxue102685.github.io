@@ -1,0 +1,356 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="RectTransform学习最近做了很多关于UI的东西，新手入门嘛，基本都是从UI做起的。今天做一个工具的时候，需要在代码中获取一个Image的宽度，遇到了一些问题，一直以为用sizeDelta就可以得到宽度，结果值不对，竟然是负的，仔细一想，不对啊！以前经常用这个变量啊，没出错。网上查了一下，发现自己对RectTransform这个组件还是不了解，总结如下：
+cocos2d-x惹的祸如果...">
+  
+  <title>RectTransform学习 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/03/AssetBundle使用/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        AssetBundle使用
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/07/03/接口与抽象类/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        接口与抽象类
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>RectTransform学习</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-03</span>
+      
+        <span id="post-title-updated">修改于 2019-07-03</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Unity/">Unity</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/RectTransform/">RectTransform</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="RectTransform学习"><a href="#RectTransform学习" class="headerlink" title="RectTransform学习"></a>RectTransform学习</h2><p>最近做了很多关于UI的东西，新手入门嘛，基本都是从UI做起的。今天做一个工具的时候，需要在代码中获取一个Image的宽度，遇到了一些问题，一直以为用sizeDelta就可以得到宽度，结果值不对，竟然是负的，仔细一想，不对啊！以前经常用这个变量啊，没出错。网上查了一下，发现自己对RectTransform这个组件还是不了解，总结如下：</p>
+<h3 id="cocos2d-x惹的祸"><a href="#cocos2d-x惹的祸" class="headerlink" title="cocos2d-x惹的祸"></a>cocos2d-x惹的祸</h3><p>如果你跟我一样，是从2D转到3D的，并且以前用过Cocos2d-x或者Egret等引擎，那你一定会对RectTransform中的某些概念搞混</p>
+<h3 id="Anchor是什么"><a href="#Anchor是什么" class="headerlink" title="Anchor是什么"></a>Anchor是什么</h3><p>在Cocos2d-x中Anchor被翻译为锚点，这点跟U3D是一样的，但是概念却不一样，Cocos2d-x中的Anchor就是U3D中的Pivot，定义的是UI的轴心，这点很坑！那在U3D中Anchor的意义是什么呢？在U3D中，Anchor是一种布局定义，就是相对父节点，如何来约束子节点的位置和大小。<br><br><img src="anchor1.png" alt><br><br><br>如上图所示，箭头所指处，即为锚点，锚点是一个百分比的值，是相对于父节点来设置的。在属性面板可通过Anchors来观察和设置Anchor的Min和Max的值，这两个值对应一个矩形框，可称为锚点框，Min对应的就是锚点框左下角的位置，Max对应的就是锚点框右上角的位置。<br><br><br><img src="anchor2.png" alt><br><br><br>子节点相对于锚点的框的位置不会发生变化。上图是锚点重合，位于白块的左下角，也就是说红块相对于白块的左下角的距离保持不变，无论白块如何移动或者大小如何改变，红块也会保持该距离来相对移动。拖动红块时，我们可以看到编辑器上面自动标出了4条边到父节点的距离，同时属性面板的参数也变为left，top，right，bottom，与之对应。<br><br><br><img src="anchor3.png" alt><br><br><br>上图，Min的位置和Max的位置没有重合，位于左上和右下，图中显示的是4个角，也就是子节点的4个边到父节点的4条边距离保持不变，父节点大小发生变化，子节点也随之发生改变。其实很多UI编辑器，Cocosbuilder，Cocoscreator，FairyGUI等等都有这样的概念，只不过叫法不一样，Unity整合的更好一些。</p>
+<h3 id="Pivot是什么"><a href="#Pivot是什么" class="headerlink" title="Pivot是什么"></a>Pivot是什么</h3><p>Pivot是轴的意思，假如用一个钉子，把一副画钉在墙上，这个钉子就是Pivot，旋转，缩放，移动就是相对这个点的。不多解释了，很简单！</p>
+<h3 id="anchoredPosition"><a href="#anchoredPosition" class="headerlink" title="anchoredPosition"></a>anchoredPosition</h3><p>anchoredPosition就是Pivot相对于Anchor的位置。当anchor的Min和Max重合时，属性面板中显示的PosX 和 PosY就是 anchoredPosition<br><br><br><img src="anchor4.png" alt><br><br><br>当anchor的Min和Max不重合时，anchoredPosition就比较复杂了，在这种情况下，Unity会根据Pivot、AnchorMin和AnchorMax计算出一个锚点，然后在通过Pivot和锚点来得出anchoredPosition的位置，不在细究。</p>
+<h3 id="offsetMin、offsetMax"><a href="#offsetMin、offsetMax" class="headerlink" title="offsetMin、offsetMax"></a>offsetMin、offsetMax</h3><p>offsetMin表示物体的左下角相对于AnchorMin的偏移， offsetMax表示物体右上角相对AnchorMax的偏移<br><br><br><img src="anchor5.png" alt><br><br><br>上图所示，AnchorMin和AnchorMax重合，offsetMin和offsetMax的x、y都为正值</p>
+<p><br><br><img src="anchor6.png" alt><br><br><br>上图所示，AnchorMin和AnchorMax不重合，offsetMin的x、y都为正值，offsetMax的x、y为负值。</p>
+<h3 id="sizeDelta"><a href="#sizeDelta" class="headerlink" title="sizeDelta"></a>sizeDelta</h3><p>sizeDelta就是offsetMax - offsetMin的值，很多人以为sizeDelta就是UI的尺寸，其实不然，当AnchorMin和AnchorMax重合时，sizeDelta就是UI的尺寸，但是当AnchorMin和AnchorMax不重合，offsetMax - offsetMin是负值，需要取反，才是UI的尺寸</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#RectTransform学习"><span class="toc-text">RectTransform学习</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#cocos2d-x惹的祸"><span class="toc-text">cocos2d-x惹的祸</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Anchor是什么"><span class="toc-text">Anchor是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Pivot是什么"><span class="toc-text">Pivot是什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#anchoredPosition"><span class="toc-text">anchoredPosition</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#offsetMin、offsetMax"><span class="toc-text">offsetMin、offsetMax</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sizeDelta"><span class="toc-text">sizeDelta</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/03/AssetBundle使用/" class="prev">&larr; 上一篇 AssetBundle使用</a>
+  
+
+  
+
+  
+    <a href="/2019/07/03/接口与抽象类/" class="next">下一篇 接口与抽象类 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

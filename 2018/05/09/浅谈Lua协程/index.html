@@ -7,7 +7,7 @@
 
 <!doctype html>
 <html lang="zh-CN">
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -70,8 +70,8 @@ coroutine...">
     <div id="menu-inner">
       <div id="brand">
         
-        <a onClick="openUserCard()">
-          <img id="avatar" src="/faceicon.jpg"/>
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
           <div id="homelink">奔跑的蜗牛</div>
         </a>
       </div>
@@ -129,9 +129,9 @@ coroutine...">
   <article id="post">
     <h1>浅谈Lua协程</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2018-05-09</span>
+      <span id="post-title-date">撰写于 2018-05-09</span>
       
-        <span id = "post-title-updated">修改于 2018-05-10</span>
+        <span id="post-title-updated">修改于 2018-05-10</span>
       
       
       
@@ -174,10 +174,10 @@ coroutine...">
 </ul>
 </li>
 </ol>
-<p>以上都是摘自<a href="https://www.cnblogs.com/zrtqsk/p/4374360.html" target="_blank" rel="external">https://www.cnblogs.com/zrtqsk/p/4374360.html</a></p>
+<p>以上都是摘自<a href="https://www.cnblogs.com/zrtqsk/p/4374360.html" target="_blank" rel="noopener">https://www.cnblogs.com/zrtqsk/p/4374360.html</a></p>
 <h4 id="协程的优点"><a href="#协程的优点" class="headerlink" title="协程的优点"></a>协程的优点</h4><p>通过以上的介绍可以发现，lua的协程很简单，由于是手动控制协程的切换，不用考虑因资源抢占引起的问题。 </p>
 <h4 id="协程的缺点"><a href="#协程的缺点" class="headerlink" title="协程的缺点"></a>协程的缺点</h4><p>因为同一时间只有一个协程拥有执行权，只相当于单线程的能力，也导致了时间片不能公平分享，很是鸡肋，功能上也跟callback有重复。而且不能跨c函数切换协程。总之线程是系统级实现，而协程只是在应用层实现。</p>
-<p>知乎大神的评论：<br><a href="https://www.zhihu.com/question/20511233" target="_blank" rel="external">协程不过是一个逻辑控制需求。一些语言原生支持，不支持也可以用原有的材料构建出来。协程的实现，无非是你要维护一组局部状态，在重新进入协程前，保证这些状态不被改变，你能顺利定位到之前的位置。你平时所写的一些逻辑控制代码，经典如状态机或对象等，也许就已经是一种“协程”了。区别在于是否精巧，适用条件是否苛刻，使用是否方便，效率是否足够罢了。面向对象中的对象，函数式语言中过程的chunk实现，都跟协程有些相似的结构。这些语言的表达足够丰富，有没有协程，倒不构成问题。真要说起来，我觉得协程的最大的好处是在写过程式（命令式）风格的代码时，很好的简化了逻辑的流程。</a></p>
+<p>知乎大神的评论：<br><a href="https://www.zhihu.com/question/20511233" target="_blank" rel="noopener">协程不过是一个逻辑控制需求。一些语言原生支持，不支持也可以用原有的材料构建出来。协程的实现，无非是你要维护一组局部状态，在重新进入协程前，保证这些状态不被改变，你能顺利定位到之前的位置。你平时所写的一些逻辑控制代码，经典如状态机或对象等，也许就已经是一种“协程”了。区别在于是否精巧，适用条件是否苛刻，使用是否方便，效率是否足够罢了。面向对象中的对象，函数式语言中过程的chunk实现，都跟协程有些相似的结构。这些语言的表达足够丰富，有没有协程，倒不构成问题。真要说起来，我觉得协程的最大的好处是在写过程式（命令式）风格的代码时，很好的简化了逻辑的流程。</a></p>
 <p>还是不能理解协程的真谛！或许真的很强大，我不能理解！</p>
 
   </article>

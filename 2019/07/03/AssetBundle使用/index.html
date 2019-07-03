@@ -1,0 +1,413 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="##AssetBundles
+AssetBundle工作流程要开始使用AssetBundles，需要遵循以下步骤。
+分配Assets给AssetBundles把一个Asset分配给一个AssetBundle，需要使用一下步骤
+
+从project 面板中，选择你想要打进包的asset
+查看 inspector 面板中，当前选择的asset的属性
+在inspector面板的底部，可以看到分配的A...">
+  
+  <title>AssetBundle使用 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/03/TypeScript语法重点/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        TypeScript语法重点
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/07/03/RectTransform学习/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        RectTransform学习
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>AssetBundle使用</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-03</span>
+      
+        <span id="post-title-updated">修改于 2019-07-03</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Unity/">Unity</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/AssetBundle/">AssetBundle</a>
+      
+      </span>
+      
+    </p>
+    
+    <p>##AssetBundles</p>
+<h3 id="AssetBundle工作流程"><a href="#AssetBundle工作流程" class="headerlink" title="AssetBundle工作流程"></a>AssetBundle工作流程</h3><p>要开始使用AssetBundles，需要遵循以下步骤。</p>
+<h4 id="分配Assets给AssetBundles"><a href="#分配Assets给AssetBundles" class="headerlink" title="分配Assets给AssetBundles"></a>分配Assets给AssetBundles</h4><p>把一个Asset分配给一个AssetBundle，需要使用一下步骤<br></p>
+<ol>
+<li>从<code>project</code> 面板中，选择你想要打进包的asset<br></li>
+<li>查看 <code>inspector</code> 面板中，当前选择的asset的属性<br></li>
+<li>在<code>inspector</code>面板的底部，可以看到分配的AssetBundles和后缀的显示部分<br></li>
+<li>左边的下拉列表中可以选择分配的AssetBundle，右边可选择AssetBundle的后缀名<br></li>
+<li>点击左边的下拉列表，表示当前已经注册的AssetBundle名字，默认为None<br></li>
+<li>点击<code>New...</code>可创建一个新的AssetBundle<br></li>
+<li>输入你想要设置的AssetBundle的名字。需要注意的是：AssetBundle的名称支持文件夹结构，这种结构取决于你输入的名称。如果想添加一个子文件夹，用<code>/</code>做分隔。例如：你输入<code>environment/forest</code>，将会在<code>environment</code>文件夹下创建一个名为<code>forest</code>的AssetBundle<br></li>
+<li><p>一旦你选择或者创建了一个AssetBundle名字，你也可以用这种方法，从右边下拉列表来分配或创建一个后缀名。后缀名不是必须的。<br></p>
+<h4 id="生成AssetBundles"><a href="#生成AssetBundles" class="headerlink" title="生成AssetBundles"></a>生成AssetBundles</h4><p>在 <code>Assets</code>文件夹下，创建一个文件夹，命名为 <code>Editor</code>，然后在<code>Editor</code>文件夹下创建一个<code>C#</code>文件，输入一下代码：<br></p>
+<pre><code>using UnityEditor;
+using System.IO;
+
+public class CreateAssetBundles
+{
+    [MenuItem(&quot;Assets/Build AssetBundles&quot;)]
+    static void BuildAllAssetBundles()
+    {
+        string assetBundleDirectory = &quot;Assets/AssetBundles&quot;;
+        if(!Directory.Exists(assetBundleDirectory))
+{
+    Directory.CreateDirectory(assetBundleDirectory);
+}
+BuildPipeline.BuildAssetBundles(assetBundleDirectory, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows);
+    }
+}
+</code></pre></li>
+</ol>
+<p>这段代码将会在<code>Assets</code>按钮菜单底部创建一个名为<code>Build AssetBundles</code>的按钮，如果点击该按钮，就会执行与之关联的函数。当点击该按钮时，就会生成一个有进度条的对话框。这将会打包所有带有AssetBundle名字的assets，然后把他们放在通过assetBundleDirectory设置的文件夹中。</p>
+<h4 id="把AssetBundles上传至服务器"><a href="#把AssetBundles上传至服务器" class="headerlink" title="把AssetBundles上传至服务器"></a>把AssetBundles上传至服务器</h4><p>这一步对于每个开发者来说都是不同的，Unity并不会告诉你怎么做。如果你想把你的<code>AssetBundles</code>上传至第三方服务器，do it!如果你就是单纯的在做本地开发，并打算把所有的AssetBundle放在磁盘上，skip it!</p>
+<h4 id="加载AssetBundles和Assets"><a href="#加载AssetBundles和Assets" class="headerlink" title="加载AssetBundles和Assets"></a>加载AssetBundles和Assets</h4><p>如果你想从本地加载，你可能会使用到 <code>AssetBundles.LoadFromFile</code>,例如：<br></p>
+<pre><code>public class LoadFromFileExample extends MonoBehaviour {
+    function Start() {
+        var myLoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, &quot;myassetBundle&quot;));
+        if (myLoadedAssetBundle == null) {
+            Debug.Log(&quot;Failed to load AssetBundle!&quot;);
+            return;
+        }
+        var prefab = myLoadedAssetBundle.LoadAsset.&lt;GameObject&gt;(&quot;MyObject&quot;);
+        Instantiate(prefab);
+    }
+}
+</code></pre><p><code>LoadFromFile</code>需要一个本地的包路径。</p>
+<p>如果你自己托管<code>AssetBundles</code>，需要下载到你的游戏中，会用到 <code>UnityWebRequest</code>的API，例如：<br></p>
+<pre><code>IEnumerator InstantiateObject()
+
+{
+    string uri = &quot;file:///&quot; + Application.dataPath + &quot;/AssetBundles/&quot; + assetBundleName;        
+    UnityEngine.__Networking__.UnityWebRequest request = UnityEngine.__Networking__.UnityWebRequest.GetAssetBundle(uri, 0);
+    yield return request.Send();
+    AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
+    GameObject cube = bundle.LoadAsset&lt;GameObject&gt;(&quot;Cube&quot;);
+    GameObject sprite = bundle.LoadAsset&lt;GameObject&gt;(&quot;Sprite&quot;);
+    Instantiate(cube);
+    Instantiate(sprite);
+}
+</code></pre><p><code>GetAssetBundle(string, int)</code>需要传入<code>AssetBundle</code>的uri和要下载的包的版本。在上面的例子中，我们仍然指向一个本地文件，但字符串uri可以指向你托管的任何AssetBundles的URL。<br><code>UnityWebRequest</code>包含一个特殊的类来处理<code>AssetBundles</code>:<code>DownloadHandlerAssetBundle</code>,这个类可以从请求中获取<code>AssetBundle</code>。<br><br>无论使用哪种方法，现在都可以访问AssetBundle对象。你需要使用AssetBundle中的 <code>LoadAsset&lt;T&gt;(string)</code>方法，这个方法需要传入类型<code>T</code>,这个类型就是你想要加载的asset的类型，还需要传入asset在包中的名字。这个方法返回任何你想从 <code>AssetBundle</code>中加载的对象。你可以像使用Unity中内置对象一样使用该加载的对象。例如，如果你想在场景中创建一个GameObject，你只需要调用<code>Instantiate(gameObjectFromAssetBundle)</code>。</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#AssetBundle工作流程"><span class="toc-text">AssetBundle工作流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#分配Assets给AssetBundles"><span class="toc-text">分配Assets给AssetBundles</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#生成AssetBundles"><span class="toc-text">生成AssetBundles</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#把AssetBundles上传至服务器"><span class="toc-text">把AssetBundles上传至服务器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#加载AssetBundles和Assets"><span class="toc-text">加载AssetBundles和Assets</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/03/TypeScript语法重点/" class="prev">&larr; 上一篇 TypeScript语法重点</a>
+  
+
+  
+
+  
+    <a href="/2019/07/03/RectTransform学习/" class="next">下一篇 RectTransform学习 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

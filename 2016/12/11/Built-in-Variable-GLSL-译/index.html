@@ -7,7 +7,7 @@
 
 <!doctype html>
 <html lang="zh-CN">
-<head>
+<head><meta name="generator" content="Hexo 3.9.0">
   <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   
@@ -16,8 +16,8 @@
   
   
   
-    <meta name="description" content="在学习高级GLSL时，看到了这个官方文档，觉得还是翻译一下好。原文: www.opengl.org/wiki/Built-inVariable(GLSL)
-内建变量(Built-in Variable (GLSL))OpenGL着色语言为各个着色阶段定义了一些特殊变量，这些内建变量有一些特殊属性。他们通常用来表达一些固定功能，通常，这些变量都以“gl_”开头，用户自定义的变量不可以这样开头。...">
+    <meta name="description" content="在学习高级GLSL时，看到了这个官方文档，觉得还是翻译一下好。原文: www.opengl.org/wiki/Built-in_Variable_(GLSL)
+内建变量(Built-in Variable (GLSL))OpenGL着色语言为各个着色阶段定义了一些特殊变量，这些内建变量有一些特殊属性。他们通常用来表达一些固定功能，通常，这些变量都以“gl_”开头，用户自定义的变量不可以这样开...">
   
   <title>Built-in Variable (GLSL)(译) [ 奔跑的蜗牛 ]</title>
   
@@ -64,8 +64,8 @@
     <div id="menu-inner">
       <div id="brand">
         
-        <a onClick="openUserCard()">
-          <img id="avatar" src="/faceicon.jpg"/>
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
           <div id="homelink">奔跑的蜗牛</div>
         </a>
       </div>
@@ -123,12 +123,12 @@
   <article id="post">
     <h1>Built-in Variable (GLSL)(译)</h1>
     <p class="page-title-sub">
-      <span id = "post-title-date">撰写于 2016-12-11</span>
+      <span id="post-title-date">撰写于 2016-12-11</span>
       
-        <span id = "post-title-updated">修改于 2018-01-29</span>
+        <span id="post-title-updated">修改于 2018-01-29</span>
       
       
-      <span id = "post-title-categories">分类
+      <span id="post-title-categories">分类
       
       
         
@@ -138,7 +138,7 @@
       </span>
       
       
-      <span id = "post-title-tags">
+      <span id="post-title-tags">
       标签
       
       
@@ -150,9 +150,9 @@
       
     </p>
     
-    <p>在学习<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/08%20Advanced%20GLSL/" target="_blank" rel="external">高级GLSL</a>时，看到了这个官方文档，觉得还是翻译一下好。<br>原文: www.opengl.org/wiki/Built-in<em>Variable</em>(GLSL)</p>
+    <p>在学习<a href="https://learnopengl-cn.github.io/04%20Advanced%20OpenGL/08%20Advanced%20GLSL/" target="_blank" rel="noopener">高级GLSL</a>时，看到了这个官方文档，觉得还是翻译一下好。<br>原文: <a href="http://www.opengl.org/wiki/Built-in_Variable_(GLSL)" target="_blank" rel="noopener">www.opengl.org/wiki/Built-in_Variable_(GLSL)</a></p>
 <h2 id="内建变量-Built-in-Variable-GLSL"><a href="#内建变量-Built-in-Variable-GLSL" class="headerlink" title="内建变量(Built-in Variable (GLSL))"></a>内建变量(Built-in Variable (GLSL))</h2><p>OpenGL着色语言为各个着色阶段定义了一些特殊变量，这些内建变量有一些特殊属性。他们通常用来表达一些固定功能，通常，这些变量都以“gl_”开头，用户自定义的变量不可以这样开头。<br>注意：这篇文章只描述了在OpengGL着色器语言中核心的预定义变量。Any variables that are from the compatibility profiles are not listed here.</p>
-<h3 id="顶点着色器输入变量-Vertex-shader-inputs"><a href="#顶点着色器输入变量-Vertex-shader-inputs" class="headerlink" title="顶点着色器输入变量(Vertex shader inputs)"></a>顶点着色器输入变量(Vertex shader inputs)</h3><p>顶点着色器有下面两个内建输入变量。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">in <span class="keyword">int</span> gl_VertexID;</div><div class="line">in <span class="keyword">int</span> gl_InstanceID;</div></pre></td></tr></table></figure></p>
+<h3 id="顶点着色器输入变量-Vertex-shader-inputs"><a href="#顶点着色器输入变量-Vertex-shader-inputs" class="headerlink" title="顶点着色器输入变量(Vertex shader inputs)"></a>顶点着色器输入变量(Vertex shader inputs)</h3><p>顶点着色器有下面两个内建输入变量。<br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">in <span class="keyword">int</span> gl_VertexID;</span><br><span class="line">in <span class="keyword">int</span> gl_InstanceID;</span><br></pre></td></tr></table></figure></p>
 <h4 id="gl-VertexID"><a href="#gl-VertexID" class="headerlink" title="gl_VertexID"></a>gl_VertexID</h4><p>表示当前正在处理的顶点的索引。当我们使用非索引渲染时，它表示当前顶点的真实索引（已经被处理过的顶点的数量）。当使用索引渲染时，它是用来获取缓冲区顶点的索引。</p>
 
   </article>

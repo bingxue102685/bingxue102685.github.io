@@ -1,0 +1,389 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="接口与抽象类引言学习面向对象的时候，一直搞不懂，接口和抽象类的区别，学习TypeScript的时，又遇到这个这两个概念，总觉得这两个东西的功能都一样，为什么要分成，仔细查阅了一番，觉得自己太幼稚了，这两个东西的区别还是很大的，或者说根本就是两种东西，两种思想：
+抽象类先说抽象类，抽象类是指：含有抽象方法的类。抽象方法是什么？：只有声明，没有具体实现的方法。抽象类的形式如下：
+abstract...">
+  
+  <title>接口与抽象类 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/03/RectTransform学习/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        RectTransform学习
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/07/03/依赖注入/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        依赖注入
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>接口与抽象类</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-03</span>
+      
+        <span id="post-title-updated">修改于 2019-07-03</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Unity/">Unity</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/设计模式/">设计模式</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="接口与抽象类"><a href="#接口与抽象类" class="headerlink" title="接口与抽象类"></a>接口与抽象类</h2><h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>学习面向对象的时候，一直搞不懂，接口和抽象类的区别，学习<code>TypeScript</code>的时，又遇到这个这两个概念，总觉得这两个东西的功能都一样，为什么要分成，仔细查阅了一番，觉得自己太幼稚了，这两个东西的区别还是很大的，或者说根本就是两种东西，两种思想：</p>
+<h3 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h3><p>先说抽象类，抽象类是指：含有抽象方法的类。抽象方法是什么？：只有声明，没有具体实现的方法。抽象类的形式如下：</p>
+<pre><code>abstract class ClassName {
+    abstract void fun();
+}
+</code></pre><p>如上所示，抽象类和抽象方法必须用<code>abstract</code>修饰。<strong>不能创建抽象类的对象。</strong><br><br>注：如果一个类中不包含抽象方法，但是用<code>abstract</code>修饰，它也是抽象类。同时，抽象类中，不一定只要抽象方法，还可以有普通方法和成员变量，除了不能实例化，他和普通的类没什么大的区别。需要注意一下几点：</p>
+<blockquote>
+<ol>
+<li>抽象方法必选为<code>public</code>或者<code>protected</code>(如果为<code>private</code>，则不能被继承，没有任何意义)</li>
+<li>抽象类不能用来创建对象。</li>
+<li>如果一个类继承与抽象类，则必须实现父类的抽象方法。如果子类没有实现父类的抽象方法，则必须将子类也定义为<code>abstract</code>类。</li>
+<li>除了以上几点的区别，抽象类跟普通类没有区别。</li>
+</ol>
+</blockquote>
+<h3 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h3><p>接口，泛指供别人调用的方法或者函数。是一种 <strong>对行为的抽象</strong>。</p>
+<pre><code>interface InterfaceName {
+    //functions
+}
+</code></pre><p>接口中也可以有变量和方法。但是接口中变量只能是 <code>public static final</code>，方法只能是 <code>public abstract</code>。也就是说接口中的方法不能有具体实现，而且<strong>一般情况下，不在接口中定义变量。</strong>总得来说，接口是一种极度抽象的类型，比抽象类更加抽象。</p>
+<h3 id="抽象类和接口的区别"><a href="#抽象类和接口的区别" class="headerlink" title="抽象类和接口的区别"></a>抽象类和接口的区别</h3><h4 id="1-语法层面上区别"><a href="#1-语法层面上区别" class="headerlink" title="1. 语法层面上区别"></a>1. 语法层面上区别</h4><blockquote>
+<ol>
+<li>抽象类可以提供成员方法的实现细节，而接口中只能存在<code>public abstract</code>方法。</li>
+<li>抽象类中的成员变量不受限制，可以是各种类型，而在接口中只能是<code>public static final</code>类型的。</li>
+<li>接口中不能含有静态代码块已经静态方法，而抽象类中可以有有个静态代码块和静态方法</li>
+<li>一个类只能继承一个抽象类，而一个类可以实现多个接口。</li>
+</ol>
+</blockquote>
+<h4 id="2-设计层面的区别"><a href="#2-设计层面的区别" class="headerlink" title="2. 设计层面的区别"></a>2. 设计层面的区别</h4><blockquote>
+<p>1）抽象类是对一种事物的抽象，即对类抽象，而接口是对行为的抽象。抽象类是对整个类整体进行抽象，包括属性、行为，但是接口却是对类局部（行为）进行抽象。举个简单的例子，飞机和鸟是不同类的事物，但是它们都有一个共性，就是都会飞。那么在设计的时候，可以将飞机设计为一个类Airplane，将鸟设计为一个类Bird，但是不能将 飞行 这个特性也设计为类，因此它只是一个行为特性，并不是对一类事物的抽象描述。此时可以将 飞行 设计为一个接口Fly，包含方法fly( )，然后Airplane和Bird分别根据自己的需要实现Fly这个接口。然后至于有不同种类的飞机，比如战斗机、民用飞机等直接继承Airplane即可，对于鸟也是类似的，不同种类的鸟直接继承Bird类即可。从这里可以看出，继承是一个 “是不是”的关系，而 接口 实现则是 “有没有”的关系。如果一个类继承了某个抽象类，则子类必定是抽象类的种类，而接口实现则是有没有、具备不具备的关系，比如鸟是否能飞（或者是否具备飞行这个特点），能飞行则可以实现这个接口，不能飞行就不实现这个接口。</p>
+</blockquote>
+<blockquote>
+<p>2）设计层面不同，抽象类作为很多子类的父类，它是一种模板式设计。而接口是一种行为规范，它是一种辐射式设计。什么是模板式设计？最简单例子，大家都用过ppt里面的模板，如果用模板A设计了ppt B和ppt C，ppt B和ppt C公共的部分就是模板A了，如果它们的公共部分需要改动，则只需要改动模板A就可以了，不需要重新对ppt B和ppt C进行改动。而辐射式设计，比如某个电梯都装了某种报警器，一旦要更新报警器，就必须全部更新。也就是说对于抽象类，如果需要添加新的方法，可以直接在抽象类中添加具体的实现，子类可以不进行变更；而对于接口则不行，如果接口进行了变更，则所有实现这个接口的类都必须进行相应的改动。</p>
+</blockquote>
+<blockquote>
+<p>3)设计层次不同。对于抽象类而言，它是自下而上来设计的，我们要先知道子类才能抽象出父类，而接口则不同，它根本就不需要知道子类的存在，只需要定义一个规则即可，至于什么子类、什么时候怎么实现它一概不知。比如我们只有一个猫类在这里，如果你这是就抽象成一个动物类，是不是设计有点儿过度？我们起码要有两个动物类，猫、狗在这里，我们在抽象他们的共同点形成动物抽象类吧！所以说抽象类往往都是通过重构而来的！但是接口就不同，比如说飞，我们根本就不知道会有什么东西来实现这个飞接口，怎么实现也不得而知，我们要做的就是事前定义好飞的行为接口。所以说抽象类是自底向上抽象而来的，接口是自顶向下设计出来的。</p>
+</blockquote>
+<p>警报门的例子就不在示例了<br><br>要搞清楚，<code>警报门</code>的本质是<code>门</code>，而<code>警报</code>只是他的一个特殊功能，所以<code>门</code>要设计为<code>抽象类</code>， <code>警报</code>要设计为<code>接口</code>。于是<code>警报门</code>就要继承自<code>门</code>，实现<code>警报</code>接口</p>
+<p>个人理解：抽象类代表的是：共性，接口代表的是：个性</p>
+<p>感悟：每个阶段对语言的理解是不一样的，只有逐渐积累，才会有不断进步！</p>
+<p>[参考资料:]<br><br><a href="https://www.cnblogs.com/dolphin0520/p/3811437.html" target="_blank" rel="noopener">https://www.cnblogs.com/dolphin0520/p/3811437.html</a><br><br><a href="https://blog.csdn.net/chenssy/article/details/12858267" target="_blank" rel="noopener">https://blog.csdn.net/chenssy/article/details/12858267</a><br><br><a href="http://blog.51cto.com/android/385282" target="_blank" rel="noopener">http://blog.51cto.com/android/385282</a></p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#接口与抽象类"><span class="toc-text">接口与抽象类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#抽象类"><span class="toc-text">抽象类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#接口"><span class="toc-text">接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#抽象类和接口的区别"><span class="toc-text">抽象类和接口的区别</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-语法层面上区别"><span class="toc-text">1. 语法层面上区别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-设计层面的区别"><span class="toc-text">2. 设计层面的区别</span></a></li></ol></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/03/RectTransform学习/" class="prev">&larr; 上一篇 RectTransform学习</a>
+  
+
+  
+
+  
+    <a href="/2019/07/03/依赖注入/" class="next">下一篇 依赖注入 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

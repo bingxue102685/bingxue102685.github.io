@@ -1,0 +1,371 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="Unity中Excel的写入Excel读取在Unity中读取Excel有很多种方法，对应的插件也很多，NPOI，COM，EPPlus等等，都可以读取，不在赘述
+Excel写入NPOIExcel写入时，我遇到了一些问题，原来的项目中使用的是NPOI，这个插件的好处就是，不依赖于Office，无论你是否安转了Office，都可以对Excel进行读写操作。原来项目中，只是使用NPOI读取Excel...">
+  
+  <title>Unity中Excel的写入 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/03/动态添加事件帧并持久化保存/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        动态添加事件帧并持久化保存
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/07/03/Lamda引起的一个问题/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Lamda引起的一个问题
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>Unity中Excel的写入</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-03</span>
+      
+        <span id="post-title-updated">修改于 2019-07-03</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Unity/">Unity</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/Excel/">Excel</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="Unity中Excel的写入"><a href="#Unity中Excel的写入" class="headerlink" title="Unity中Excel的写入"></a>Unity中Excel的写入</h2><h3 id="Excel读取"><a href="#Excel读取" class="headerlink" title="Excel读取"></a>Excel读取</h3><p>在Unity中读取Excel有很多种方法，对应的插件也很多，NPOI，COM，EPPlus等等，都可以读取，不在赘述</p>
+<h3 id="Excel写入"><a href="#Excel写入" class="headerlink" title="Excel写入"></a>Excel写入</h3><h4 id="NPOI"><a href="#NPOI" class="headerlink" title="NPOI"></a>NPOI</h4><p>Excel写入时，我遇到了一些问题，原来的项目中使用的是NPOI，这个插件的好处就是，不依赖于Office，无论你是否安转了Office，都可以对Excel进行读写操作。原来项目中，只是使用NPOI读取Excel，没有写入的操作，本以为没有问题，But竟然不能用！一直在报一个异常：<code>Type NPOI.OpenXmlFormats.ItemChoiceType is missing enumeration value &#39;stream&#39; for element &#39;stream from namespace</code>，无论怎么尝试都不行！浪费了好长时间，放弃！</p>
+<h4 id="COM"><a href="#COM" class="headerlink" title="COM"></a>COM</h4><p>后来搜了一个方法，使用Office自带的Excel.dll，这总行了吧，果断试了以下，没有在Unity中尝试，自建了一个C#工程，使用方法很简单，添加引用-&gt;COM，找到 <code>Microsoft Office 16.0 Object Library</code> 和 <code>Microsoft Excel 16.0 Object Libray</code>,添加到引用，然后使用方法如下：</p>
+<pre><code>Excel.Application xApp = new Excel.Application();
+xApp.Visible = true;
+xApp.UserControl = true;
+Excel.Workbook xBook = null;
+try
+{
+    xBook = xApp.Workbooks.Open(@&quot;E:\hxl22.xlsx&quot;);
+}
+catch (Exception ex)
+{
+    throw ex;
+}
+</code></pre><p>读写都没有问题，是不是以为要成功了？！<br><br>But，在Unity工程中，按以上步骤和代码来操作<br><br><strong>先是dll引入出错</strong><br><br>在Unity中不能用以上方式来引入库，需要手动添加上面两个dll到<code>Assets/Plugins</code>中，不是很简单么，直接拷过去不就行了，But当你打开程序集目录<code>C:\Windows\assembly</code>，傻了眼，哪里有什么dll文件啊，根本不能拷贝！一通乱搜，在网上找到了方法<br>在VS中打开 程序包管理控制台，输入：</p>
+<ul>
+<li><code>copy C:\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Excel.dll E:\</code></li>
+<li><code>copy C:\Windows\assembly\GAC_MSIL\Microsoft.Vbe.Interop\15.0.0.0__71e9bce111e9429c\Microsoft.Vbe.Interop.dll E:\</code></li>
+<li><code>copy C:\Windows\assembly\GAC_MSIL\office\15.0.0.0__71e9bce111e9429c\OFFICE.DLL E:\</code></li>
+</ul>
+<p>然后E盘下面就会出现三个dll文件 <code>Microsoft.Office.Interop.Excel.dll、 Microsoft.Vbe.Interop.dll 、 OFFICE.DLL</code>，<br>拷进 <code>Assets/Plugins</code>，dll文件解决了！<br><br><strong>严重的Crash</strong><br><br>接着是写逻辑代码，一通乱写！Run！ Crash！ WTF！，修改代码！Run！ Crash！…不折腾了，也不开源，无法调试，网上也没有方法解决！放弃！</p>
+<h4 id="EPPlus"><a href="#EPPlus" class="headerlink" title="EPPlus"></a>EPPlus</h4><p>这个方法<a href="https://blog.csdn.net/yupu56/article/details/50580277" target="_blank" rel="noopener"></a>，早就看到了，刚开始很不屑，不想使用，用了一下，真香！一个方法 <code>ExcelPackage.Save()</code>搞定！</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Unity中Excel的写入"><span class="toc-text">Unity中Excel的写入</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Excel读取"><span class="toc-text">Excel读取</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Excel写入"><span class="toc-text">Excel写入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#NPOI"><span class="toc-text">NPOI</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#COM"><span class="toc-text">COM</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#EPPlus"><span class="toc-text">EPPlus</span></a></li></ol></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/03/动态添加事件帧并持久化保存/" class="prev">&larr; 上一篇 动态添加事件帧并持久化保存</a>
+  
+
+  
+
+  
+    <a href="/2019/07/03/Lamda引起的一个问题/" class="next">下一篇 Lamda引起的一个问题 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+

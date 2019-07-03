@@ -1,0 +1,386 @@
+
+
+
+
+
+
+
+<!doctype html>
+<html lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <meta name="author" content="ZHJ">
+  
+  
+  
+  
+    <meta name="description" content="动态添加事件帧并持久化保存代码中如何在AnimationClip中添加事件帧，并回写，实现事件帧持久化保存。
+动态添加事件帧动态添加事件帧，很简单！有两种方法：
+
+AnimationClip.AddEvent(AnimationEvent evt)AnimationClip中提供的有添加事件帧的方法AnimationClip.AddEvent(AnimationEvent evt),但这个并...">
+  
+  <title>动态添加事件帧并持久化保存 [ 奔跑的蜗牛 ]</title>
+  
+  
+    <link rel="shortcut icon" href="/favicon.ico">
+  
+  
+  <link rel="stylesheet" href="/css/random.css">
+<link rel="stylesheet" href="/css/vegas.min.css">
+<link rel="stylesheet" href="/css/highlight-railscasts.css">
+<link rel="stylesheet" href="/css/jquery.fancybox.css">
+<link rel="stylesheet" href="/css/iconfont/iconfont.css">
+<link rel="stylesheet" href="/css/jquery.fancybox-thumbs.css">
+<link rel="stylesheet" href="/css/plyr.css"><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+</head>
+
+<body>
+<!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="side-navigate hide-area">
+  
+    <div class="item prev">
+      <a href="/2019/07/03/依赖注入/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        依赖注入
+      </div>
+    </div>
+  
+  
+    <div class="item next">
+      <a href="/2019/07/03/Unity中Excel的写入/">
+        <div class="item-icon"></div>
+      </a>
+      <div class="item-title">
+        Unity中Excel的写入
+      </div>
+    </div>
+  
+</div>
+<div id="outer-container" class="hide-area">
+<div id="container">
+  <div id="menu-outer" class="slide-down">
+    <div id="menu-inner">
+      <div id="brand">
+        
+        <a onclick="openUserCard()">
+          <img id="avatar" src="/faceicon.jpg">
+          <div id="homelink">奔跑的蜗牛</div>
+        </a>
+      </div>
+      <div id="menu-list">
+        <ul>
+        
+        
+          
+            <li>
+          
+            <a href="/index.html">首页</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/archives">文章</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/tags">标签</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/categories">分类</a>
+            
+          </li>
+        
+          
+            <li>
+          
+            <a href="/about">关于</a>
+            
+          </li>
+        
+        </ul>
+      </div>
+      <div id="show-menu">
+        <button>Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="content-outer">
+    <div id="content-inner">
+      
+      
+  <article id="post">
+    <h1>动态添加事件帧并持久化保存</h1>
+    <p class="page-title-sub">
+      <span id="post-title-date">撰写于 2019-07-03</span>
+      
+        <span id="post-title-updated">修改于 2019-07-03</span>
+      
+      
+      <span id="post-title-categories">分类
+      
+      
+        
+        
+        <a href="/categories/Unity/">Unity</a>
+      
+      </span>
+      
+      
+      <span id="post-title-tags">
+      标签
+      
+      
+        
+        
+        <a href="/tags/Animator/">Animator</a>
+      
+      </span>
+      
+    </p>
+    
+    <h2 id="动态添加事件帧并持久化保存"><a href="#动态添加事件帧并持久化保存" class="headerlink" title="动态添加事件帧并持久化保存"></a>动态添加事件帧并持久化保存</h2><p>代码中如何在AnimationClip中添加事件帧，并回写，实现事件帧持久化保存。</p>
+<h3 id="动态添加事件帧"><a href="#动态添加事件帧" class="headerlink" title="动态添加事件帧"></a>动态添加事件帧</h3><p>动态添加事件帧，很简单！有两种方法：<br></p>
+<ol>
+<li><strong>AnimationClip.AddEvent(AnimationEvent evt)</strong><br><br>AnimationClip中提供的有添加事件帧的方法<code>AnimationClip.AddEvent(AnimationEvent evt)</code>,但这个并不能实现持久化保存，只是修改了内存数据。<br></li>
+<li><strong>AnimationUtility.SetAnimationEvents(AnimationClip clip, AnimationEvent[] events)</strong><br><br>那怎么办呢？其实文档中已经写了 <code>If you want to add an event to a clip persistently, use AnimationUtility.SetAnimationEvents from the Unity editor.</code>就是如果你想实现持久化保存，就需要使用 <code>AnimationUtility.SetAnimationEvents</code>,这个方法也很简单，使用 <code>AnimationUtility.GetAnimationEvents</code>等到该clip的所有事件，然后可以修改该数组，使用<code>AnimationUtility.SetAnimationEvents</code>重新设置一下。实际使用中，这种方法的确可以实现<strong>暂时的</strong>持久化：修改后，每次运行场景，都可以读取到添加（或修改）的事件帧。但是，在Animation的Inspector面板中，Events数据面板中并没有看到添加的事件帧，而且，重新打开UnityEditor，所有的修改的事件都被还原了！也就是说，并没有真正的实现持久化！</li>
+</ol>
+<h3 id="持久化"><a href="#持久化" class="headerlink" title="持久化"></a>持久化</h3><p>动态添加事件帧很简单，但是持久化貌似不简单！<br>这时就考虑到Evens究竟是如何在本地存储的？牵涉到，Unity对数据的序列化保存，Unity会对Inspector面板上设置的数据进行序列化，并保存在<code>.meta</code>文件中，打开AnimationClip对应的文件，你会发现，除了一个<code>.fbx</code>文件，还会对应一个<code>.meta</code>，打开<code>.meta</code>文件，会看到很多序列化数据，以<code>yaml</code>格式存储，这些数据会被<code>Unity</code>加载并同步更新，我们会很容易的找到<code>animations:clipAnimations:events</code><br><br><img src="events.png" alt></p>
+<p>该clip对应的事件都会存贮在这里。找到了数据存储的地方，怎么修改呢？总不能暴力写入吧（我没有试过），Unity开放了这么多接口，肯定有办法修改的。是的！Unity提供一个类 <code>AssetImporter</code>，可以让你在导入配置文件时进行修改，在这里我们使用它的子类 <code>ModelImporter</code>，关键代码如下：</p>
+<pre><code>string clipAssertPath = AssetDatabase.GetAssetPath(currentClip);
+ModelImporter modelImporter = AssetImporter.GetAtPath(clipAssertPath) as ModelImporter;
+if (modelImporter == null)
+    return;
+
+SerializedObject modelImporterObj = new SerializedObject(modelImporter);
+SerializedProperty rootNodeProperty = modelImporterObj.FindProperty(&quot;m_ClipAnimations&quot;);
+SerializedProperty firstProperty = modelImporterObj.GetIterator();
+
+if (!rootNodeProperty.isNull() &amp;&amp; rootNodeProperty.isArray)
+{
+    for (int i = 0; i &lt; rootNodeProperty.arraySize; i++)
+    {
+        SerializedProperty item = rootNodeProperty.GetArrayElementAtIndex(i);
+
+        string clipName = item.FindPropertyRelative(&quot;name&quot;).stringValue;
+        if (clipName.Equals(currentClip.name))
+        {
+            //找出对应clip的events
+            var eventItems = item.FindPropertyRelative(&quot;events&quot;);
+            break;
+        }
+    }
+}
+</code></pre><p>通过以上代码，我们可以获取到对应clip的所有events，然后可以通过 <code>SerializedProperty</code>提供的 方法和属性对events进行修改。修改后，并没有保存到<code>.meta</code>文件，需要使用连个关键的方法：<br></p>
+<pre><code>modelImporterObj.ApplyModifiedProperties();
+modelImporter.SaveAndReimport();
+</code></pre><p>然后，大功告成！在<code>.meta</code>可以看到该动的<code>event</code>,在<code>Inspector</code>面板中，也可以看到该动的<code>event</code>！</p>
+
+  </article>
+  <div class="random-toc-area">
+  <button class="btn-hide-toc btn-hide-toc-show" style="display: none" onclick="TOCToggle()">显示目录</button>
+  <button class="btn-hide-toc btn-hide-toc-hide" onclick="TOCToggle()">隐藏目录</button>
+  <div class="random-toc">
+    <h2>目录</h2>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#动态添加事件帧并持久化保存"><span class="toc-text">动态添加事件帧并持久化保存</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#动态添加事件帧"><span class="toc-text">动态添加事件帧</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#持久化"><span class="toc-text">持久化</span></a></li></ol></li></ol>
+  </div>
+</div>
+
+  
+<nav id="pagination">
+  
+    <a href="/2019/07/03/依赖注入/" class="prev">&larr; 上一篇 依赖注入</a>
+  
+
+  
+
+  
+    <a href="/2019/07/03/Unity中Excel的写入/" class="next">下一篇 Unity中Excel的写入 &rarr;</a>
+  
+</nav>
+
+  <!-- JiaThis Button BEGIN -->
+
+<!-- JiaThis Button END -->
+
+
+      
+      
+    </div>
+  </div>
+
+  <div id="bottom-outer">
+    <div id="bottom-inner">
+      Site by ZHJ using
+      <a href="http://hexo.io">Hexo</a> & <a href="https://github.com/stiekel/hexo-theme-random">Random</a>
+      <br>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div id="user-card">
+  <div class="center-field">
+    <img class="avatar" src="/faceicon.jpg">
+    <p id="description"></p>
+    <ul class="social-icon">
+  
+  
+    <li>
+      <a href="https://github.com/bingxue102685/">
+        
+          <i class="icon iconfont github">&#xe606;</i>
+        
+      </a>
+    </li>
+  
+    <li>
+      <a href="http://weibo.com/u/2651440571">
+        
+          <i class="icon iconfont weibo">&#xe602;</i>
+        
+      </a>
+    </li>
+  
+</ul>
+  </div>
+</div>
+
+
+<div id="btn-view">Hide</div>
+
+<script>
+// is trigger analytics / tongji script
+var isIgnoreHost = false;
+
+if(window && window.location && window.location.host) {
+  isIgnoreHost = ["localhost","127.0.0.1"].some(function(address){
+    return 0 === window.location.host.indexOf(address);
+  });
+}
+
+var isTriggerAnalytics = !( true && isIgnoreHost );
+
+</script>
+
+  <script>
+if(isTriggerAnalytics) {
+  var _hmt = _hmt || [];
+  (function() {
+    var hm = document.createElement("script");
+    hm.src = "//hm.baidu.com/hm.js?ad51ef187046c9c2ce59ecc66675a383";
+    var s = document.getElementsByTagName("script")[0]; 
+    s.parentNode.insertBefore(hm, s);
+  })();
+}
+</script>
+
+
+
+
+
+  
+  
+    <script src="/js/jquery-2.2.3.min.js"></script>
+  
+    <script src="/js/vegas.min.js"></script>
+  
+    <script src="/js/random.js"></script>
+  
+    <script src="/js/highlight.pack.js"></script>
+  
+    <script src="/js/jquery.mousewheel.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox.pack.js"></script>
+  
+    <script src="/js/jquery.fancybox-thumbs.js"></script>
+  
+    <script src="/js/plyr.js"></script>
+  
+
+<script>
+
+  // fancybox
+  var backgroundImages = [];
+  
+  $('#post').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox') || $(this).parent().hasClass('fancybox-thumb')) return;
+      var alt = this.alt || this.title;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'post' + i);
+    });
+  });
+  $(".fancybox").fancybox();
+
+var vegasConfig = {"preload­Image":true,"transition":["slideLeft2","slideRight2","flash2"],"timer":true,"delay":5000,"shuffle":true,"count":28};
+var unsplashConfig = {"gravity":"north"};
+// is show background images
+var turnoffBackgroundImage = false;
+
+
+
+  turnoffBackgroundImage = true;
+
+
+var backgroundColor = "34495E";
+
+$(".fancybox-thumb").fancybox({
+  prevEffect: 'none',
+  nextEffect: 'none',
+  helpers: {
+    title: {
+      type: 'outside'
+    },
+    thumbs: {
+      width: 50,
+      height: 50
+    }
+  }
+});
+
+// show video with plyr
+$(".video-container iframe").each(function(i){
+  var url = $(this).attr('src');
+  var id = url.split('/').pop();
+  var plyrContainer = document.createElement('div');
+  plyrContainer.className = 'plyr';
+  var plyrElement = document.createElement('div');
+  plyrElement.dataset.videoId = id;
+  switch(true) {
+    case url.search('youtube.com') >= 0:
+      plyrElement.dataset.type = 'youtube';
+      break;
+    case url.search('vimeo.com') >= 0:
+      plyrElement.dataset.type = 'vimeo';
+      break;
+    default:
+      return;
+  };
+  plyrContainer.appendChild(plyrElement);
+  $(this).parent().html(plyrContainer);
+});
+plyr.setup('.plyr', {iconUrl: '/css/sprite.svg'});
+</script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+</body>
+</html>
+
