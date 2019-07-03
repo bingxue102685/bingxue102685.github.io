@@ -152,20 +152,8 @@ Excel写入NPOIExcel写入时，我遇到了一些问题，原来的项目中使
     
     <h2 id="Unity中Excel的写入"><a href="#Unity中Excel的写入" class="headerlink" title="Unity中Excel的写入"></a>Unity中Excel的写入</h2><h3 id="Excel读取"><a href="#Excel读取" class="headerlink" title="Excel读取"></a>Excel读取</h3><p>在Unity中读取Excel有很多种方法，对应的插件也很多，NPOI，COM，EPPlus等等，都可以读取，不在赘述</p>
 <h3 id="Excel写入"><a href="#Excel写入" class="headerlink" title="Excel写入"></a>Excel写入</h3><h4 id="NPOI"><a href="#NPOI" class="headerlink" title="NPOI"></a>NPOI</h4><p>Excel写入时，我遇到了一些问题，原来的项目中使用的是NPOI，这个插件的好处就是，不依赖于Office，无论你是否安转了Office，都可以对Excel进行读写操作。原来项目中，只是使用NPOI读取Excel，没有写入的操作，本以为没有问题，But竟然不能用！一直在报一个异常：<code>Type NPOI.OpenXmlFormats.ItemChoiceType is missing enumeration value &#39;stream&#39; for element &#39;stream from namespace</code>，无论怎么尝试都不行！浪费了好长时间，放弃！</p>
-<h4 id="COM"><a href="#COM" class="headerlink" title="COM"></a>COM</h4><p>后来搜了一个方法，使用Office自带的Excel.dll，这总行了吧，果断试了以下，没有在Unity中尝试，自建了一个C#工程，使用方法很简单，添加引用-&gt;COM，找到 <code>Microsoft Office 16.0 Object Library</code> 和 <code>Microsoft Excel 16.0 Object Libray</code>,添加到引用，然后使用方法如下：</p>
-<pre><code>Excel.Application xApp = new Excel.Application();
-xApp.Visible = true;
-xApp.UserControl = true;
-Excel.Workbook xBook = null;
-try
-{
-    xBook = xApp.Workbooks.Open(@&quot;E:\hxl22.xlsx&quot;);
-}
-catch (Exception ex)
-{
-    throw ex;
-}
-</code></pre><p>读写都没有问题，是不是以为要成功了？！<br><br>But，在Unity工程中，按以上步骤和代码来操作<br><br><strong>先是dll引入出错</strong><br><br>在Unity中不能用以上方式来引入库，需要手动添加上面两个dll到<code>Assets/Plugins</code>中，不是很简单么，直接拷过去不就行了，But当你打开程序集目录<code>C:\Windows\assembly</code>，傻了眼，哪里有什么dll文件啊，根本不能拷贝！一通乱搜，在网上找到了方法<br>在VS中打开 程序包管理控制台，输入：</p>
+<h4 id="COM"><a href="#COM" class="headerlink" title="COM"></a>COM</h4><p>后来搜了一个方法，使用Office自带的Excel.dll，这总行了吧，果断试了以下，没有在Unity中尝试，自建了一个C#工程，使用方法很简单，添加引用-&gt;COM，找到 <code>Microsoft Office 16.0 Object Library</code> 和 <code>Microsoft Excel 16.0 Object Libray</code>,添加到引用，然后使用方法如下：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Excel.Application xApp = <span class="keyword">new</span> Excel.Application();</span><br><span class="line">xApp.Visible = <span class="literal">true</span>;</span><br><span class="line">xApp.UserControl = <span class="literal">true</span>;</span><br><span class="line">Excel.Workbook xBook = <span class="literal">null</span>;</span><br><span class="line"><span class="keyword">try</span></span><br><span class="line">&#123;</span><br><span class="line">    xBook = xApp.Workbooks.Open(<span class="string">@"E:\hxl22.xlsx"</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">catch</span> (Exception ex)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">throw</span> ex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>读写都没有问题，是不是以为要成功了？！<br><br>But，在Unity工程中，按以上步骤和代码来操作<br><br><strong>先是dll引入出错</strong><br><br>在Unity中不能用以上方式来引入库，需要手动添加上面两个dll到<code>Assets/Plugins</code>中，不是很简单么，直接拷过去不就行了，But当你打开程序集目录<code>C:\Windows\assembly</code>，傻了眼，哪里有什么dll文件啊，根本不能拷贝！一通乱搜，在网上找到了方法<br>在VS中打开 程序包管理控制台，输入：</p>
 <ul>
 <li><code>copy C:\Windows\assembly\GAC_MSIL\Microsoft.Office.Interop.Excel\15.0.0.0__71e9bce111e9429c\Microsoft.Office.Interop.Excel.dll E:\</code></li>
 <li><code>copy C:\Windows\assembly\GAC_MSIL\Microsoft.Vbe.Interop\15.0.0.0__71e9bce111e9429c\Microsoft.Vbe.Interop.dll E:\</code></li>

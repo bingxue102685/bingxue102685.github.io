@@ -158,37 +158,12 @@
 <li>AnimatorState.speed</li>
 </ul>
 <p><strong>Animator.speed</strong>: 通过尝试，发现<code>speed=1</code>正常速度播放，<code>speed&lt;=0</code>停止播放，并不能回放，所以这种方法不行！<br><br><strong>AnimatorStateInfo.speed</strong>: 也就是通过<code>Animator.GetCurrentAnimatorStateInfo</code>方法获取到<code>AnimatorStateInfo</code>，然后设置<code>AnimatorStateInfo.speed</code>。是不是觉得一切顺利？！但是！<code>AnimatorStateInfo.speed</code>是只读！readonly！，所以这种方法不行！<br><br><strong>AnimatorState.speed</strong>: 是不是没有见过这个类，是的，这个类不常用，除非你经常做插件，需要跟Unity编辑器打交道，可能会用的到。这个对象可以通过以下方式获取：</p>
-<pre><code>UnityEditor.Animations.AnimatorController ac = animator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
-UnityEditor.Animations.AnimatorStateMachine sm = ac.layers[0].stateMachine;
-for (int i = 0; i &lt; sm.states.Length; i++)
-{
-    UnityEditor.Animations.ChildAnimatorState state = sm.states[i];
-    if (state.state.name.Equals(name))
-    state.state.speed = speed;
-}
-</code></pre><p>是不是觉得就要大功告成，然并卵！这个代码在第一行就会报错，就是<code>animator.runtimeAnimatorController</code>无法转为<code>UnityEditor.Animations.AnimatorController</code>类型，以前的版本是可以的，2018的版本是不行的，所以这种方法不行！</p>
+<figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">UnityEditor.Animations.AnimatorController ac = animator.runtimeAnimatorController <span class="keyword">as</span> UnityEditor.Animations.AnimatorController;</span><br><span class="line">UnityEditor.Animations.AnimatorStateMachine sm = ac.layers[<span class="number">0</span>].stateMachine;</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; sm.states.Length; i++)</span><br><span class="line">&#123;</span><br><span class="line">	UnityEditor.Animations.ChildAnimatorState state = sm.states[i];</span><br><span class="line">	<span class="keyword">if</span> (state.state.name.Equals(name))</span><br><span class="line">	state.state.speed = speed;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>是不是觉得就要大功告成，然并卵！这个代码在第一行就会报错，就是<code>animator.runtimeAnimatorController</code>无法转为<code>UnityEditor.Animations.AnimatorController</code>类型，以前的版本是可以的，2018的版本是不行的，所以这种方法不行！</p>
 <p>也就是说，通过speed方法，来达到动作的回放，是行不通的，Unity已经把这条路堵死了！</p>
 <h3 id="Time-timeScale（错误2）"><a href="#Time-timeScale（错误2）" class="headerlink" title="Time.timeScale（错误2）"></a>Time.timeScale（错误2）</h3><p><code>Time.timeScale</code>可以加速，可以暂停，那<code>Time.timeScale = -1</code>，会怎么样呢？直接提示：<code>Time.timeScale</code>不能设为-1。而且<code>Time.timeScale</code>会控制所有特效的播放，我只是想要控制当前角色动作的播放。所以这种方法不行！</p>
-<h3 id="Playback（错误3）"><a href="#Playback（错误3）" class="headerlink" title="Playback（错误3）"></a>Playback（错误3）</h3><p>实在没有办法了，只能通过录像回放的形式来处理了。代码如下：</p>
-<pre><code>//录制
-int frameCount = (int)(currentClip.length * currentClip.frameRate);
-animator.speed = 0;
-animator.StopPlayback();
-animator.recorderStartTime = 0;
-animator.StartRecording(frameCount);
-animator.Update(0);
-for (var i = 0; i &lt; frameCount; i++)
-{
-    animator.Update(1.0f / currentClip.frameRate);
-}
-animator.StopRecording();
-animator.speed = 1;
-.
-.
-.
-//回放
-animator.StartPlayback();
-</code></pre><p>是不是觉得很完美，但是在实际使用中问题很多：</p>
+<h3 id="Playback（错误3）"><a href="#Playback（错误3）" class="headerlink" title="Playback（错误3）"></a>Playback（错误3）</h3><p>实在没有办法了，只能通过录像回放的形式来处理了。代码如下：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//录制</span></span><br><span class="line"><span class="keyword">int</span> frameCount = (<span class="keyword">int</span>)(currentClip.length * currentClip.frameRate);</span><br><span class="line">animator.speed = <span class="number">0</span>;</span><br><span class="line">animator.StopPlayback();</span><br><span class="line">animator.recorderStartTime = <span class="number">0</span>;</span><br><span class="line">animator.StartRecording(frameCount);</span><br><span class="line">animator.Update(<span class="number">0</span>);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; frameCount; i++)</span><br><span class="line">&#123;</span><br><span class="line">    animator.Update(<span class="number">1.0f</span> / currentClip.frameRate);</span><br><span class="line">&#125;</span><br><span class="line">animator.StopRecording();</span><br><span class="line">animator.speed = <span class="number">1</span>;</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line">.</span><br><span class="line"><span class="comment">//回放</span></span><br><span class="line">animator.StartPlayback();</span><br></pre></td></tr></table></figure></p>
+<p>是不是觉得很完美，但是在实际使用中问题很多：</p>
 <ol>
 <li>无法正确开始录制。录制时间开始的帧数无法确定，比如我想从idle状态转到attack状态，需要播放attak动作，我用<code>animator.GetCurrentAnimatorClipInfo(0)[0].clip.name</code>来判断是否到这一状态，然后开始录制，但是实际中，录制的动作总会少几帧。其实我觉得使用 <code>normalizeTime == 0</code> 是可以用来判断 clip 是否已经开始播放了，可以准确的录制，但是我没有尝试，原因是录制回放会有一个很大的问题，就是下面这个问题。</li>
 <li>事件帧会无限触发。暂时没有找到原因，我在某一帧加入事件后，在播放录像时该事件会无限触发，无解！</li>

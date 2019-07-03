@@ -17,10 +17,7 @@
   
   
     <meta name="description" content="##Lamda引起的一个问题
-在C#中, Lamda表达式已经不是什么新鲜的东西，广泛使用在各个地方，跟 Action Delegate Func等这些委托没有本质却别，最近在使用是，遇到了常见的一种问题，在其他脚本Lua，Js中都能遇到，面试中也常遇到，就记录一下。先看一下代码演示：
-static void Main(string[] args)
-{
-    List&lt;Action&...">
+在C#中, Lamda表达式已经不是什么新鲜的东西，广泛使用在各个地方，跟 Action Delegate Func等这些委托没有本质却别，最近在使用是，遇到了常见的一种问题，在其他脚本Lua，Js中都能遇到，面试中也常遇到，就记录一下。先看一下代码演示：123456789101112131415static void Main(string[] args)&#...">
   
   <title>Lamda引起的一个问题 [ 奔跑的蜗牛 ]</title>
   
@@ -154,23 +151,8 @@ static void Main(string[] args)
     </p>
     
     <p>##Lamda引起的一个问题</p>
-<p>在C#中, Lamda表达式已经不是什么新鲜的东西，广泛使用在各个地方，跟 Action Delegate Func等这些委托没有本质却别，最近在使用是，遇到了常见的一种问题，在其他脚本Lua，Js中都能遇到，面试中也常遇到，就记录一下。先看一下代码演示：</p>
-<pre><code>static void Main(string[] args)
-{
-    List&lt;Action&gt; callFunc = new List&lt;Action&gt;();
-    for (int i = 0; i &lt; 5; i++)
-    {
-        callFunc.Add(() =&gt; Console.WriteLine(&quot;current index is:&quot; + i));
-    }
-
-    foreach (var item in callFunc)
-    {
-        item();
-    }
-
-    Console.ReadKey();
-}
-</code></pre><p>以上代码输出是什么呢？预期的输出是：</p>
+<p>在C#中, Lamda表达式已经不是什么新鲜的东西，广泛使用在各个地方，跟 Action Delegate Func等这些委托没有本质却别，最近在使用是，遇到了常见的一种问题，在其他脚本Lua，Js中都能遇到，面试中也常遇到，就记录一下。先看一下代码演示：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    List&lt;Action&gt; callFunc = <span class="keyword">new</span> List&lt;Action&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        callFunc.Add(() =&gt; Console.WriteLine(<span class="string">"current index is:"</span> + i));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> callFunc)</span><br><span class="line">    &#123;</span><br><span class="line">        item();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Console.ReadKey();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>以上代码输出是什么呢？预期的输出是：</p>
 <blockquote>
 <p>current index is:0<br><br>current index is:1<br><br>current index is:2<br><br>current index is:3<br><br>current index is:4<br></p>
 </blockquote>
@@ -178,26 +160,8 @@ static void Main(string[] args)
 <blockquote>
 <p>current index is:5<br><br>current index is:5<br><br>current index is:5<br><br>current index is:5<br><br>current index is:5<br></p>
 </blockquote>
-<p>为什么会这样呢？因为Lamda的一个特性：<strong>保存上下文</strong>。就是会保留当前执行环境内所有变量的值，在Lamda表达式中依旧可以访问这些变量。注意：<strong>是访问这些值，而不是复制这些值</strong>。当执行<code>callFunc</code>中的Lamda表达式时，会去寻找定义该表达式时上下文中存在的<code>i</code>，显然，<code>i</code>是在定义Lamda表达式的<code>for</code>循环中声明的，在内存中只有一份这样的数据，所有Lamda表达式访问的都是这同一个数据，当for循环执行完时：<code>i=5</code>，因此所有Lamda表达式中访问到的<code>i</code>值都是5。<br><br>那怎么才能得到预期结果呢？很显然，我们需要为每个Lamda创造一个单独的执行环境，也就是说，每个执行环境中的<code>i</code>都是一份拷贝，互不相干。因此需要包装一下Lamda表达式， 方法如下：</p>
-<pre><code>static void Main(string[] args)
-{
-    List&lt;Action&gt; callFunc = new List&lt;Action&gt;();
-
-    Func&lt;int, Action&gt; generateCallFunc = (i) =&gt; { return () =&gt; Console.WriteLine(&quot;current index is:&quot; + i); };
-
-    for (int i = 0; i &lt; 5; i++)
-    {
-        callFunc.Add(generateCallFunc(i));
-    }
-
-    foreach (var item in callFunc)
-    {
-        item();
-    }
-
-    Console.ReadKey();
-}
-</code></pre><p><code>generateCallFunc</code>就是一个函数，传入<code>i</code>，这样生成的每个Lamda就会有一个<code>i</code>的拷贝，每个Lamda在执行时，就会访问当前上下文中的<code>i</code>，这样就互不干涉，可以达到预期结果！</p>
+<p>为什么会这样呢？因为Lamda的一个特性：<strong>保存上下文</strong>。就是会保留当前执行环境内所有变量的值，在Lamda表达式中依旧可以访问这些变量。注意：<strong>是访问这些值，而不是复制这些值</strong>。当执行<code>callFunc</code>中的Lamda表达式时，会去寻找定义该表达式时上下文中存在的<code>i</code>，显然，<code>i</code>是在定义Lamda表达式的<code>for</code>循环中声明的，在内存中只有一份这样的数据，所有Lamda表达式访问的都是这同一个数据，当for循环执行完时：<code>i=5</code>，因此所有Lamda表达式中访问到的<code>i</code>值都是5。<br><br>那怎么才能得到预期结果呢？很显然，我们需要为每个Lamda创造一个单独的执行环境，也就是说，每个执行环境中的<code>i</code>都是一份拷贝，互不相干。因此需要包装一下Lamda表达式， 方法如下：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">Main</span>(<span class="params"><span class="keyword">string</span>[] args</span>)</span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    List&lt;Action&gt; callFunc = <span class="keyword">new</span> List&lt;Action&gt;();</span><br><span class="line"></span><br><span class="line">    Func&lt;<span class="keyword">int</span>, Action&gt; generateCallFunc = (i) =&gt; &#123; <span class="keyword">return</span> () =&gt; Console.WriteLine(<span class="string">"current index is:"</span> + i); &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        callFunc.Add(generateCallFunc(i));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">foreach</span> (<span class="keyword">var</span> item <span class="keyword">in</span> callFunc)</span><br><span class="line">    &#123;</span><br><span class="line">        item();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    Console.ReadKey();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>generateCallFunc</code>就是一个函数，传入<code>i</code>，这样生成的每个Lamda就会有一个<code>i</code>的拷贝，每个Lamda在执行时，就会访问当前上下文中的<code>i</code>，这样就互不干涉，可以达到预期结果！</p>
 
   </article>
   <div class="random-toc-area">

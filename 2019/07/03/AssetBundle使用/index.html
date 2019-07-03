@@ -16,13 +16,12 @@
   
   
   
-    <meta name="description" content="##AssetBundles
-AssetBundle工作流程要开始使用AssetBundles，需要遵循以下步骤。
+    <meta name="description" content="AssetBundle工作流程要开始使用AssetBundles，需要遵循以下步骤。
 分配Assets给AssetBundles把一个Asset分配给一个AssetBundle，需要使用一下步骤
 
 从project 面板中，选择你想要打进包的asset
 查看 inspector 面板中，当前选择的asset的属性
-在inspector面板的底部，可以看到分配的A...">
+在inspector面板的底部，可以看到分配的AssetBundles和后缀的...">
   
   <title>AssetBundle使用 [ 奔跑的蜗牛 ]</title>
   
@@ -146,8 +145,7 @@ AssetBundle工作流程要开始使用AssetBundles，需要遵循以下步骤。
       
     </p>
     
-    <p>##AssetBundles</p>
-<h3 id="AssetBundle工作流程"><a href="#AssetBundle工作流程" class="headerlink" title="AssetBundle工作流程"></a>AssetBundle工作流程</h3><p>要开始使用AssetBundles，需要遵循以下步骤。</p>
+    <h3 id="AssetBundle工作流程"><a href="#AssetBundle工作流程" class="headerlink" title="AssetBundle工作流程"></a>AssetBundle工作流程</h3><p>要开始使用AssetBundles，需要遵循以下步骤。</p>
 <h4 id="分配Assets给AssetBundles"><a href="#分配Assets给AssetBundles" class="headerlink" title="分配Assets给AssetBundles"></a>分配Assets给AssetBundles</h4><p>把一个Asset分配给一个AssetBundle，需要使用一下步骤<br></p>
 <ol>
 <li>从<code>project</code> 面板中，选择你想要打进包的asset<br></li>
@@ -157,55 +155,15 @@ AssetBundle工作流程要开始使用AssetBundles，需要遵循以下步骤。
 <li>点击左边的下拉列表，表示当前已经注册的AssetBundle名字，默认为None<br></li>
 <li>点击<code>New...</code>可创建一个新的AssetBundle<br></li>
 <li>输入你想要设置的AssetBundle的名字。需要注意的是：AssetBundle的名称支持文件夹结构，这种结构取决于你输入的名称。如果想添加一个子文件夹，用<code>/</code>做分隔。例如：你输入<code>environment/forest</code>，将会在<code>environment</code>文件夹下创建一个名为<code>forest</code>的AssetBundle<br></li>
-<li><p>一旦你选择或者创建了一个AssetBundle名字，你也可以用这种方法，从右边下拉列表来分配或创建一个后缀名。后缀名不是必须的。<br></p>
-<h4 id="生成AssetBundles"><a href="#生成AssetBundles" class="headerlink" title="生成AssetBundles"></a>生成AssetBundles</h4><p>在 <code>Assets</code>文件夹下，创建一个文件夹，命名为 <code>Editor</code>，然后在<code>Editor</code>文件夹下创建一个<code>C#</code>文件，输入一下代码：<br></p>
-<pre><code>using UnityEditor;
-using System.IO;
-
-public class CreateAssetBundles
-{
-    [MenuItem(&quot;Assets/Build AssetBundles&quot;)]
-    static void BuildAllAssetBundles()
-    {
-        string assetBundleDirectory = &quot;Assets/AssetBundles&quot;;
-        if(!Directory.Exists(assetBundleDirectory))
-{
-    Directory.CreateDirectory(assetBundleDirectory);
-}
-BuildPipeline.BuildAssetBundles(assetBundleDirectory, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows);
-    }
-}
-</code></pre></li>
+<li>一旦你选择或者创建了一个AssetBundle名字，你也可以用这种方法，从右边下拉列表来分配或创建一个后缀名。后缀名不是必须的。<br><h4 id="生成AssetBundles"><a href="#生成AssetBundles" class="headerlink" title="生成AssetBundles"></a>生成AssetBundles</h4>在 <code>Assets</code>文件夹下，创建一个文件夹，命名为 <code>Editor</code>，然后在<code>Editor</code>文件夹下创建一个<code>C#</code>文件，输入一下代码：<br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> UnityEditor;</span><br><span class="line"><span class="keyword">using</span> System.IO;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">CreateAssetBundles</span></span><br><span class="line">&#123;</span><br><span class="line">    [<span class="meta">MenuItem(<span class="meta-string">"Assets/Build AssetBundles"</span>)</span>]</span><br><span class="line">    <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">BuildAllAssetBundles</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span>    &#123;</span><br><span class="line">        <span class="keyword">string</span> assetBundleDirectory = <span class="string">"Assets/AssetBundles"</span>;</span><br><span class="line">        <span class="keyword">if</span>(!Directory.Exists(assetBundleDirectory))</span><br><span class="line">&#123;</span><br><span class="line">    Directory.CreateDirectory(assetBundleDirectory);</span><br><span class="line">&#125;</span><br><span class="line">BuildPipeline.BuildAssetBundles(assetBundleDirectory, BuildAssetBundleOptions.None, BuildTarget.StandaloneWindows);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
 </ol>
 <p>这段代码将会在<code>Assets</code>按钮菜单底部创建一个名为<code>Build AssetBundles</code>的按钮，如果点击该按钮，就会执行与之关联的函数。当点击该按钮时，就会生成一个有进度条的对话框。这将会打包所有带有AssetBundle名字的assets，然后把他们放在通过assetBundleDirectory设置的文件夹中。</p>
 <h4 id="把AssetBundles上传至服务器"><a href="#把AssetBundles上传至服务器" class="headerlink" title="把AssetBundles上传至服务器"></a>把AssetBundles上传至服务器</h4><p>这一步对于每个开发者来说都是不同的，Unity并不会告诉你怎么做。如果你想把你的<code>AssetBundles</code>上传至第三方服务器，do it!如果你就是单纯的在做本地开发，并打算把所有的AssetBundle放在磁盘上，skip it!</p>
-<h4 id="加载AssetBundles和Assets"><a href="#加载AssetBundles和Assets" class="headerlink" title="加载AssetBundles和Assets"></a>加载AssetBundles和Assets</h4><p>如果你想从本地加载，你可能会使用到 <code>AssetBundles.LoadFromFile</code>,例如：<br></p>
-<pre><code>public class LoadFromFileExample extends MonoBehaviour {
-    function Start() {
-        var myLoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, &quot;myassetBundle&quot;));
-        if (myLoadedAssetBundle == null) {
-            Debug.Log(&quot;Failed to load AssetBundle!&quot;);
-            return;
-        }
-        var prefab = myLoadedAssetBundle.LoadAsset.&lt;GameObject&gt;(&quot;MyObject&quot;);
-        Instantiate(prefab);
-    }
-}
-</code></pre><p><code>LoadFromFile</code>需要一个本地的包路径。</p>
-<p>如果你自己托管<code>AssetBundles</code>，需要下载到你的游戏中，会用到 <code>UnityWebRequest</code>的API，例如：<br></p>
-<pre><code>IEnumerator InstantiateObject()
-
-{
-    string uri = &quot;file:///&quot; + Application.dataPath + &quot;/AssetBundles/&quot; + assetBundleName;        
-    UnityEngine.__Networking__.UnityWebRequest request = UnityEngine.__Networking__.UnityWebRequest.GetAssetBundle(uri, 0);
-    yield return request.Send();
-    AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);
-    GameObject cube = bundle.LoadAsset&lt;GameObject&gt;(&quot;Cube&quot;);
-    GameObject sprite = bundle.LoadAsset&lt;GameObject&gt;(&quot;Sprite&quot;);
-    Instantiate(cube);
-    Instantiate(sprite);
-}
-</code></pre><p><code>GetAssetBundle(string, int)</code>需要传入<code>AssetBundle</code>的uri和要下载的包的版本。在上面的例子中，我们仍然指向一个本地文件，但字符串uri可以指向你托管的任何AssetBundles的URL。<br><code>UnityWebRequest</code>包含一个特殊的类来处理<code>AssetBundles</code>:<code>DownloadHandlerAssetBundle</code>,这个类可以从请求中获取<code>AssetBundle</code>。<br><br>无论使用哪种方法，现在都可以访问AssetBundle对象。你需要使用AssetBundle中的 <code>LoadAsset&lt;T&gt;(string)</code>方法，这个方法需要传入类型<code>T</code>,这个类型就是你想要加载的asset的类型，还需要传入asset在包中的名字。这个方法返回任何你想从 <code>AssetBundle</code>中加载的对象。你可以像使用Unity中内置对象一样使用该加载的对象。例如，如果你想在场景中创建一个GameObject，你只需要调用<code>Instantiate(gameObjectFromAssetBundle)</code>。</p>
+<h4 id="加载AssetBundles和Assets"><a href="#加载AssetBundles和Assets" class="headerlink" title="加载AssetBundles和Assets"></a>加载AssetBundles和Assets</h4><p>如果你想从本地加载，你可能会使用到 <code>AssetBundles.LoadFromFile</code>,例如：<br><br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title">LoadFromFileExample</span> <span class="title">extends</span> <span class="title">MonoBehaviour</span> &#123;</span><br><span class="line">    <span class="function">function <span class="title">Start</span>(<span class="params"></span>)</span> &#123;</span><br><span class="line">        <span class="keyword">var</span> myLoadedAssetBundle = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, <span class="string">"myassetBundle"</span>));</span><br><span class="line">        <span class="keyword">if</span> (myLoadedAssetBundle == <span class="literal">null</span>) &#123;</span><br><span class="line">            Debug.Log(<span class="string">"Failed to load AssetBundle!"</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">var</span> prefab = myLoadedAssetBundle.LoadAsset.&lt;GameObject&gt;(<span class="string">"MyObject"</span>);</span><br><span class="line">        Instantiate(prefab);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>LoadFromFile</code>需要一个本地的包路径。</p>
+<p>如果你自己托管<code>AssetBundles</code>，需要下载到你的游戏中，会用到 <code>UnityWebRequest</code>的API，例如：<br><br><figure class="highlight cs"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">IEnumerator <span class="title">InstantiateObject</span>(<span class="params"></span>)</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">string</span> uri = <span class="string">"file:///"</span> + Application.dataPath + <span class="string">"/AssetBundles/"</span> + assetBundleName;        </span><br><span class="line">    UnityEngine.__Networking__.UnityWebRequest request = UnityEngine.__Networking__.UnityWebRequest.GetAssetBundle(uri, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">yield</span> <span class="keyword">return</span> request.Send();</span><br><span class="line">    AssetBundle bundle = DownloadHandlerAssetBundle.GetContent(request);</span><br><span class="line">    GameObject cube = bundle.LoadAsset&lt;GameObject&gt;(<span class="string">"Cube"</span>);</span><br><span class="line">    GameObject sprite = bundle.LoadAsset&lt;GameObject&gt;(<span class="string">"Sprite"</span>);</span><br><span class="line">    Instantiate(cube);</span><br><span class="line">    Instantiate(sprite);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>GetAssetBundle(string, int)</code>需要传入<code>AssetBundle</code>的uri和要下载的包的版本。在上面的例子中，我们仍然指向一个本地文件，但字符串uri可以指向你托管的任何AssetBundles的URL。<br><code>UnityWebRequest</code>包含一个特殊的类来处理<code>AssetBundles</code>:<code>DownloadHandlerAssetBundle</code>,这个类可以从请求中获取<code>AssetBundle</code>。<br><br>无论使用哪种方法，现在都可以访问AssetBundle对象。你需要使用AssetBundle中的 <code>LoadAsset&lt;T&gt;(string)</code>方法，这个方法需要传入类型<code>T</code>,这个类型就是你想要加载的asset的类型，还需要传入asset在包中的名字。这个方法返回任何你想从 <code>AssetBundle</code>中加载的对象。你可以像使用Unity中内置对象一样使用该加载的对象。例如，如果你想在场景中创建一个GameObject，你只需要调用<code>Instantiate(gameObjectFromAssetBundle)</code>。</p>
 
   </article>
   <div class="random-toc-area">
